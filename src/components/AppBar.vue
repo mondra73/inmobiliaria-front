@@ -1,60 +1,59 @@
 <template>
-  <v-app-bar
-    app
-    flat
-    elevate-on-scroll
-    color="surface"
-    class="glass-app-bar"
-  >
-    <v-toolbar-title class="font-weight-bold text-white">Espinosa</v-toolbar-title>
+  <div>
+    <v-app-bar app flat elevate-on-scroll color="surface" class="glass-app-bar">
+      <v-toolbar-title class="font-weight-bold text-white">Espinosa</v-toolbar-title>
 
-    <v-spacer></v-spacer>
+      <v-spacer></v-spacer>
 
-    <!-- Desktop -->
-    <div class="d-none d-md-flex">
-      <v-btn variant="text" class="text-white" @click="scrollTo('nosotros')">Nosotros</v-btn>
-      <v-btn variant="text" class="text-white" @click="scrollTo('servicios')">Servicios</v-btn>
-      <v-btn variant="text" class="text-white" @click="scrollTo('propiedades')">Propiedades</v-btn>
-      <v-btn variant="text" class="text-white" @click="scrollTo('contacto')">Contacto</v-btn>
-    </div>
+      <!-- Desktop -->
+      <div class="d-none d-md-flex">
+        <v-btn variant="text" class="text-white" @click="scrollTo('nosotros')">Nosotros</v-btn>
+        <v-btn variant="text" class="text-white" @click="scrollTo('servicios')">Servicios</v-btn>
+        <v-btn variant="text" class="text-white" @click="scrollTo('propiedades')">Propiedades</v-btn>
+        <v-btn variant="text" class="text-white" @click="scrollTo('contacto')">Contacto</v-btn>
+        <v-btn variant="text" class="text-white" @click="goToLogin">Login</v-btn>
+      </div>
 
-    <!-- Mobile -->
-    <v-btn
-      icon
-      class="d-flex d-md-none"
-      color="white"
-      @click.stop="drawer = !drawer"
-    >
-      <v-icon>mdi-menu</v-icon>
-    </v-btn>
-  </v-app-bar>
-
-  <!-- Menú móvil - Ahora con tamaño automático -->
-  <v-navigation-drawer
-    v-model="drawer"
-    temporary
-    location="right"
-    class="glass-menu"
-    style="z-index: 1001; height: auto !important; min-height: 0 !important; top: 64px;"
-    width="200"
-  >
-    <v-list density="compact" style="padding: 0;">
-      <v-list-item 
-        v-for="(item, index) in menuItems"
-        :key="index"
-        @click="navAction(item.id)"
-        class="px-4"
+      <!-- Mobile -->
+      <v-menu
+        v-model="menuOpen"
+        activator="parent"
+        transition="scale-transition"
+        location="top end"
+        offset-y
       >
-        <v-list-item-title class="text-white">{{ item.title }}</v-list-item-title>
-      </v-list-item>
-    </v-list>
-  </v-navigation-drawer>
+        <template #activator="{ props }">
+          <v-btn icon class="d-flex d-md-none" color="white" v-bind="props">
+            <v-icon>mdi-menu</v-icon>
+          </v-btn>
+        </template>
+
+        <v-list class="glass-menu rounded-lg py-2" elevation="10" style="min-width: 160px;">
+          <v-list-item
+            v-for="(item, index) in menuItems"
+            :key="index"
+            @click="navAction(item.id)"
+            class="px-4"
+          >
+            <v-list-item-title class="text-white">{{ item.title }}</v-list-item-title>
+          </v-list-item>
+          <v-divider class="my-1" />
+          <v-list-item @click="goToLogin" class="px-4">
+            <v-list-item-title class="text-white">Login</v-list-item-title>
+          </v-list-item>
+        </v-list>
+      </v-menu>
+    </v-app-bar>
+  </div>
 </template>
 
 <script setup>
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 
-const drawer = ref(false)
+const menuOpen = ref(false)
+const router = useRouter()
+
 const menuItems = [
   { id: 'nosotros', title: 'Nosotros' },
   { id: 'servicios', title: 'Servicios' },
@@ -69,7 +68,12 @@ const scrollTo = (id) => {
 
 const navAction = (id) => {
   scrollTo(id)
-  drawer.value = false
+  menuOpen.value = false
+}
+
+const goToLogin = () => {
+  menuOpen.value = false
+  router.push('/login')
 }
 </script>
 
@@ -84,15 +88,13 @@ const navAction = (id) => {
 .glass-menu {
   background-color: rgba(30, 30, 30, 0.95) !important;
   backdrop-filter: blur(10px);
-  border-bottom-left-radius: 8px; /* Opcional: para esquinas redondeadas */
 }
 
 .text-white {
   color: white !important;
 }
 
-/* Estilo para los ítems del menú */
 .v-list-item {
-  min-height: 48px !important;
+  min-height: 42px !important;
 }
 </style>
