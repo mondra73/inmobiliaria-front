@@ -3,42 +3,96 @@
     app
     flat
     elevate-on-scroll
+    color="surface"
     class="glass-app-bar"
   >
     <v-toolbar-title class="font-weight-bold text-white">Espinosa</v-toolbar-title>
 
     <v-spacer></v-spacer>
 
-    <v-btn text class="text-white" @click="scrollTo('nosotros')">Nosotros</v-btn>
-    <v-btn text class="text-white" @click="scrollTo('servicios')">Servicios</v-btn>
-    <v-btn text class="text-white" @click="scrollTo('propiedades')">Propiedades</v-btn>
-    <v-btn text class="text-white" @click="scrollTo('contacto')">Contacto</v-btn>
+    <!-- Desktop -->
+    <div class="d-none d-md-flex">
+      <v-btn variant="text" class="text-white" @click="scrollTo('nosotros')">Nosotros</v-btn>
+      <v-btn variant="text" class="text-white" @click="scrollTo('servicios')">Servicios</v-btn>
+      <v-btn variant="text" class="text-white" @click="scrollTo('propiedades')">Propiedades</v-btn>
+      <v-btn variant="text" class="text-white" @click="scrollTo('contacto')">Contacto</v-btn>
+    </div>
+
+    <!-- Mobile -->
+    <v-btn
+      icon
+      class="d-flex d-md-none"
+      color="white"
+      @click.stop="drawer = !drawer"
+    >
+      <v-icon>mdi-menu</v-icon>
+    </v-btn>
   </v-app-bar>
+
+  <!-- Menú móvil - Ahora con tamaño automático -->
+  <v-navigation-drawer
+    v-model="drawer"
+    temporary
+    location="right"
+    class="glass-menu"
+    style="z-index: 1001; height: auto !important; min-height: 0 !important; top: 64px;"
+    width="200"
+  >
+    <v-list density="compact" style="padding: 0;">
+      <v-list-item 
+        v-for="(item, index) in menuItems"
+        :key="index"
+        @click="navAction(item.id)"
+        class="px-4"
+      >
+        <v-list-item-title class="text-white">{{ item.title }}</v-list-item-title>
+      </v-list-item>
+    </v-list>
+  </v-navigation-drawer>
 </template>
 
 <script setup>
+import { ref } from 'vue'
+
+const drawer = ref(false)
+const menuItems = [
+  { id: 'nosotros', title: 'Nosotros' },
+  { id: 'servicios', title: 'Servicios' },
+  { id: 'propiedades', title: 'Propiedades' },
+  { id: 'contacto', title: 'Contacto' }
+]
+
 const scrollTo = (id) => {
   const el = document.getElementById(id)
   if (el) el.scrollIntoView({ behavior: 'smooth' })
+}
+
+const navAction = (id) => {
+  scrollTo(id)
+  drawer.value = false
 }
 </script>
 
 <style scoped>
 .glass-app-bar {
-  background-color: rgba(0, 0, 0, 0.6) !important; /* Igual al footer */
-  backdrop-filter: blur(6px);
-  transition: background-color 0.3s ease;
+  background-color: rgba(30, 30, 30, 0.9) !important;
+  backdrop-filter: blur(10px);
+  position: relative;
+  z-index: 1000;
 }
 
-/* Si quisieras que cambie al hacer scroll, podés ajustar esto */
-.v-toolbar--scroll.glass-app-bar {
-  background-color: rgba(0, 0, 0, 0.6) !important; /* Mismo color al hacer scroll también */
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3); /* sombra opcional al hacer scroll */
+.glass-menu {
+  background-color: rgba(30, 30, 30, 0.95) !important;
+  backdrop-filter: blur(10px);
+  border-bottom-left-radius: 8px; /* Opcional: para esquinas redondeadas */
 }
 
-.glass-app-bar {
-  background-color: #1e1e1e !important; /* mismo tono del footer */
-  color: white;
+.text-white {
+  color: white !important;
 }
 
+/* Estilo para los ítems del menú */
+.v-list-item {
+  min-height: 48px !important;
+}
 </style>
