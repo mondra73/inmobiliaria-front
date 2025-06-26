@@ -1,0 +1,24 @@
+<template>
+  <v-app>
+    <!-- AppBar global -->
+    <AppBar />
+
+    <!-- Área scrollable para enlaces -->
+    <v-main id="scrolling-area">
+      <RouterView />
+    </v-main>
+  </v-app>
+</template>
+
+<script setup>
+import { RouterView } from 'vue-router'
+import AppBar from './components/AppBar.vue'
+</script>
+
+
+<style>
+/* Elimina el scoped para permitir que Vuetify funcione */
+.logo {
+  margin: 0 auto 2rem;
+}
+</style>
