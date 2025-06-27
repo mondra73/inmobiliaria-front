@@ -74,7 +74,7 @@
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-
+import axios from 'axios'
 const router = useRouter()
 
 // Estado reactivo
@@ -86,31 +86,53 @@ const loginForm = ref({
 const isLoading = ref(false)
 const errorMessage = ref('')
 
+// Configuración base de Axios
+const api = axios.create({
+  baseURL: 'http://localhost:3000',  // Asegúrate que coincide con tu puerto backend
+  headers: {
+    'Content-Type': 'application/json'
+  }
+})
+
 // Función para manejar el login
 const handleLogin = async () => {
   isLoading.value = true
   errorMessage.value = ''
-  
+
   try {
-    // Aquí puedes integrar tu lógica de autenticación
-    // Por ejemplo, usando axios para hacer la petición a tu API
-    
-    console.log('Datos del login:', loginForm.value)
-    
-    // Simulación de delay de API
-    await new Promise(resolve => setTimeout(resolve, 1000))
-    
-    // Si el login es exitoso, redirigir
-    // router.push('/dashboard')
-    
-    // Por ahora solo mostramos en consola
-    alert('Login exitoso!')
-    
+    // Preparamos los datos para el backend
+    const loginData = {
+      usuario: loginForm.value.usuario,
+      contraseña: loginForm.value.password
+    }
+
+    // Llamada al endpoint de login
+    const response = await api.post('/api/user/login', loginData)
+
+    if (response.data.success) {
+      // Guardar el token en localStorage o en un store (Pinia/Vuex)
+      localStorage.setItem('authToken', response.data.data.token)
+
+      // Redirigir al dashboard
+      router.push('/dashboard')
+    } else {
+      errorMessage.value = response.data.error || 'Error en el login'
+    }
+
   } catch (error) {
-    errorMessage.value = 'Usuario o contraseña incorrectos'
-    console.error('Error en login:', error)
+    if (error.response) {
+      // Error de la API
+      errorMessage.value = error.response.data.error || 'Error en el servidor'
+    } else if (error.request) {
+      // La petición fue hecha pero no hubo respuesta
+      errorMessage.value = 'No se pudo conectar con el servidor'
+    } else {
+      // Error al configurar la petición
+      errorMessage.value = 'Error en la configuración de la petición'
+    }
   } finally {
     isLoading.value = false
   }
 }
+
 </script>
