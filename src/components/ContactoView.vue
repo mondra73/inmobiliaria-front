@@ -93,6 +93,7 @@
                             <label class="text-sm font-medium text-slate-700">¿En qué podemos ayudarle?</label>
                             <select
                                 class="w-full p-4 border-2 border-gray-300 rounded-xl hover:border-gray-400 focus:outline-none focus:border-slate-600 focus:ring-2 focus:ring-slate-200 transition-all duration-200 shadow-sm appearance-none bg-white">
+                                <option value="" selected disabled hidden>Elija una opción</option>
                                 <option>Quiero comprar una propiedad</option>
                                 <option>Quiero vender mi propiedad</option>
                                 <option>Busco alquilar</option>
