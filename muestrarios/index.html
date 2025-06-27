@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>InmoExpert - Inmobiliaria</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
+        }
+        .card-hover:hover {
+            transform: translateY(-5px);
+            transition: transform 0.3s ease;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Header -->
+    <header class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <h1 class="text-2xl font-bold text-blue-900">🏠 InmoExpert</h1>
+                </div>
+                <nav class="hidden md:flex space-x-8">
+                    <a href="#" class="text-gray-900 hover:text-blue-600 font-medium">Inicio</a>
+                    <a href="#" class="text-gray-500 hover:text-blue-600 font-medium">Propiedades</a>
+                    <a href="#" class="text-gray-500 hover:text-blue-600 font-medium">Servicios</a>
+                    <a href="#" class="text-gray-500 hover:text-blue-600 font-medium">Contacto</a>
+                </nav>
+                <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium">
+                    Publicar Propiedad
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="gradient-bg text-white py-24">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center">
+                <h1 class="text-4xl md:text-6xl font-bold mb-6">
+                    Encuentra tu hogar ideal
+                </h1>
+                <p class="text-xl md:text-2xl mb-8 text-blue-100">
+                    Más de 15 años de experiencia en el mercado inmobiliario
+                </p>
+                
+                <!-- Search Bar -->
+                <div class="max-w-4xl mx-auto bg-white rounded-lg shadow-lg p-6">
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                        <select class="w-full p-3 border border-gray-300 rounded-lg text-gray-900">
+                            <option>Casa</option>
+                            <option>Departamento</option>
+                            <option>Local</option>
+                            <option>Terreno</option>
+                        </select>
+                        <select class="w-full p-3 border border-gray-300 rounded-lg text-gray-900">
+                            <option>Venta</option>
+                            <option>Alquiler</option>
+                        </select>
+                        <input type="text" placeholder="Ciudad, barrio..." class="w-full p-3 border border-gray-300 rounded-lg text-gray-900">
+                        <button class="w-full bg-blue-600 hover:bg-blue-700 text-white p-3 rounded-lg font-medium">
+                            Buscar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Properties -->
+    <section class="py-16 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-gray-900 mb-4">Propiedades Destacadas</h2>
+                <p class="text-lg text-gray-600">Descubre las mejores oportunidades del mercado</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Property Card 1 -->
+                <div class="bg-white rounded-lg shadow-lg overflow-hidden card-hover">
+                    <div class="relative">
+                        <div class="h-64 bg-gradient-to-r from-green-400 to-blue-500 flex items-center justify-center">
+                            <span class="text-white text-2xl">🏡</span>
+                        </div>
+                        <div class="absolute top-4 left-4 bg-green-500 text-white px-3 py-1 rounded-full text-sm font-medium">
+                            Venta
+                        </div>
+                        <div class="absolute top-4 right-4 bg-blue-600 text-white px-3 py-1 rounded-full text-sm font-medium">
+                            Destacada
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold text-gray-900 mb-2">Casa Moderna en Barrio Norte</h3>
+                        <p class="text-gray-600 mb-4">3 dormitorios • 2 baños • 180 m²</p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-2xl font-bold text-blue-600">$350.000</span>
+                            <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm">
+                                Ver detalles
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Property Card 2 -->
+                <div class="bg-white rounded-lg shadow-lg overflow-hidden card-hover">
+                    <div class="relative">
+                        <div class="h-64 bg-gradient-to-r from-purple-400 to-pink-500 flex items-center justify-center">
+                            <span class="text-white text-2xl">🏢</span>
+                        </div>
+                        <div class="absolute top-4 left-4 bg-orange-500 text-white px-3 py-1 rounded-full text-sm font-medium">
+                            Alquiler
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold text-gray-900 mb-2">Departamento Céntrico</h3>
+                        <p class="text-gray-600 mb-4">2 dormitorios • 1 baño • 85 m²</p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-2xl font-bold text-blue-600">$1.200/mes</span>
+                            <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm">
+                                Ver detalles
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Property Card 3 -->
+                <div class="bg-white rounded-lg shadow-lg overflow-hidden card-hover">
+                    <div class="relative">
+                        <div class="h-64 bg-gradient-to-r from-yellow-400 to-orange-500 flex items-center justify-center">
+                            <span class="text-white text-2xl">🏪</span>
+                        </div>
+                        <div class="absolute top-4 left-4 bg-green-500 text-white px-3 py-1 rounded-full text-sm font-medium">
+                            Venta
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold text-gray-900 mb-2">Local Comercial Estratégico</h3>
+                        <p class="text-gray-600 mb-4">Planta baja • 120 m² • Zona comercial</p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-2xl font-bold text-blue-600">$180.000</span>
+                            <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm">
+                                Ver detalles
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section class="py-16 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-gray-900 mb-4">Nuestros Servicios</h2>
+                <p class="text-lg text-gray-600">Soluciones integrales para todas tus necesidades inmobiliarias</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="text-center p-6 bg-white rounded-lg shadow-sm">
+                    <div class="text-5xl mb-4">🏠</div>
+                    <h3 class="text-xl font-semibold text-gray-900 mb-2">Compra y Venta</h3>
+                    <p class="text-gray-600">Asesoramiento completo en operaciones de compra y venta de propiedades</p>
+                </div>
+                
+                <div class="text-center p-6 bg-white rounded-lg shadow-sm">
+                    <div class="text-5xl mb-4">📋</div>
+                    <h3 class="text-xl font-semibold text-gray-900 mb-2">Alquileres</h3>
+                    <p class="text-gray-600">Gestión integral de alquileres con garantías y administración completa</p>
+                </div>
+                
+                <div class="text-center p-6 bg-white rounded-lg shadow-sm">
+                    <div class="text-5xl mb-4">📊</div>
+                    <h3 class="text-xl font-semibold text-gray-900 mb-2">Tasaciones</h3>
+                    <p class="text-gray-600">Valuaciones profesionales con certificación de martillero público</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="py-16 bg-blue-600">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h2 class="text-3xl font-bold text-white mb-4">¿Listo para encontrar tu próxima propiedad?</h2>
+            <p class="text-xl text-blue-100 mb-8">Contáctanos hoy y te ayudaremos a hacer realidad tus objetivos inmobiliarios</p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <button class="bg-white text-blue-600 hover:bg-gray-100 px-8 py-3 rounded-lg font-medium">
+                    Ver todas las propiedades
+                </button>
+                <button class="border-2 border-white text-white hover:bg-white hover:text-blue-600 px-8 py-3 rounded-lg font-medium">
+                    Contactar ahora
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <h3 class="text-xl font-bold mb-4">🏠 InmoExpert</h3>
+                    <p class="text-gray-400 mb-4">Tu socio de confianza en el mercado inmobiliario</p>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Servicios</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li>Compra y Venta</li>
+                        <li>Alquileres</li>
+                        <li>Tasaciones</li>
+                        <li>Asesoramiento Legal</li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Propiedades</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li>Casas</li>
+                        <li>Departamentos</li>
+                        <li>Locales Comerciales</li>
+                        <li>Terrenos</li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Contacto</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li>📍 Av. Principal 123, Ciudad</li>
+                        <li>📞 +54 11 1234-5678</li>
+                        <li>✉️ info@inmoexpert.com</li>
+                        <li>🕒 Lun-Vie 9:00-18:00</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
+                <p>&copy; 2024 InmoExpert. Todos los derechos reservados. | Martillero Público Mat. 1234</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Agregar interactividad básica
+        document.addEventListener('DOMContentLoaded', function() {
+            // Efecto hover en las tarjetas
+            const cards = document.querySelectorAll('.card-hover');
+            cards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-5px)';
+                    this.style.transition = 'transform 0.3s ease';
+                });
+                
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0)';
+                });
+            });
+        });
+    </script>
+</body>
+</html>

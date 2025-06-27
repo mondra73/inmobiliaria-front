@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find Your Dream Home - Real Estate</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+        .hero-bg {
+            background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('/images/hero-house.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+        .card-hover {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body class="bg-white">
+    <!-- Hero Section -->
+    <section class="hero-bg min-h-screen flex items-center justify-start text-white relative">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8 w-full">
+            <div class="max-w-2xl">
+                <h1 class="text-5xl lg:text-7xl font-bold mb-6 leading-tight">
+                    Find Your<br>
+                    Dream Home
+                </h1>
+                <p class="text-xl lg:text-2xl mb-8 text-gray-200 leading-relaxed">
+                    Browse our latest listings of properties for<br>
+                    sale and rent
+                </p>
+                <button class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-lg text-lg font-semibold transition-colors">
+                    View Properties
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Properties Section -->
+    <section class="py-20 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <h2 class="text-4xl font-bold text-gray-900 mb-16">Featured Properties</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Property 1 -->
+                <div class="bg-white rounded-2xl overflow-hidden shadow-lg card-hover">
+                    <div class="relative">
+                        <div class="h-64 bg-gradient-to-br from-gray-300 to-gray-400 flex items-center justify-center">
+                            <!-- Placeholder for modern house image -->
+                            <div class="w-full h-full bg-cover bg-center" style="background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjI1NiIgdmlld0JveD0iMCAwIDQwMCAyNTYiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iMjU2IiBmaWxsPSIjRTVFN0VCIi8+CjxwYXRoIGQ9Ik0yMDAgMTI4TDE2MCA5Nkw4MCA5NlY5NkgzMjBWOTZMMjQwIDk2TDIwMCAxMjhaIiBmaWxsPSIjOUNBM0FGIi8+CjxyZWN0IHg9IjE2MCIgeT0iMTI4IiB3aWR0aD0iODAiIGhlaWdodD0iODAiIGZpbGw9IiM5Q0EzQUYiLz4KPC9zdmc+')"></div>
+                        </div>
+                        <div class="absolute top-4 left-4">
+                            <span class="bg-green-600 text-white px-3 py-1 rounded-md text-sm font-medium">
+                                For Sale
+                            </span>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="mb-4">
+                            <div class="text-3xl font-bold text-gray-900 mb-2">$750,000</div>
+                            <div class="text-lg font-semibold text-gray-700 mb-1">Home</div>
+                            <div class="text-gray-600 mb-3">3 Bedrooms • 2.0 Bath</div>
+                            <div class="text-gray-600">1,600 sqft</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Property 2 -->
+                <div class="bg-white rounded-2xl overflow-hidden shadow-lg card-hover">
+                    <div class="relative">
+                        <div class="h-64 bg-gradient-to-br from-blue-200 to-blue-300 flex items-center justify-center">
+                            <!-- Placeholder for apartment image -->
+                            <div class="w-full h-full bg-cover bg-center" style="background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjI1NiIgdmlld0JveD0iMCAwIDQwMCAyNTYiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iMjU2IiBmaWxsPSIjRTVFN0VCIi8+CjxyZWN0IHg9IjgwIiB5PSI2NCIgd2lkdGg9IjI0MCIgaGVpZ2h0PSIxMjgiIGZpbGw9IiM5Q0EzQUYiLz4KPHJlY3QgeD0iMTAwIiB5PSI4NCIgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIiBmaWxsPSIjNjM3M0ZGIi8+CjxyZWN0IHg9IjE2MCIgeT0iODQiIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCIgZmlsbD0iIzYzNzNGRiIvPgo8L3N2Zz4=')"></div>
+                        </div>
+                        <div class="absolute top-4 left-4">
+                            <span class="bg-blue-600 text-white px-3 py-1 rounded-md text-sm font-medium">
+                                For Rent
+                            </span>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="mb-4">
+                            <div class="text-lg font-semibold text-gray-700 mb-2">Apartment</div>
+                            <div class="text-2xl font-bold text-gray-900 mb-2">$3,000/month</div>
+                            <div class="text-gray-600 mb-3">2 Bedrooms • 1 Bathroom</div>
+                            <div class="text-gray-600">1,000 sqft</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Property 3 -->
+                <div class="bg-white rounded-2xl overflow-hidden shadow-lg card-hover">
+                    <div class="relative">
+                        <div class="h-64 bg-gradient-to-br from-green-200 to-green-300 flex items-center justify-center">
+                            <!-- Placeholder for traditional house image -->
+                            <div class="w-full h-full bg-cover bg-center" style="background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjI1NiIgdmlld0JveD0iMCAwIDQwMCAyNTYiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iMjU2IiBmaWxsPSIjRTVFN0VCIi8+CjxwYXRoIGQ9Ik0yMDAgODBMMTAwIDEyOEgzMDBMMjAwIDgwWiIgZmlsbD0iIzEwQjk4MSIvPgo8cmVjdCB4PSIxNDAiIHk9IjEyOCIgd2lkdGg9IjEyMCIgaGVpZ2h0PSI4MCIgZmlsbD0iIzEwQjk4MSIvPgo8L3N2Zz4=')"></div>
+                        </div>
+                        <div class="absolute top-4 left-4">
+                            <span class="bg-green-600 text-white px-3 py-1 rounded-md text-sm font-medium">
+                                Tree Sale
+                            </span>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="mb-4">
+                            <div class="text-3xl font-bold text-gray-900 mb-2">$600,000</div>
+                            <div class="text-lg font-semibold text-gray-700 mb-1">Tree Sale</div>
+                            <div class="text-gray-600 mb-3">3 Bedrooms • 2.5 sq ft</div>
+                            <div class="text-gray-600">1,500 sqft</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Why Choose Us Section -->
+    <section class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <h2 class="text-4xl font-bold text-gray-900 mb-16 text-center">Why Choose Us</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
+                <!-- Feature 1 -->
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-4">Extensive Listings</h3>
+                    <p class="text-gray-600 leading-relaxed">
+                        We offer diwide range of properties to suit all needs and budgets.
+                    </p>
+                </div>
+
+                <!-- Feature 2 -->
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-4">Expert Guidance</h3>
+                    <p class="text-gray-600 leading-relaxed">
+                        Our experienced agents are hereto help you every step of the way.
+                    </p>
+                </div>
+
+                <!-- Feature 3 -->
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-4">Trusted by Clients</h3>
+                    <p class="text-gray-600 leading-relaxed">
+                        We are committed noviding exceptional service and transparent transactions.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-16">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
+                <!-- Contact -->
+                <div>
+                    <h3 class="text-xl font-bold mb-6">Contact</h3>
+                    <div class="space-y-3 text-gray-300">
+                        <p>123 Main Street,</p>
+                        <p>Anytown, USA</p>
+                        <p class="pt-2">(123) 458, 7800</p>
+                    </div>
+                </div>
+
+                <!-- Login -->
+                <div>
+                    <h3 class="text-xl font-bold mb-6">Login</h3>
+                    <div class="space-y-3">
+                        <a href="#" class="block text-gray-300 hover:text-white transition-colors">Home</a>
+                        <a href="#" class="block text-gray-300 hover:text-white transition-colors">Properties</a>
+                        <a href="#" class="block text-gray-300 hover:text-white transition-colors">About</a>
+                    </div>
+                </div>
+
+                <!-- Quick Links -->
+                <div>
+                    <h3 class="text-xl font-bold mb-6">Quick Links</h3>
+                    <div class="space-y-3">
+                        <a href="#" class="block text-gray-300 hover:text-white transition-colors">Home</a>
+                        <a href="#" class="block text-gray-300 hover:text-white transition-colors">Properties</a>
+                        <a href="#" class="block text-gray-300 hover:text-white transition-colors">About</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Add smooth hover effects
+        document.addEventListener('DOMContentLoaded', function() {
+            const cards = document.querySelectorAll('.card-hover');
+            cards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-5px)';
+                });
+                
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0)';
+                });
+            });
+        });
+    </script>
+</body>
+</html>
