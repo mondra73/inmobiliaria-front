@@ -57,7 +57,8 @@
                             </div>
                             <div>
                                 <h3 class="font-semibold text-slate-900 mb-1">Oficina</h3>
-                                <p class="text-slate-600">Calle 44 N° 861. Colon, Buenos Aires<br>Lunes a Viernes 9:00 - 18:00</p>
+                                <p class="text-slate-600">Calle 44 N° 861. Colon, Buenos Aires<br>Lunes a Viernes 9:00 -
+                                    18:00</p>
                             </div>
                         </div>
                     </div>
@@ -66,29 +67,32 @@
                 <!-- Formulario de contacto -->
                 <div class="bg-white rounded-3xl shadow-sm border border-gray-100 p-10">
                     <form class="space-y-6">
+                        <!-- Nombre completo -->
                         <div class="space-y-2">
                             <label class="text-sm font-medium text-slate-700">Nombre completo</label>
-                            <input type="text"
-                                class="w-full p-4 border border-gray-200 rounded-xl focus:ring-2 focus:ring-slate-500 focus:border-transparent" />
+                            <input
+                                class="w-full p-4 border-2 border-gray-300 rounded-xl hover:border-gray-400 focus:outline-none focus:border-slate-600 focus:ring-2 focus:ring-slate-200 transition-all duration-200 shadow-sm" />
                         </div>
 
+                        <!-- Email y Teléfono -->
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div class="space-y-2">
                                 <label class="text-sm font-medium text-slate-700">Email</label>
                                 <input type="email"
-                                    class="w-full p-4 border border-gray-200 rounded-xl focus:ring-2 focus:ring-slate-500 focus:border-transparent" />
+                                    class="w-full p-4 border-2 border-gray-300 rounded-xl hover:border-gray-400 focus:outline-none focus:border-slate-600 focus:ring-2 focus:ring-slate-200 transition-all duration-200 shadow-sm" />
                             </div>
                             <div class="space-y-2">
                                 <label class="text-sm font-medium text-slate-700">Teléfono</label>
                                 <input type="tel"
-                                    class="w-full p-4 border border-gray-200 rounded-xl focus:ring-2 focus:ring-slate-500 focus:border-transparent" />
+                                    class="w-full p-4 border-2 border-gray-300 rounded-xl hover:border-gray-400 focus:outline-none focus:border-slate-600 focus:ring-2 focus:ring-slate-200 transition-all duration-200 shadow-sm" />
                             </div>
                         </div>
 
+                        <!-- Select -->
                         <div class="space-y-2">
                             <label class="text-sm font-medium text-slate-700">¿En qué podemos ayudarle?</label>
                             <select
-                                class="w-full p-4 border border-gray-200 rounded-xl focus:ring-2 focus:ring-slate-500 focus:border-transparent">
+                                class="w-full p-4 border-2 border-gray-300 rounded-xl hover:border-gray-400 focus:outline-none focus:border-slate-600 focus:ring-2 focus:ring-slate-200 transition-all duration-200 shadow-sm appearance-none bg-white">
                                 <option>Quiero comprar una propiedad</option>
                                 <option>Quiero vender mi propiedad</option>
                                 <option>Busco alquilar</option>
@@ -97,19 +101,20 @@
                             </select>
                         </div>
 
+                        <!-- Textarea -->
                         <div class="space-y-2">
                             <label class="text-sm font-medium text-slate-700">Mensaje</label>
                             <textarea rows="4" placeholder="Cuéntenos más detalles sobre su consulta..."
-                                class="w-full p-4 border border-gray-200 rounded-xl focus:ring-2 focus:ring-slate-500 focus:border-transparent"></textarea>
+                                class="w-full p-4 border-2 border-gray-300 rounded-xl hover:border-gray-400 focus:outline-none focus:border-slate-600 focus:ring-2 focus:ring-slate-200 transition-all duration-200 shadow-sm"></textarea>
                         </div>
 
+                        <!-- Botón -->
                         <button type="submit"
-                            class="w-full bg-slate-900 hover:bg-slate-800 text-white p-4 rounded-xl font-medium btn-minimal">
+                            class="w-full bg-slate-900 hover:bg-slate-800 text-white p-4 rounded-xl font-medium transition-colors duration-200 shadow-md">
                             Enviar consulta
                         </button>
                     </form>
                 </div>
-
 
             </div>
         </div>
