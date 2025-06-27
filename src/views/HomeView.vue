@@ -93,14 +93,10 @@
   </div>
 </section>
 
-
-  <!-- Footer separado -->
-  <FooterBar />
 </template>
 
 <script setup>
 import { ref, onMounted } from 'vue';
-import FooterBar from '../FooterBar.vue';
 import imagenDesktop  from '../assets/casa2.jpg';
 import imagenMobile  from '../assets/imagen-casa.png';
 

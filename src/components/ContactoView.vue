@@ -120,9 +120,8 @@
         </div>
     </section>
 
-    <FooterBar />
 </template>
 
 <script setup>
-import FooterBar from '../FooterBar.vue';
+
 </script>

@@ -68,13 +68,12 @@
       </div>
     </div>
   </div>
-  <FooterBar />
+
 </template>
 
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import FooterBar from '../FooterBar.vue';
 
 const router = useRouter()
 
