@@ -2,7 +2,7 @@
   <div>
     <v-app-bar app flat elevate-on-scroll color="surface" class="glass-app-bar">
       <!-- Logo en lugar del texto -->
-      <v-img :src="logo" max-height="60" max-width="120" contain @click="goToHome"
+      <v-img :src="logo" max-height="50" max-width="120" contain @click="goToHome"
         class="cursor-pointer"></v-img>
 
       <v-spacer></v-spacer>
@@ -38,9 +38,9 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+
 import { useRouter } from 'vue-router'
-import logo from '../assets/logo-principal.png'
+import logo from '../assets/simbolo.png'
 
 const router = useRouter()
 
