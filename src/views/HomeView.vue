@@ -72,6 +72,28 @@
     </div>
   </section>
 
+  <!-- Mapa de ubicación -->
+<section class="py-20 bg-gray-50">
+  <div class="max-w-7xl mx-auto px-6 lg:px-8 text-center">
+    <h2 class="text-3xl font-semibold text-slate-900 mb-6">Nuestra oficina</h2>
+    <p class="text-slate-600 mb-8">
+      Nos encontramos en Calle 44 N° 861, Colón, Buenos Aires.
+    </p>
+    <div class="w-full h-[400px] rounded-xl overflow-hidden shadow-lg">
+      <iframe
+        width="100%"
+        height="100%"
+        style="border:0"
+        loading="lazy"
+        allowfullscreen
+        referrerpolicy="no-referrer-when-downgrade"
+        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d9976.297552572325!2d-61.1005680715816!3d-33.89599187989589!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x95b8105aedb1f3cd%3A0xb49236ebc9434b14!2sC.%2044%20861%2C%20B2720%20Col%C3%B3n%2C%20Provincia%20de%20Buenos%20Aires!5e0!3m2!1ses-419!2sar!4v1751035458991!5m2!1ses-419!2sar">
+      </iframe>
+    </div>
+  </div>
+</section>
+
+
   <!-- Footer separado -->
   <FooterBar />
 </template>
