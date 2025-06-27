@@ -12,7 +12,13 @@
         <v-btn variant="text" class="text-white" @click="scrollTo('nosotros')">Nosotros</v-btn>
         <v-btn variant="text" class="text-white" @click="scrollTo('propiedades')">Propiedades</v-btn>
         <v-btn variant="text" class="text-white" @click="goToContacto">Consultar</v-btn>
-        <v-btn variant="text" class="text-white" @click="goToLogin">Login</v-btn>
+        <v-btn
+          variant="text"
+          class="text-white"
+          @click="isAuthenticated ? handleLogout() : goToLogin()"
+        >
+          {{ isAuthenticated ? 'Cerrar Sesión' : 'Login' }}
+        </v-btn>
       </div>
 
       <!-- Mobile - Menú con activator directo -->
@@ -28,8 +34,10 @@
             <v-list-item-title class="text-white">{{ item.title }}</v-list-item-title>
           </v-list-item>
           <v-divider class="my-1" />
-          <v-list-item @click="goToLogin" class="px-4">
-            <v-list-item-title class="text-white">Login</v-list-item-title>
+          <v-list-item @click="isAuthenticated ? handleLogout() : goToLogin()" class="px-4">
+            <v-list-item-title class="text-white">
+              {{ isAuthenticated ? 'Cerrar Sesión' : 'Login' }}
+            </v-list-item-title>
           </v-list-item>
         </v-list>
       </v-menu>
@@ -38,12 +46,31 @@
 </template>
 
 <script setup>
-
+import { ref, onMounted, onUnmounted } from 'vue' // Añade onUnmounted
 import { useRouter } from 'vue-router'
 import logo from '../assets/simbolo.png'
 
 const router = useRouter()
+const isAuthenticated = ref(false)
 
+// Función para verificar si el usuario está autenticado
+const checkAuthStatus = () => {
+  isAuthenticated.value = !!localStorage.getItem('auth-token')
+  console.log('Auth status changed:', isAuthenticated.value)
+}
+
+// Configuración de listeners
+onMounted(() => {
+  checkAuthStatus()
+  window.addEventListener('auth-change', checkAuthStatus)
+})
+
+// Limpieza de listeners
+onUnmounted(() => {
+  window.removeEventListener('auth-change', checkAuthStatus)
+})
+
+// Resto de tus funciones permanecen igual...
 const goToHome = () => {
   router.push('/')
 }
@@ -73,6 +100,12 @@ const goToLogin = () => {
 
 const goToContacto = () => {
   router.push('/contacto')
+}
+
+const handleLogout = () => {
+  localStorage.removeItem('auth-token')
+  isAuthenticated.value = false
+  router.push('/')
 }
 </script>
 
