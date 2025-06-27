@@ -74,7 +74,7 @@
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import axios from 'axios'
+import api from '../api'
 const router = useRouter()
 
 // Estado reactivo
@@ -86,13 +86,6 @@ const loginForm = ref({
 const isLoading = ref(false)
 const errorMessage = ref('')
 
-// Configuración base de Axios
-const api = axios.create({
-  baseURL: 'http://localhost:3000',  // Asegúrate que coincide con tu puerto backend
-  headers: {
-    'Content-Type': 'application/json'
-  }
-})
 
 // Función para manejar el login
 const handleLogin = async () => {
@@ -100,36 +93,24 @@ const handleLogin = async () => {
   errorMessage.value = ''
 
   try {
-    // Preparamos los datos para el backend
-    const loginData = {
+    const response = await api.post('/api/user/login', {
       usuario: loginForm.value.usuario,
       contraseña: loginForm.value.password
-    }
-
-    // Llamada al endpoint de login
-    const response = await api.post('/api/user/login', loginData)
+    })
 
     if (response.data.success) {
-      // Guardar el token en localStorage o en un store (Pinia/Vuex)
-      localStorage.setItem('authToken', response.data.data.token)
-
-      // Redirigir al dashboard
+      localStorage.setItem('auth-token', response.data.data.token)
+      window.dispatchEvent(new Event('auth-change'))
       router.push('/dashboard')
     } else {
       errorMessage.value = response.data.error || 'Error en el login'
     }
 
   } catch (error) {
-    if (error.response) {
-      // Error de la API
-      errorMessage.value = error.response.data.error || 'Error en el servidor'
-    } else if (error.request) {
-      // La petición fue hecha pero no hubo respuesta
-      errorMessage.value = 'No se pudo conectar con el servidor'
-    } else {
-      // Error al configurar la petición
-      errorMessage.value = 'Error en la configuración de la petición'
-    }
+    // Manejo de errores centralizado en api.js, aquí solo mostramos el mensaje
+    errorMessage.value = error.response?.data?.error ||
+                        error.message ||
+                        'Error en la conexión'
   } finally {
     isLoading.value = false
   }
