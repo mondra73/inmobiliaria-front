@@ -4,7 +4,7 @@
       <!-- Header -->
       <div class="mb-8">
         <div class="flex items-center space-x-4 mb-4">
-          <button class="text-slate-600 hover:text-slate-900 transition-colors duration-200">
+          <button @click="goToDashboard" class="text-slate-600 hover:text-slate-900 transition-colors duration-200">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
             </svg>
@@ -31,14 +31,14 @@
             <div class="lg:col-span-2">
               <label class="block mb-2 text-sm font-medium text-slate-700" for="titulo">Título de la propiedad</label>
               <input id="titulo" type="text" placeholder="Ej: Casa 3 dormitorios con jardín"
-                class="w-full p-4 border-2 border-gray-500 rounded-xl focus:outline-none focus:border-slate-600 focus:ring-2 focus:ring-slate-200 transition-all duration-200" />
+                class="w-full p-4 border-2 border-gray-300 rounded-xl hover:border-gray-400 focus:outline-none focus:border-slate-600 focus:ring-2 focus:ring-slate-200 transition-all duration-200 shadow-sm" />
             </div>
 
             <div>
               <label class="block mb-2 text-sm font-medium text-slate-700" for="tipo-propiedad">Tipo de
                 propiedad</label>
               <select id="tipo-propiedad"
-                class="w-full p-4 border-2 border-gray-500 rounded-xl focus:outline-none focus:border-slate-600 focus:ring-2 focus:ring-slate-200 transition-all duration-200">
+                class="w-full p-4 border-2 border-gray-300 rounded-xl hover:border-gray-400 focus:outline-none focus:border-slate-600 focus:ring-2 focus:ring-slate-200 transition-all duration-200 shadow-sm appearance-none bg-white">
                 <option>Seleccionar tipo</option>
                 <option>Casa</option>
                 <option>Departamento</option>
@@ -52,7 +52,7 @@
               <label class="block mb-2 text-sm font-medium text-slate-700" for="tipo-operacion">Tipo de
                 operación</label>
               <select id="tipo-operacion"
-                class="w-full p-4 border-2 border-gray-500 rounded-xl focus:outline-none focus:border-slate-600 focus:ring-2 focus:ring-slate-200 transition-all duration-200">
+                class="w-full p-4 border-2 border-gray-300 rounded-xl hover:border-gray-400 focus:outline-none focus:border-slate-600 focus:ring-2 focus:ring-slate-200 transition-all duration-200 shadow-sm appearance-none bg-white">
                 <option>Seleccionar operación</option>
                 <option>Venta</option>
                 <option>Alquiler</option>
@@ -63,13 +63,13 @@
             <div>
               <label class="block mb-2 text-sm font-medium text-slate-700" for="precio">Precio</label>
               <input id="precio" type="number" placeholder="$"
-                class="w-full p-4 border-2 border-gray-500 rounded-xl focus:outline-none focus:border-slate-600 focus:ring-2 focus:ring-slate-200 transition-all duration-200" />
+                class="w-full p-4 border-2 border-gray-300 rounded-xl hover:border-gray-400 focus:outline-none focus:border-slate-600 focus:ring-2 focus:ring-slate-200 transition-all duration-200 shadow-sm" />
             </div>
 
             <div>
               <label class="block mb-2 text-sm font-medium text-slate-700" for="moneda">Moneda</label>
               <select id="moneda"
-                class="w-full p-4 border-2 border-gray-500 rounded-xl focus:outline-none focus:border-slate-600 focus:ring-2 focus:ring-slate-200 transition-all duration-200">
+                class="w-full p-4 border-2 border-gray-300 rounded-xl hover:border-gray-400 focus:outline-none focus:border-slate-600 focus:ring-2 focus:ring-slate-200 transition-all duration-200 shadow-sm appearance-none bg-white">
                 <option>Pesos argentinos</option>
                 <option>Dólares americanos</option>
               </select>
@@ -78,7 +78,7 @@
             <div class="lg:col-span-2">
               <label class="block mb-2 text-sm font-medium text-slate-700" for="descripcion">Descripción</label>
               <textarea id="descripcion" rows="4" placeholder="Descripción detallada de la propiedad..."
-                class="w-full p-4 border-2 border-gray-500 rounded-xl focus:outline-none focus:border-slate-600 focus:ring-2 focus:ring-slate-200 transition-all duration-200"></textarea>
+                class="w-full p-4 border-2 border-gray-300 rounded-xl hover:border-gray-400 focus:outline-none focus:border-slate-600 focus:ring-2 focus:ring-slate-200 transition-all duration-200 shadow-sm"></textarea>
             </div>
           </div>
         </div>
@@ -91,25 +91,25 @@
             <div>
               <label class="block mb-2 text-sm font-medium text-slate-700" for="direccion">Dirección</label>
               <input id="direccion" type="text" placeholder="Calle y número"
-                class="w-full p-4 border-2 border-gray-300 rounded-xl focus:outline-none focus:border-slate-600 focus:ring-2 focus:ring-slate-200 transition-all duration-200" />
+                class="w-full p-4 border-2 border-gray-300 rounded-xl hover:border-gray-400 focus:outline-none focus:border-slate-600 focus:ring-2 focus:ring-slate-200 transition-all duration-200 shadow-sm" />
             </div>
 
             <div>
               <label class="block mb-2 text-sm font-medium text-slate-700" for="barrio">Barrio/Zona</label>
               <input id="barrio" type="text" placeholder="Nombre del barrio"
-                class="w-full p-4 border-2 border-gray-300 rounded-xl focus:outline-none focus:border-slate-600 focus:ring-2 focus:ring-slate-200 transition-all duration-200" />
+                class="w-full p-4 border-2 border-gray-300 rounded-xl hover:border-gray-400 focus:outline-none focus:border-slate-600 focus:ring-2 focus:ring-slate-200 transition-all duration-200 shadow-sm" />
             </div>
 
             <div>
               <label class="block mb-2 text-sm font-medium text-slate-700" for="ciudad">Ciudad</label>
               <input id="ciudad" type="text" placeholder="Ciudad"
-                class="w-full p-4 border-2 border-gray-300 rounded-xl focus:outline-none focus:border-slate-600 focus:ring-2 focus:ring-slate-200 transition-all duration-200" />
+                class="w-full p-4 border-2 border-gray-300 rounded-xl hover:border-gray-400 focus:outline-none focus:border-slate-600 focus:ring-2 focus:ring-slate-200 transition-all duration-200 shadow-sm" />
             </div>
 
             <div>
               <label class="block mb-2 text-sm font-medium text-slate-700" for="codigo-postal">Código postal</label>
               <input id="codigo-postal" type="text" placeholder="CP"
-                class="w-full p-4 border-2 border-gray-300 rounded-xl focus:outline-none focus:border-slate-600 focus:ring-2 focus:ring-slate-200 transition-all duration-200" />
+                class="w-full p-4 border-2 border-gray-300 rounded-xl hover:border-gray-400 focus:outline-none focus:border-slate-600 focus:ring-2 focus:ring-slate-200 transition-all duration-200 shadow-sm" />
             </div>
           </div>
         </div>
@@ -124,25 +124,25 @@
             <div>
               <label class="block mb-2 text-sm font-medium text-slate-700" for="dormitorios">Dormitorios</label>
               <input id="dormitorios" type="number" placeholder="0"
-                class="w-full p-4 border-2 border-gray-300 rounded-xl focus:outline-none focus:border-slate-600 focus:ring-2 focus:ring-slate-200 transition-all duration-200" />
+                class="w-full p-4 border-2 border-gray-300 rounded-xl hover:border-gray-400 focus:outline-none focus:border-slate-600 focus:ring-2 focus:ring-slate-200 transition-all duration-200 shadow-sm" />
             </div>
 
             <div>
               <label class="block mb-2 text-sm font-medium text-slate-700" for="banos">Baños</label>
               <input id="banos" type="number" placeholder="0"
-                class="w-full p-4 border-2 border-gray-300 rounded-xl focus:outline-none focus:border-slate-600 focus:ring-2 focus:ring-slate-200 transition-all duration-200" />
+                class="w-full p-4 border-2 border-gray-300 rounded-xl hover:border-gray-400 focus:outline-none focus:border-slate-600 focus:ring-2 focus:ring-slate-200 transition-all duration-200 shadow-sm" />
             </div>
 
             <div>
               <label class="block mb-2 text-sm font-medium text-slate-700" for="superficie">Superficie (m²)</label>
               <input id="superficie" type="number" placeholder="0"
-                class="w-full p-4 border-2 border-gray-300 rounded-xl focus:outline-none focus:border-slate-600 focus:ring-2 focus:ring-slate-200 transition-all duration-200" />
+                class="w-full p-4 border-2 border-gray-300 rounded-xl hover:border-gray-400 focus:outline-none focus:border-slate-600 focus:ring-2 focus:ring-slate-200 transition-all duration-200 shadow-sm" />
             </div>
 
             <div>
               <label class="block mb-2 text-sm font-medium text-slate-700" for="antiguedad">Antigüedad (años)</label>
               <input id="antiguedad" type="number" placeholder="0"
-                class="w-full p-4 border-2 border-gray-300 rounded-xl focus:outline-none focus:border-slate-600 focus:ring-2 focus:ring-slate-200 transition-all duration-200" />
+                class="w-full p-4 border-2 border-gray-300 rounded-xl hover:border-gray-400 focus:outline-none focus:border-slate-600 focus:ring-2 focus:ring-slate-200 transition-all duration-200 shadow-sm" />
             </div>
           </div>
 
@@ -152,38 +152,39 @@
               Amenities
             </label>
             <div class="grid grid-cols-2 lg:grid-cols-3 gap-4">
-              <label class="flex items-center space-x-3 text-slate-700">
+              <label class="flex items-center space-x-3 text-slate-700 cursor-pointer">
                 <input type="checkbox"
-                  class="w-5 h-5 bg-white text-slate-600 border-2 border-gray-300 rounded focus:ring-slate-200" />
+                  class="h-5 w-5 rounded bg-white border-gray-500 border shadow-sm accent-black focus:ring-2 focus:ring-slate-300 hover:ring hover:ring-slate-200 transition" />
                 <span>Garage</span>
               </label>
-              <label class="flex items-center space-x-3 text-slate-700">
+              <label class="flex items-center space-x-3 text-slate-700 cursor-pointer">
                 <input type="checkbox"
-                  class="w-5 h-5 bg-whitetext-slate-600 border-2 border-gray-300 rounded focus:ring-slate-200" />
+                  class="h-5 w-5 rounded bg-white border-gray-500 border shadow-sm accent-black focus:ring-2 focus:ring-slate-300 hover:ring hover:ring-slate-200 transition" />
                 <span>Jardín</span>
               </label>
-              <label class="flex items-center space-x-3 text-slate-700">
+              <label class="flex items-center space-x-3 text-slate-700 cursor-pointer">
                 <input type="checkbox"
-                  class="w-5 h-5 bg-whitetext-slate-600 border-2 border-gray-300 rounded focus:ring-slate-200" />
+                  class="h-5 w-5 rounded bg-white border-gray-500 border shadow-sm accent-black focus:ring-2 focus:ring-slate-300 hover:ring hover:ring-slate-200 transition" />
                 <span>Piscina</span>
               </label>
-              <label class="flex items-center space-x-3 text-slate-700">
+              <label class="flex items-center space-x-3 text-slate-700 cursor-pointer">
                 <input type="checkbox"
-                  class="w-5 h-5 bg-whitetext-slate-600 border-2 border-gray-300 rounded focus:ring-slate-200" />
+                  class="h-5 w-5 rounded bg-white border-gray-500 border shadow-sm accent-black focus:ring-2 focus:ring-slate-300 hover:ring hover:ring-slate-200 transition" />
                 <span>Balcón</span>
               </label>
-              <label class="flex items-center space-x-3 text-slate-700">
+              <label class="flex items-center space-x-3 text-slate-700 cursor-pointer">
                 <input type="checkbox"
-                  class="w-5 h-5 bg-whitetext-slate-600 border-2 border-gray-300 rounded focus:ring-slate-200" />
+                  class="h-5 w-5 rounded bg-white border-gray-500 border shadow-sm accent-black focus:ring-2 focus:ring-slate-300 hover:ring hover:ring-slate-200 transition" />
                 <span>Terraza</span>
               </label>
-              <label class="flex items-center space-x-3 text-slate-700">
+              <label class="flex items-center space-x-3 text-slate-700 cursor-pointer">
                 <input type="checkbox"
-                  class="w-5 h-5 bg-whitetext-slate-600 border-2 border-gray-300 rounded focus:ring-slate-200" />
+                  class="h-5 w-5 rounded bg-white border-gray-500 border shadow-sm accent-black focus:ring-2 focus:ring-slate-300 hover:ring hover:ring-slate-200 transition" />
                 <span>Parrilla</span>
               </label>
             </div>
           </div>
+
         </div>
 
         <!-- Imágenes -->
@@ -229,5 +230,19 @@
 </template>
 
 <script setup>
-// Aquí podés agregar tu lógica de Vue 3 con <script setup> si necesitás
+
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
+
+const goToDashboard = () => {
+  router.push('/dashboard')
+}
+
 </script>
+
+<style>
+.custom-checkbox:checked + .checkmark::after {
+    display: block;
+  }
+</style>

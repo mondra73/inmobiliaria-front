@@ -62,15 +62,27 @@
 
       <div class="absolute bottom-6 left-6 right-6">
         <div class="bg-slate-50 rounded-xl p-4">
-          <div class="flex items-center space-x-3">
-            <div class="w-10 h-10 bg-slate-200 rounded-full"></div>
+          <div class="flex items-center space-x-3 relative">
+            <!-- Avatar con icono de usuario y punto verde -->
+            <div class="relative">
+              <div class="w-10 h-10 bg-slate-200 rounded-full flex items-center justify-center">
+                <svg class="w-6 h-6 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                </svg>
+              </div>
+              <!-- Punto verde de estado en línea -->
+              <div class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white"></div>
+            </div>
+
             <div>
-              <p class="font-medium text-slate-900 text-sm">Martillero</p>
+              <p class="font-medium text-slate-900 text-sm">{{ userData.nombre || 'Usuario' }}</p>
               <p class="text-slate-600 text-xs">En línea</p>
             </div>
           </div>
         </div>
       </div>
+
     </div>
 
     <!-- Contenido principal -->
@@ -139,13 +151,46 @@
 </template>
 
 <script setup>
+
 import { useRouter } from 'vue-router'
+import { ref, onMounted } from 'vue'
 
 const router = useRouter()
+const userData = ref({ nombre: '' })
 
 function irANuevaPropiedad() {
   router.push('/nueva-propiedad')
 }
+
+// Función para decodificar el token JWT
+function parseJwt(token) {
+  try {
+    const base64Url = token.split('.')[1]
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/')
+    const jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
+      return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
+    }).join(''))
+
+    return JSON.parse(jsonPayload)
+  } catch {
+    return null
+  }
+}
+
+onMounted(() => {
+  const token = localStorage.getItem('auth-token')
+  if (token) {
+    const decoded = parseJwt(token)
+    if (decoded) {
+      userData.value = {
+        nombre: decoded.nombre,
+        mail: decoded.mail,
+        rol: decoded.rol
+      }
+    }
+  }
+})
+
 </script>
 
 
