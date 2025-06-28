@@ -1,9 +1,9 @@
 // src/main.js
 import { createApp } from 'vue'
 import App from './App.vue'
-import vuetify from './plugins/vuetify' 
 import router from './router'
 import './assets/tailwind.css'
+import vuetify from './plugins/vuetify'
 
 const app = createApp(App)
 app.use(vuetify)

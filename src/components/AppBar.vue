@@ -9,9 +9,15 @@
 
       <!-- Desktop -->
       <div class="d-none d-md-flex">
-        <v-btn variant="text" class="text-white" @click="scrollTo('nosotros')">Nosotros</v-btn>
-        <v-btn variant="text" class="text-white" @click="scrollTo('propiedades')">Propiedades</v-btn>
-        <v-btn variant="text" class="text-white" @click="goToContacto">Consultar</v-btn>
+        <template v-if="!isAuthenticated">
+          <v-btn variant="text" class="text-white" @click="scrollTo('nosotros')">Nosotros</v-btn>
+          <v-btn variant="text" class="text-white" @click="scrollTo('propiedades')">Propiedades</v-btn>
+          <v-btn variant="text" class="text-white" @click="goToContacto">Consultar</v-btn>
+        </template>
+        <template v-else>
+          <v-btn variant="text" class="text-white" @click="goToDashboard">Dashboard</v-btn>
+          <v-btn variant="text" class="text-white" @click="scrollTo('propiedades')">Propiedades</v-btn>
+        </template>
         <v-btn
           variant="text"
           class="text-white"
@@ -30,9 +36,19 @@
         </template>
 
         <v-list class="glass-menu rounded-lg py-2" elevation="10" style="min-width: 160px;">
-          <v-list-item v-for="(item, index) in menuItems" :key="index" @click="navAction(item.id)" class="px-4">
-            <v-list-item-title class="text-white">{{ item.title }}</v-list-item-title>
-          </v-list-item>
+          <template v-if="!isAuthenticated">
+            <v-list-item v-for="(item, index) in menuItems" :key="index" @click="navAction(item.id)" class="px-4">
+              <v-list-item-title class="text-white">{{ item.title }}</v-list-item-title>
+            </v-list-item>
+          </template>
+          <template v-else>
+            <v-list-item @click="goToDashboard" class="px-4">
+              <v-list-item-title class="text-white">Dashboard</v-list-item-title>
+            </v-list-item>
+            <v-list-item @click="scrollTo('propiedades')" class="px-4">
+              <v-list-item-title class="text-white">Propiedades</v-list-item-title>
+            </v-list-item>
+          </template>
           <v-divider class="my-1" />
           <v-list-item @click="isAuthenticated ? handleLogout() : goToLogin()" class="px-4">
             <v-list-item-title class="text-white">
@@ -46,7 +62,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue' // Añade onUnmounted
+import { ref, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import logo from '../assets/simbolo.png'
 
@@ -70,7 +86,6 @@ onUnmounted(() => {
   window.removeEventListener('auth-change', checkAuthStatus)
 })
 
-// Resto de tus funciones permanecen igual...
 const goToHome = () => {
   router.push('/')
 }
@@ -100,6 +115,10 @@ const goToLogin = () => {
 
 const goToContacto = () => {
   router.push('/contacto')
+}
+
+const goToDashboard = () => {
+  router.push('/dashboard')
 }
 
 const handleLogout = () => {
