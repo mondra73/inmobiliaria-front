@@ -193,8 +193,12 @@
             Imágenes
           </h2>
 
-          <div
-            class="border-2 border-dashed border-gray-300 rounded-xl p-8 text-center hover:border-slate-400 transition-colors duration-200 cursor-pointer">
+          <!-- Input de tipo file oculto -->
+          <input type="file" id="file-upload" ref="fileInput" class="hidden" multiple accept="image/png, image/jpeg"
+            @change="handleFileUpload">
+
+          <label for="file-upload"
+            class="border-2 border-dashed border-gray-300 rounded-xl p-8 text-center hover:border-slate-400 transition-colors duration-200 cursor-pointer block">
             <svg class="w-12 h-12 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
                 d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z">
@@ -203,13 +207,23 @@
             <p class="text-slate-600 mb-2">
               Arrastra las imágenes aquí o
             </p>
-            <button type="button"
-              class="text-slate-900 font-medium hover:text-slate-700 transition-colors duration-200">
+            <span class="text-slate-900 font-medium hover:text-slate-700 transition-colors duration-200">
               selecciona archivos
-            </button>
+            </span>
             <p class="text-xs text-slate-500 mt-2">
               PNG, JPG hasta 10MB cada una
             </p>
+          </label>
+
+          <!-- Mostrar previsualización de imágenes seleccionadas -->
+          <div v-if="files.length > 0" class="mt-4 grid grid-cols-3 gap-4">
+            <div v-for="(file, index) in files" :key="index" class="relative">
+              <img :src="file.preview" class="w-full h-32 object-cover rounded-lg">
+              <button @click="removeFile(index)"
+                class="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center">
+                ×
+              </button>
+            </div>
           </div>
         </div>
 
@@ -230,19 +244,42 @@
 </template>
 
 <script setup>
-
+import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
+const fileInput = ref(null)
+const files = ref([])
 
 const goToDashboard = () => {
   router.push('/dashboard')
 }
 
+const handleFileUpload = (event) => {
+  const uploadedFiles = Array.from(event.target.files)
+
+  uploadedFiles.forEach(file => {
+    if (!file.type.match('image.*')) return
+
+    const reader = new FileReader()
+    reader.onload = (e) => {
+      files.value.push({
+        file: file,
+        preview: e.target.result
+      })
+    }
+    reader.readAsDataURL(file)
+  })
+}
+
+const removeFile = (index) => {
+  files.value.splice(index, 1)
+}
+
 </script>
 
 <style>
-.custom-checkbox:checked + .checkmark::after {
-    display: block;
-  }
+.custom-checkbox:checked+.checkmark::after {
+  display: block;
+}
 </style>
