@@ -19,7 +19,7 @@
       </div>
 
       <!-- Formulario -->
-      <form class="space-y-8">
+      <form @submit.prevent="submitForm" class="space-y-8">
         <!-- Información básica -->
         <div class="bg-white rounded-3xl shadow-sm border border-gray-100 p-8">
           <h2 class="text-xl font-light text-slate-900 mb-6">
@@ -30,14 +30,15 @@
           <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <div class="lg:col-span-2">
               <label class="block mb-2 text-sm font-medium text-slate-700" for="titulo">Título de la propiedad</label>
-              <input id="titulo" type="text" placeholder="Ej: Casa 3 dormitorios con jardín"
+              <input id="titulo" type="text" v-model="formData.tituloPublicacion"
+                placeholder="Ej: Casa 3 dormitorios con jardín"
                 class="w-full p-4 border-2 border-gray-300 rounded-xl hover:border-gray-400 focus:outline-none focus:border-slate-600 focus:ring-2 focus:ring-slate-200 transition-all duration-200 shadow-sm" />
             </div>
 
             <div>
               <label class="block mb-2 text-sm font-medium text-slate-700" for="tipo-propiedad">Tipo de
                 propiedad</label>
-              <select id="tipo-propiedad"
+              <select id="tipo-propiedad" v-model="formData.categoria"
                 class="w-full p-4 border-2 border-gray-300 rounded-xl hover:border-gray-400 focus:outline-none focus:border-slate-600 focus:ring-2 focus:ring-slate-200 transition-all duration-200 shadow-sm appearance-none bg-white">
                 <option>Seleccionar tipo</option>
                 <option>Casa</option>
@@ -63,22 +64,23 @@
 
             <div>
               <label class="block mb-2 text-sm font-medium text-slate-700" for="precio">Precio</label>
-              <input id="precio" type="number" placeholder="$"
+              <input id="precio" type="number" v-model.number="formData.precio.monto" placeholder="$"
                 class="w-full p-4 border-2 border-gray-300 rounded-xl hover:border-gray-400 focus:outline-none focus:border-slate-600 focus:ring-2 focus:ring-slate-200 transition-all duration-200 shadow-sm" />
             </div>
 
             <div>
               <label class="block mb-2 text-sm font-medium text-slate-700" for="moneda">Moneda</label>
-              <select id="moneda"
+              <select id="moneda" v-model="formData.precio.moneda"
                 class="w-full p-4 border-2 border-gray-300 rounded-xl hover:border-gray-400 focus:outline-none focus:border-slate-600 focus:ring-2 focus:ring-slate-200 transition-all duration-200 shadow-sm appearance-none bg-white">
-                <option>Pesos argentinos</option>
-                <option>Dólares americanos</option>
+                <option value="ARS">Pesos argentinos</option>
+                <option value="USD">Dólares americanos</option>
               </select>
             </div>
 
             <div class="lg:col-span-2">
               <label class="block mb-2 text-sm font-medium text-slate-700" for="descripcion">Descripción</label>
-              <textarea id="descripcion" rows="4" placeholder="Descripción detallada de la propiedad..."
+              <textarea id="descripcion" rows="4" v-model="formData.descripcion"
+                placeholder="Descripción detallada de la propiedad..."
                 class="w-full p-4 border-2 border-gray-300 rounded-xl hover:border-gray-400 focus:outline-none focus:border-slate-600 focus:ring-2 focus:ring-slate-200 transition-all duration-200 shadow-sm"></textarea>
             </div>
           </div>
@@ -91,38 +93,40 @@
           <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <div>
               <label class="block mb-2 text-sm font-medium text-slate-700" for="calle">Calle</label>
-              <input id="calle" type="text" placeholder="Ej: Av. Siempreviva"
+              <input id="calle" type="text" v-model="formData.ubicacion.calle" placeholder="Ej: Av. Siempreviva"
                 class="w-full p-4 border-2 border-gray-300 rounded-xl hover:border-gray-400 focus:outline-none focus:border-slate-600 focus:ring-2 focus:ring-slate-200 transition-all duration-200 shadow-sm" />
             </div>
 
             <div>
               <label class="block mb-2 text-sm font-medium text-slate-700" for="altura">Altura</label>
-              <input id="altura" type="number" placeholder="Ej: 742"
+              <input id="altura" type="number" v-model.number="formData.ubicacion.altura" placeholder="Ej: 742"
                 class="w-full p-4 border-2 border-gray-300 rounded-xl hover:border-gray-400 focus:outline-none focus:border-slate-600 focus:ring-2 focus:ring-slate-200 transition-all duration-200 shadow-sm" />
             </div>
 
             <div>
               <label class="block mb-2 text-sm font-medium text-slate-700" for="entre-calle1">Entre calle 1</label>
-              <input id="entre-calle1" type="text" placeholder="Ej: Calle Falsa"
+              <input id="altura" type="number" v-model.number="formData.ubicacion.altura" placeholder="Ej: 742"
                 class="w-full p-4 border-2 border-gray-300 rounded-xl hover:border-gray-400 focus:outline-none focus:border-slate-600 focus:ring-2 focus:ring-slate-200 transition-all duration-200 shadow-sm" />
             </div>
 
             <div>
               <label class="block mb-2 text-sm font-medium text-slate-700" for="entre-calle2">Entre calle 2</label>
-              <input id="entre-calle2" type="text" placeholder="Ej: Calle Verdadera"
+              <input id="entre-calle2" type="text" v-model="formData.ubicacion.entreCalles.calle2"
+                placeholder="Ej: Calle Verdadera"
                 class="w-full p-4 border-2 border-gray-300 rounded-xl hover:border-gray-400 focus:outline-none focus:border-slate-600 focus:ring-2 focus:ring-slate-200 transition-all duration-200 shadow-sm" />
             </div>
 
             <div>
               <label class="block mb-2 text-sm font-medium text-slate-700" for="localidad">Localidad</label>
-              <input id="localidad" type="text" placeholder="Ej: Springfield"
+              <input id="localidad" type="text" v-model="formData.ubicacion.localidad" placeholder="Ej: Springfield"
                 class="w-full p-4 border-2 border-gray-300 rounded-xl hover:border-gray-400 focus:outline-none focus:border-slate-600 focus:ring-2 focus:ring-slate-200 transition-all duration-200 shadow-sm" />
             </div>
 
             <div>
               <label class="block mb-2 text-sm font-medium text-slate-700" for="coordenadas">Coordenadas
                 (lat,lng)</label>
-              <input id="coordenadas" type="text" placeholder="-34.6037, -58.3816"
+              <input id="coordenadas" type="text" v-model="formData.ubicacion.coordenadas"
+                placeholder="-34.6037, -58.3816"
                 class="w-full p-4 border-2 border-gray-300 rounded-xl hover:border-gray-400 focus:outline-none focus:border-slate-600 focus:ring-2 focus:ring-slate-200 transition-all duration-200 shadow-sm" />
             </div>
           </div>
@@ -137,7 +141,7 @@
           <div class="grid grid-cols-2 lg:grid-cols-3 gap-6">
             <div>
               <label class="block mb-2 text-sm font-medium text-slate-700" for="dormitorios">Dormitorios</label>
-              <input id="dormitorios" type="number" placeholder="0"
+              <input id="dormitorios" type="number" v-model.number="formData.dormitorios" placeholder="0"
                 class="w-full p-4 border-2 border-gray-300 rounded-xl hover:border-gray-400 focus:outline-none focus:border-slate-600 focus:ring-2 focus:ring-slate-200 transition-all duration-200 shadow-sm" />
             </div>
 
@@ -182,32 +186,32 @@
             </label>
             <div class="grid grid-cols-2 lg:grid-cols-3 gap-4">
               <label class="flex items-center space-x-3 text-slate-700 cursor-pointer">
-                <input type="checkbox"
+                <input type="checkbox" v-model="formData.piscina"
                   class="h-5 w-5 rounded bg-white border-gray-500 border shadow-sm accent-black focus:ring-2 focus:ring-slate-300 hover:ring hover:ring-slate-200 transition" />
                 <span>Garage</span>
               </label>
               <label class="flex items-center space-x-3 text-slate-700 cursor-pointer">
-                <input type="checkbox"
+                <input type="checkbox" v-model="formData.piscina"
                   class="h-5 w-5 rounded bg-white border-gray-500 border shadow-sm accent-black focus:ring-2 focus:ring-slate-300 hover:ring hover:ring-slate-200 transition" />
                 <span>Jardín</span>
               </label>
               <label class="flex items-center space-x-3 text-slate-700 cursor-pointer">
-                <input type="checkbox"
+                <input type="checkbox" v-model="formData.piscina"
                   class="h-5 w-5 rounded bg-white border-gray-500 border shadow-sm accent-black focus:ring-2 focus:ring-slate-300 hover:ring hover:ring-slate-200 transition" />
                 <span>Piscina</span>
               </label>
               <label class="flex items-center space-x-3 text-slate-700 cursor-pointer">
-                <input type="checkbox"
+                <input type="checkbox" v-model="formData.piscina"
                   class="h-5 w-5 rounded bg-white border-gray-500 border shadow-sm accent-black focus:ring-2 focus:ring-slate-300 hover:ring hover:ring-slate-200 transition" />
                 <span>Balcón</span>
               </label>
               <label class="flex items-center space-x-3 text-slate-700 cursor-pointer">
-                <input type="checkbox"
+                <input type="checkbox" v-model="formData.piscina"
                   class="h-5 w-5 rounded bg-white border-gray-500 border shadow-sm accent-black focus:ring-2 focus:ring-slate-300 hover:ring hover:ring-slate-200 transition" />
                 <span>Terraza</span>
               </label>
               <label class="flex items-center space-x-3 text-slate-700 cursor-pointer">
-                <input type="checkbox"
+                <input type="checkbox" v-model="formData.piscina"
                   class="h-5 w-5 rounded bg-white border-gray-500 border shadow-sm accent-black focus:ring-2 focus:ring-slate-300 hover:ring hover:ring-slate-200 transition" />
                 <span>Parrilla</span>
               </label>
@@ -280,10 +284,40 @@ const router = useRouter()
 const fileInput = ref(null)
 const files = ref([])
 
-const goToDashboard = () => {
-  router.push('/dashboard')
-}
+const formData = ref({
+  tituloPublicacion: '',
+  ubicacion: {
+    calle: '',
+    altura: null,
+    entreCalles: {
+      calle1: '',
+      calle2: ''
+    },
+    localidad: '',
+    coordenadas: null
+  },
+  descripcion: '',
+  antiguedad: null,
+  categoria: 'Casa', // Valor por defecto
+  precio: {
+    monto: null,
+    moneda: 'ARS' // Valor por defecto
+  },
+  baños: null,
+  dormitorios: null,
+  ambientes: null,
+  piscina: false,
+  parrilla: false,
+  jardin: false,
+  terraza: false,
+  garage: false,
+  balcon: false,
+  superficieTotal: null,
+  superficieCubierta: null,
+  imagenes: []
+})
 
+// Manejo de archivos
 const handleFileUpload = (event) => {
   const uploadedFiles = Array.from(event.target.files)
 
@@ -296,13 +330,65 @@ const handleFileUpload = (event) => {
         file: file,
         preview: e.target.result
       })
+
+      // Aquí deberías subir el archivo a tu servidor o servicio (Cloudinary, S3, etc.)
+      // y luego guardar la URL en formData.value.imagenes
+      // Ejemplo simplificado:
+      formData.value.imagenes.push({
+        url: URL.createObjectURL(file), // Esto es temporal, debes reemplazarlo con la URL real
+        descripcion: '',
+        orden: formData.value.imagenes.length,
+        esPortada: formData.value.imagenes.length === 0
+      })
     }
     reader.readAsDataURL(file)
   })
 }
 
+// Enviar formulario
+const submitForm = async () => {
+  try {
+    // Validación básica
+    if (!formData.value.tituloPublicacion || !formData.value.ubicacion.localidad) {
+      alert('Por favor complete el título y la localidad')
+      return
+    }
+
+    // Convertir coordenadas si es necesario
+    if (typeof formData.value.ubicacion.coordenadas === 'string') {
+      const [lat, lng] = formData.value.ubicacion.coordenadas.split(',').map(Number)
+      formData.value.ubicacion.coordenadas = { lat, lng }
+    }
+
+    // Enviar datos al backend
+    const response = await fetch('http://localhost:3000/api/nueva-casa', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('token')}` // Asumiendo que usas JWT
+      },
+      body: JSON.stringify(formData.value)
+    })
+
+    if (!response.ok) throw new Error('Error al guardar la propiedad')
+
+    const data = await response.json()
+    alert('Propiedad creada con éxito!')
+    router.push(`/propiedad/${data.id}`) // Redirigir a la vista de la propiedad
+
+  } catch (error) {
+    console.error('Error:', error)
+    alert('Hubo un error al guardar la propiedad. Por favor intente nuevamente.')
+  }
+}
+
+const goToDashboard = () => {
+  router.push('/dashboard')
+}
+
 const removeFile = (index) => {
   files.value.splice(index, 1)
+  formData.value.imagenes.splice(index, 1)
 }
 
 </script>
