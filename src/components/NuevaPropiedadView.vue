@@ -44,7 +44,8 @@
                 <option>Departamento</option>
                 <option>Local comercial</option>
                 <option>Terreno</option>
-                <option>Oficina</option>
+                <option>Campo</option>
+                <option>Fondo de Comercio</option>
               </select>
             </div>
 
@@ -89,26 +90,39 @@
 
           <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <div>
-              <label class="block mb-2 text-sm font-medium text-slate-700" for="direccion">Dirección</label>
-              <input id="direccion" type="text" placeholder="Calle y número"
+              <label class="block mb-2 text-sm font-medium text-slate-700" for="calle">Calle</label>
+              <input id="calle" type="text" placeholder="Ej: Av. Siempreviva"
                 class="w-full p-4 border-2 border-gray-300 rounded-xl hover:border-gray-400 focus:outline-none focus:border-slate-600 focus:ring-2 focus:ring-slate-200 transition-all duration-200 shadow-sm" />
             </div>
 
             <div>
-              <label class="block mb-2 text-sm font-medium text-slate-700" for="barrio">Barrio/Zona</label>
-              <input id="barrio" type="text" placeholder="Nombre del barrio"
+              <label class="block mb-2 text-sm font-medium text-slate-700" for="altura">Altura</label>
+              <input id="altura" type="number" placeholder="Ej: 742"
                 class="w-full p-4 border-2 border-gray-300 rounded-xl hover:border-gray-400 focus:outline-none focus:border-slate-600 focus:ring-2 focus:ring-slate-200 transition-all duration-200 shadow-sm" />
             </div>
 
             <div>
-              <label class="block mb-2 text-sm font-medium text-slate-700" for="ciudad">Ciudad</label>
-              <input id="ciudad" type="text" placeholder="Ciudad"
+              <label class="block mb-2 text-sm font-medium text-slate-700" for="entre-calle1">Entre calle 1</label>
+              <input id="entre-calle1" type="text" placeholder="Ej: Calle Falsa"
                 class="w-full p-4 border-2 border-gray-300 rounded-xl hover:border-gray-400 focus:outline-none focus:border-slate-600 focus:ring-2 focus:ring-slate-200 transition-all duration-200 shadow-sm" />
             </div>
 
             <div>
-              <label class="block mb-2 text-sm font-medium text-slate-700" for="codigo-postal">Código postal</label>
-              <input id="codigo-postal" type="text" placeholder="CP"
+              <label class="block mb-2 text-sm font-medium text-slate-700" for="entre-calle2">Entre calle 2</label>
+              <input id="entre-calle2" type="text" placeholder="Ej: Calle Verdadera"
+                class="w-full p-4 border-2 border-gray-300 rounded-xl hover:border-gray-400 focus:outline-none focus:border-slate-600 focus:ring-2 focus:ring-slate-200 transition-all duration-200 shadow-sm" />
+            </div>
+
+            <div>
+              <label class="block mb-2 text-sm font-medium text-slate-700" for="localidad">Localidad</label>
+              <input id="localidad" type="text" placeholder="Ej: Springfield"
+                class="w-full p-4 border-2 border-gray-300 rounded-xl hover:border-gray-400 focus:outline-none focus:border-slate-600 focus:ring-2 focus:ring-slate-200 transition-all duration-200 shadow-sm" />
+            </div>
+
+            <div>
+              <label class="block mb-2 text-sm font-medium text-slate-700" for="coordenadas">Coordenadas
+                (lat,lng)</label>
+              <input id="coordenadas" type="text" placeholder="-34.6037, -58.3816"
                 class="w-full p-4 border-2 border-gray-300 rounded-xl hover:border-gray-400 focus:outline-none focus:border-slate-600 focus:ring-2 focus:ring-slate-200 transition-all duration-200 shadow-sm" />
             </div>
           </div>
@@ -120,7 +134,7 @@
             Características
           </h2>
 
-          <div class="grid grid-cols-2 lg:grid-cols-4 gap-6">
+          <div class="grid grid-cols-2 lg:grid-cols-3 gap-6">
             <div>
               <label class="block mb-2 text-sm font-medium text-slate-700" for="dormitorios">Dormitorios</label>
               <input id="dormitorios" type="number" placeholder="0"
@@ -134,8 +148,16 @@
             </div>
 
             <div>
-              <label class="block mb-2 text-sm font-medium text-slate-700" for="superficie">Superficie (m²)</label>
-              <input id="superficie" type="number" placeholder="0"
+              <label class="block mb-2 text-sm font-medium text-slate-700" for="superficie-total">Sup. Total
+                (m²)</label>
+              <input id="superficie-total" type="number" placeholder="0"
+                class="w-full p-4 border-2 border-gray-300 rounded-xl hover:border-gray-400 focus:outline-none focus:border-slate-600 focus:ring-2 focus:ring-slate-200 transition-all duration-200 shadow-sm" />
+            </div>
+
+            <div>
+              <label class="block mb-2 text-sm font-medium text-slate-700" for="superficie-cubierta">Sup. Cubierta
+                (m²)</label>
+              <input id="superficie-cubierta" type="number" placeholder="0"
                 class="w-full p-4 border-2 border-gray-300 rounded-xl hover:border-gray-400 focus:outline-none focus:border-slate-600 focus:ring-2 focus:ring-slate-200 transition-all duration-200 shadow-sm" />
             </div>
 
@@ -144,6 +166,13 @@
               <input id="antiguedad" type="number" placeholder="0"
                 class="w-full p-4 border-2 border-gray-300 rounded-xl hover:border-gray-400 focus:outline-none focus:border-slate-600 focus:ring-2 focus:ring-slate-200 transition-all duration-200 shadow-sm" />
             </div>
+
+            <div>
+              <label class="block mb-2 text-sm font-medium text-slate-700" for="ambientes">Ambientes</label>
+              <input id="ambientes" type="number" placeholder="0"
+                class="w-full p-4 border-2 border-gray-300 rounded-xl hover:border-gray-400 focus:outline-none focus:border-slate-600 focus:ring-2 focus:ring-slate-200 transition-all duration-200 shadow-sm" />
+            </div>
+
           </div>
 
           <!-- Amenities -->
