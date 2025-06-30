@@ -18,19 +18,28 @@
                     <Home class="w-5 h-5" />
                     <span class="font-medium">Propiedades</span>
                 </RouterLink>
-
             </nav>
+
+            <!-- Sección del usuario - Modificada para ser dinámica -->
             <div class="absolute bottom-6 left-6 right-6">
                 <div class="bg-slate-50 rounded-xl p-4">
-                    <div class="flex items-center space-x-3">
-                        <div class="w-10 h-10 bg-slate-200 rounded-full flex items-center justify-center">
-                            <svg class="w-6 h-6 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                            </svg>
+                    <div class="flex items-center space-x-3 relative">
+                        <!-- Avatar con icono de usuario y punto verde -->
+                        <div class="relative">
+                            <div class="w-10 h-10 bg-slate-200 rounded-full flex items-center justify-center">
+                                <svg class="w-6 h-6 text-slate-500" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                </svg>
+                            </div>
+                            <!-- Punto verde de estado en línea -->
+                            <div
+                                class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white">
+                            </div>
                         </div>
                         <div>
-                            <p class="font-medium text-slate-900 text-sm">Usuario</p>
+                            <p class="font-medium text-slate-900 text-sm">{{ userData.nombre || 'Usuario' }}</p>
                             <p class="text-slate-600 text-xs">En línea</p>
                         </div>
                     </div>
@@ -114,7 +123,7 @@
                         <div class="text-slate-600 text-sm mb-1 flex items-center">
                             <Home class="w-4 h-4 mr-1" />
                             <span>{{ casa.ubicacion.calle }} {{ casa.ubicacion.altura }}, {{ casa.ubicacion.localidad
-                            }}</span>
+                                }}</span>
                         </div>
                         <div class="text-slate-600 text-sm mb-3 flex items-center">
                             <span>Publicado: {{ formatDate(casa.fechaPublicada) }}</span>
@@ -127,7 +136,7 @@
                                 dorm.</span>
                             <span v-if="casa.caracteristicas.baños">{{ casa.caracteristicas.baños }} baños</span>
                             <span v-if="casa.caracteristicas.superficieTotal">{{ casa.caracteristicas.superficieTotal
-                            }}m²</span>
+                                }}m²</span>
                         </div>
                     </div>
                 </div>
@@ -163,6 +172,22 @@ import api from '../api'
 
 const router = useRouter()
 const casas = ref([])
+const userData = ref({ nombre: '' })
+
+// Función para decodificar el token JWT (copiada del primer componente)
+function parseJwt(token) {
+    try {
+        const base64Url = token.split('.')[1]
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/')
+        const jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
+            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
+        }).join(''))
+
+        return JSON.parse(jsonPayload)
+    } catch {
+        return null
+    }
+}
 
 function irANuevaPropiedad() {
     router.push('/nueva-propiedad')
@@ -179,6 +204,20 @@ function formatPrice(precio) {
 }
 
 onMounted(async () => {
+    // Cargar datos del usuario desde el token
+    const token = localStorage.getItem('auth-token')
+    if (token) {
+        const decoded = parseJwt(token)
+        if (decoded) {
+            userData.value = {
+                nombre: decoded.nombre,
+                mail: decoded.mail,
+                rol: decoded.rol
+            }
+        }
+    }
+
+    // Cargar propiedades
     try {
         const res = await api.get('/admin/todas-casas')
         casas.value = res.data.casas
