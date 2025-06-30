@@ -3,6 +3,7 @@ import Home from "../views/HomeView.vue";
 import About from "../views/AboutView.vue";
 import Contacto from "../components/ContactoView.vue";
 import Login from "../components/LoginView.vue";
+import Propiedades from "../components/PropiedadesView.vue";
 import Dashboard from "../components/DashboardView.vue";
 import NuevaPropiedad from "../components/NuevaPropiedadView.vue";
 
@@ -13,6 +14,7 @@ const routes = [
   { path: "/login", component: Login },
   { path: "/dashboard", component: Dashboard, meta: { requiresAuth: true } },
   { path: "/nueva-propiedad", component: NuevaPropiedad, meta: { requiresAuth: true } },
+  { path: "/propiedades", component: Propiedades },
 ];
 
 const router = createRouter({

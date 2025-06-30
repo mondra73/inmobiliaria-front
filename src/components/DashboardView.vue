@@ -9,7 +9,8 @@
       </div>
 
       <nav class="px-6 space-y-2">
-        <a href="#" class="flex items-center space-x-3 p-3 rounded-xl bg-slate-100 text-slate-900">
+        <a @click="irADashboard"
+          class="flex items-center space-x-3 p-3 rounded-xl bg-slate-100 text-slate-900 cursor-pointer">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
               d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z"></path>
@@ -19,8 +20,8 @@
           <span class="font-medium">Dashboard</span>
         </a>
 
-        <a href="#"
-          class="flex items-center space-x-3 p-3 rounded-xl text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-colors duration-200">
+        <a @click="irAPropiedades"
+          class="flex items-center space-x-3 p-3 rounded-xl text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-colors duration-200 cursor-pointer">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
               d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6">
@@ -162,6 +163,14 @@ function irANuevaPropiedad() {
   router.push('/nueva-propiedad')
 }
 
+function irADashboard() {
+  router.push('/dashboard')
+}
+
+function irAPropiedades() {
+  router.push('/propiedades')
+}
+
 // Función para decodificar el token JWT
 function parseJwt(token) {
   try {
@@ -192,6 +201,5 @@ onMounted(() => {
 })
 
 </script>
-
 
 <style scoped></style>
