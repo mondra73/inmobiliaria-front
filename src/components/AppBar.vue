@@ -16,7 +16,6 @@
         </template>
         <template v-else>
           <v-btn variant="text" class="text-white" @click="goToDashboard">Dashboard</v-btn>
-          <v-btn variant="text" class="text-white" @click="scrollTo('propiedades')">Propiedades</v-btn>
         </template>
         <v-btn
           variant="text"
@@ -44,9 +43,6 @@
           <template v-else>
             <v-list-item @click="goToDashboard" class="px-4">
               <v-list-item-title class="text-white">Dashboard</v-list-item-title>
-            </v-list-item>
-            <v-list-item @click="scrollTo('propiedades')" class="px-4">
-              <v-list-item-title class="text-white">Propiedades</v-list-item-title>
             </v-list-item>
           </template>
           <v-divider class="my-1" />
