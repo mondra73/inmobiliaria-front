@@ -99,8 +99,8 @@
 
             <!-- Tarjetas de propiedades -->
             <section class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 mt-4">
-                <div v-for="casa in casas" :key="casa.id"
-                    class="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow duration-200">
+                <div v-for="casa in casas" :key="casa.id" @click="irADetallePropiedad(casa.id)"
+                    class="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow duration-200 cursor-pointer">
                     <div class="relative">
                         <img :src="casa.imagenes?.[0]?.url || '/placeholder.svg?height=200&width=300'"
                             :alt="casa.titulo" class="w-full h-48 object-cover" />
@@ -113,7 +113,6 @@
                             : 'bg-red-100 text-red-800'">
                             {{ casa.visible ? 'Visible' : 'Oculta' }}
                         </span>
-
                     </div>
 
                     <div class="p-6">
@@ -167,7 +166,6 @@
 import { ref, onMounted } from 'vue'
 import { Plus, Home, Search } from 'lucide-vue-next'
 import { useRouter } from 'vue-router'
-import axios from 'axios'
 import api from '../api'
 
 const router = useRouter()
@@ -191,6 +189,10 @@ function parseJwt(token) {
 
 function irANuevaPropiedad() {
     router.push('/nueva-propiedad')
+}
+
+function irADetallePropiedad(id) {
+    router.push(`/propiedad/${id}`)
 }
 
 function formatDate(fecha) {
