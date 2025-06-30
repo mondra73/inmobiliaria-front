@@ -115,21 +115,16 @@
             </button>
 
             <!-- Mensajes -->
-<div v-if="mostrarMensaje" class="mt-4">
-  <div
-    v-if="mensajeExito"
-    class="bg-green-100 border border-green-300 text-green-800 px-4 py-3 rounded-xl text-sm shadow transition-opacity duration-300"
-  >
-    {{ mensajeExito }}
-  </div>
-  <div
-    v-else-if="mensajeError"
-    class="bg-red-100 border border-red-300 text-red-800 px-4 py-3 rounded-xl text-sm shadow transition-opacity duration-300"
-  >
-    {{ mensajeError }}
-  </div>
-</div>
-
+            <div v-if="mostrarMensaje" class="mt-4">
+              <div v-if="mensajeExito"
+                class="bg-green-100 border border-green-300 text-green-800 px-4 py-3 rounded-xl text-sm shadow transition-opacity duration-300">
+                {{ mensajeExito }}
+              </div>
+              <div v-else-if="mensajeError"
+                class="bg-red-100 border border-red-300 text-red-800 px-4 py-3 rounded-xl text-sm shadow transition-opacity duration-300">
+                {{ mensajeError }}
+              </div>
+            </div>
 
           </form>
         </div>
