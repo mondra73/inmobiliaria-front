@@ -4,6 +4,7 @@ import About from "../views/AboutView.vue";
 import Contacto from "../components/ContactoView.vue";
 import Login from "../components/LoginView.vue";
 import Propiedades from "../components/PropiedadesView.vue";
+import PropiedadDetalle from "../components/PropiedadDetalleView.vue";
 import Dashboard from "../components/DashboardView.vue";
 import NuevaPropiedad from "../components/NuevaPropiedadView.vue";
 
@@ -15,6 +16,7 @@ const routes = [
   { path: "/dashboard", component: Dashboard, meta: { requiresAuth: true } },
   { path: "/nueva-propiedad", component: NuevaPropiedad, meta: { requiresAuth: true } },
   { path: "/propiedades", component: Propiedades },
+  { path: "/propiedad/:id", component: PropiedadDetalle }
 ];
 
 const router = createRouter({
