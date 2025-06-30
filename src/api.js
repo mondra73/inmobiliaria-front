@@ -1,45 +1,29 @@
 import axios from 'axios'
 
-// Determina el entorno actual (development, production, etc.)
-const env = import.meta.env.MODE || 'development'
+const api = axios.create({
+  baseURL: import.meta.env.VITE_DEV_API_BASE_URL + '/api',
+  withCredentials: true
+})
 
-// Configuración base según entorno
-const baseConfig = {
-  development: {
-    baseURL: import.meta.env.VITE_DEV_API_BASE_URL,
-    timeout: parseInt(import.meta.env.VITE_DEFAULT_TIMEOUT),
-    withCredentials: false
-  },
-  production: {
-    baseURL: import.meta.env.VITE_PROD_API_BASE_URL,
-    timeout: parseInt(import.meta.env.VITE_DEFAULT_TIMEOUT),
-    withCredentials: true
-  },
-  staging: {
-    baseURL: import.meta.env.VITE_STAGING_API_BASE_URL,
-    timeout: parseInt(import.meta.env.VITE_DEFAULT_TIMEOUT),
-    withCredentials: true
-  }
-}
-
-// Crea instancia de axios con la configuración adecuada
-const api = axios.create(baseConfig[env] || baseConfig.development)
-
-// Interceptor para autenticación
+// Interceptor para agregar el token CORRECTAMENTE
 api.interceptors.request.use(config => {
-  const token = localStorage.getItem('authToken')
+  const token = localStorage.getItem('auth-token') // Exactamente como está guardado
+  
   if (token) {
-    config.headers['auth-token'] = token
+    config.headers['auth-token'] = token // Sin Bearer, solo el token
+    // Elimina el header Authorization si no lo necesitas
+    delete config.headers['Authorization']
   }
+  
   return config
-}, error => Promise.reject(error))
+})
 
-// Interceptor de respuestas
+// Interceptor de respuestas (mantenemos igual)
 api.interceptors.response.use(
   response => response,
   error => {
     if (error.response?.status === 401) {
-      localStorage.removeItem('authToken')
+      localStorage.removeItem('auth-token')
       window.location.href = '/login?sessionExpired=true'
     }
     return Promise.reject(error)

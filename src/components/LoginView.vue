@@ -93,7 +93,7 @@ const handleLogin = async () => {
   errorMessage.value = ''
 
   try {
-    const response = await api.post('/api/user/login', {
+    const response = await api.post('/user/login', {
       usuario: loginForm.value.usuario,
       contraseña: loginForm.value.password
     })
