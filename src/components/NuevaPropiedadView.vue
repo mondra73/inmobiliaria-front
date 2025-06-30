@@ -338,6 +338,7 @@
 import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import api from '../api'
+import { uploadImageToCloudinary } from '../../utils/uploadToCloudinary';
 
 const router = useRouter()
 const fileInput = ref(null)
@@ -410,7 +411,6 @@ const isCampo = computed(() => formData.value.categoria === 'Campo')
 // Campos según tipo de propiedad
 const showBedroomsField = computed(() => ['Casa', 'Departamento'].includes(formData.value.categoria))
 const showBathroomsField = computed(() => ['Casa', 'Departamento', 'Local comercial'].includes(formData.value.categoria))
-const showTotalSurfaceField = computed(() => true)
 const showCoveredSurfaceField = computed(() => ['Casa', 'Departamento', 'Local comercial'].includes(formData.value.categoria))
 const showAgeField = computed(() => ['Casa', 'Departamento', 'Local comercial'].includes(formData.value.categoria))
 const showRoomsField = computed(() => ['Casa', 'Departamento'].includes(formData.value.categoria))
@@ -585,6 +585,20 @@ const submitForm = async () => {
       const [lat, lng] = payload.ubicacion.coordenadas.split(',').map(Number)
       payload.ubicacion.coordenadas = { lat, lng }
     }
+
+    const imageUrls = []
+
+    for (const file of files.value) {
+      const url = await uploadImageToCloudinary(file.file);
+      imageUrls.push({
+        url,
+        descripcion: '', // si querés podés agregar esto desde el formulario
+        orden: imageUrls.length,
+        esPortada: imageUrls.length === 0
+      });
+    }
+
+    payload.imagenes = imageUrls;
 
     // 6. Enviar los datos
     const response = await api.post(endpoint, payload)
