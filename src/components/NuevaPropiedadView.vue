@@ -23,8 +23,7 @@
         <!-- Información básica -->
         <div class="bg-white rounded-3xl shadow-sm border border-gray-100 p-8">
           <h2 class="text-xl font-light text-slate-900 mb-6">
-            Información
-            <span class="font-semibold">Básica</span>
+            Información <span class="font-semibold">Básica</span>
           </h2>
 
           <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -36,8 +35,7 @@
             </div>
 
             <div>
-              <label class="block mb-2 text-sm font-medium text-slate-700" for="tipo-propiedad">Tipo de
-                propiedad</label>
+              <label class="block mb-2 text-sm font-medium text-slate-700" for="tipo-propiedad">Tipo de propiedad</label>
               <select id="tipo-propiedad" v-model="formData.categoria" @change="handlePropertyTypeChange"
                 class="w-full p-4 border-2 border-gray-300 rounded-xl hover:border-gray-400 focus:outline-none focus:border-slate-600 focus:ring-2 focus:ring-slate-200 transition-all duration-200 shadow-sm appearance-none bg-white">
                 <option value="">Seleccionar tipo</option>
@@ -51,8 +49,7 @@
             </div>
 
             <div>
-              <label class="block mb-2 text-sm font-medium text-slate-700" for="tipo-operacion">Tipo de
-                operación</label>
+              <label class="block mb-2 text-sm font-medium text-slate-700" for="tipo-operacion">Tipo de operación</label>
               <select id="tipo-operacion" v-model="formData.tipoOperacion"
                 class="w-full p-4 border-2 border-gray-300 rounded-xl hover:border-gray-400 focus:outline-none focus:border-slate-600 focus:ring-2 focus:ring-slate-200 transition-all duration-200 shadow-sm appearance-none bg-white">
                 <option value="">Seleccionar operación</option>
@@ -64,7 +61,7 @@
 
             <div>
               <label class="block mb-2 text-sm font-medium text-slate-700" for="precio">Precio</label>
-              <input id="precio" type="number" v-model.number="formData.precio.monto" placeholder="$"
+              <input id="precio" type="number" v-model.number="formData.precio.monto" placeholder="$" min="0"
                 class="w-full p-4 border-2 border-gray-300 rounded-xl hover:border-gray-400 focus:outline-none focus:border-slate-600 focus:ring-2 focus:ring-slate-200 transition-all duration-200 shadow-sm" />
             </div>
 
@@ -86,7 +83,7 @@
           </div>
         </div>
 
-        <!-- Ubicación - Solo visible cuando se selecciona un tipo de propiedad -->
+        <!-- Ubicación -->
         <div v-if="showLocationSection" class="bg-white rounded-3xl shadow-sm border border-gray-500 p-8">
           <h2 class="text-xl font-light text-slate-900 mb-6">Ubicación</h2>
 
@@ -99,7 +96,7 @@
 
             <div>
               <label class="block mb-2 text-sm font-medium text-slate-700" for="altura">Altura</label>
-              <input id="altura" type="number" v-model.number="formData.ubicacion.altura" placeholder="Ej: 742"
+              <input id="altura" type="number" v-model.number="formData.ubicacion.altura" placeholder="Ej: 742" min="0"
                 class="w-full p-4 border-2 border-gray-300 rounded-xl hover:border-gray-400 focus:outline-none focus:border-slate-600 focus:ring-2 focus:ring-slate-200 transition-all duration-200 shadow-sm" />
             </div>
 
@@ -124,8 +121,7 @@
             </div>
 
             <div>
-              <label class="block mb-2 text-sm font-medium text-slate-700" for="coordenadas">Coordenadas
-                (lat,lng)</label>
+              <label class="block mb-2 text-sm font-medium text-slate-700" for="coordenadas">Coordenadas (lat,lng)</label>
               <input id="coordenadas" type="text" v-model="formData.ubicacion.coordenadas"
                 placeholder="-34.6037, -58.3816"
                 class="w-full p-4 border-2 border-gray-300 rounded-xl hover:border-gray-400 focus:outline-none focus:border-slate-600 focus:ring-2 focus:ring-slate-200 transition-all duration-200 shadow-sm" />
@@ -133,100 +129,131 @@
           </div>
         </div>
 
-        <!-- Características - Solo visible cuando se selecciona un tipo de propiedad -->
+        <!-- Características -->
         <div v-if="showFeaturesSection" class="bg-white rounded-3xl shadow-sm border border-gray-100 p-8">
-          <h2 class="text-xl font-light text-slate-900 mb-6">
-            Características
-          </h2>
+          <h2 class="text-xl font-light text-slate-900 mb-6">Características</h2>
 
-          <div class="grid grid-cols-2 lg:grid-cols-3 gap-6">
+          <!-- Características numéricas -->
+          <div class="grid grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
             <div v-if="showBedroomsField">
               <label class="block mb-2 text-sm font-medium text-slate-700" for="dormitorios">Dormitorios</label>
-              <input id="dormitorios" type="number" v-model.number="formData.dormitorios" placeholder="0"
+              <input id="dormitorios" type="number" v-model.number="formData.dormitorios" placeholder="0" min="0"
                 class="w-full p-4 border-2 border-gray-300 rounded-xl hover:border-gray-400 focus:outline-none focus:border-slate-600 focus:ring-2 focus:ring-slate-200 transition-all duration-200 shadow-sm" />
             </div>
 
             <div v-if="showBathroomsField">
               <label class="block mb-2 text-sm font-medium text-slate-700" for="banos">Baños</label>
-              <input id="banos" type="number" v-model.number="formData.baños" placeholder="0"
+              <input id="banos" type="number" v-model.number="formData.baños" placeholder="0" min="0"
                 class="w-full p-4 border-2 border-gray-300 rounded-xl hover:border-gray-400 focus:outline-none focus:border-slate-600 focus:ring-2 focus:ring-slate-200 transition-all duration-200 shadow-sm" />
             </div>
 
-            <div v-if="showTotalSurfaceField">
-              <label class="block mb-2 text-sm font-medium text-slate-700" for="superficie-total">Sup. Total
-                (m²)</label>
-              <input id="superficie-total" type="number" v-model.number="formData.superficieTotal" placeholder="0"
+            <div>
+              <label class="block mb-2 text-sm font-medium text-slate-700" for="superficie-total">Sup. Total (m²)</label>
+              <input id="superficie-total" type="number" v-model.number="formData.superficieTotal" placeholder="0" min="0"
                 class="w-full p-4 border-2 border-gray-300 rounded-xl hover:border-gray-400 focus:outline-none focus:border-slate-600 focus:ring-2 focus:ring-slate-200 transition-all duration-200 shadow-sm" />
             </div>
 
             <div v-if="showCoveredSurfaceField">
-              <label class="block mb-2 text-sm font-medium text-slate-700" for="superficie-cubierta">Sup. Cubierta
-                (m²)</label>
-              <input id="superficie-cubierta" type="number" v-model.number="formData.superficieCubierta" placeholder="0"
+              <label class="block mb-2 text-sm font-medium text-slate-700" for="superficie-cubierta">Sup. Cubierta (m²)</label>
+              <input id="superficie-cubierta" type="number" v-model.number="formData.superficieCubierta" placeholder="0" min="0"
                 class="w-full p-4 border-2 border-gray-300 rounded-xl hover:border-gray-400 focus:outline-none focus:border-slate-600 focus:ring-2 focus:ring-slate-200 transition-all duration-200 shadow-sm" />
             </div>
 
             <div v-if="showAgeField">
               <label class="block mb-2 text-sm font-medium text-slate-700" for="antiguedad">Antigüedad (años)</label>
-              <input id="antiguedad" type="number" v-model.number="formData.antiguedad" placeholder="0"
+              <input id="antiguedad" type="number" v-model.number="formData.antiguedad" placeholder="0" min="0"
                 class="w-full p-4 border-2 border-gray-300 rounded-xl hover:border-gray-400 focus:outline-none focus:border-slate-600 focus:ring-2 focus:ring-slate-200 transition-all duration-200 shadow-sm" />
             </div>
 
             <div v-if="showRoomsField">
               <label class="block mb-2 text-sm font-medium text-slate-700" for="ambientes">Ambientes</label>
-              <input id="ambientes" type="number" v-model.number="formData.ambientes" placeholder="0"
+              <input id="ambientes" type="number" v-model.number="formData.ambientes" placeholder="0" min="0"
                 class="w-full p-4 border-2 border-gray-300 rounded-xl hover:border-gray-400 focus:outline-none focus:border-slate-600 focus:ring-2 focus:ring-slate-200 transition-all duration-200 shadow-sm" />
             </div>
 
+            <!-- Campos específicos para terrenos -->
+            <div v-if="formData.categoria === 'Terreno'">
+              <label class="block mb-2 text-sm font-medium text-slate-700" for="largo">Largo (m)</label>
+              <input id="largo" type="number" v-model.number="formData.largo" placeholder="0" min="0" step="0.01"
+                class="w-full p-4 border-2 border-gray-300 rounded-xl hover:border-gray-400 focus:outline-none focus:border-slate-600 focus:ring-2 focus:ring-slate-200 transition-all duration-200 shadow-sm" />
+            </div>
+
+            <div v-if="formData.categoria === 'Terreno'">
+              <label class="block mb-2 text-sm font-medium text-slate-700" for="ancho">Ancho (m)</label>
+              <input id="ancho" type="number" v-model.number="formData.ancho" placeholder="0" min="0" step="0.01"
+                class="w-full p-4 border-2 border-gray-300 rounded-xl hover:border-gray-400 focus:outline-none focus:border-slate-600 focus:ring-2 focus:ring-slate-200 transition-all duration-200 shadow-sm" />
+            </div>
           </div>
 
-          <!-- Amenities - Solo visible para ciertos tipos de propiedades -->
-          <div v-if="showAmenitiesSection" class="mt-6">
-            <label class="block mb-4 text-sm font-medium text-slate-700">
-              Amenities
-            </label>
-            <div class="grid grid-cols-2 lg:grid-cols-3 gap-4">
-              <label v-if="showGarageField" class="flex items-center space-x-3 text-slate-700 cursor-pointer">
+          <!-- Servicios Básicos - Todos los tipos de propiedades -->
+          <div v-if="showBasicServicesSection" class="mb-8">
+            <h3 class="text-lg font-medium text-slate-700 mb-4">Servicios Básicos</h3>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 p-4 bg-slate-50 rounded-xl">
+              <label class="flex items-start space-x-3 p-3 bg-white rounded-lg shadow-sm hover:bg-slate-100 transition-colors">
+                <input type="checkbox" v-model="formData.servicios.agua"
+                  class="mt-1 h-5 w-5 rounded border-gray-300 text-slate-600 focus:ring-slate-500">
+                <span class="text-sm font-medium text-slate-700">Agua corriente</span>
+              </label>
+              <label class="flex items-start space-x-3 p-3 bg-white rounded-lg shadow-sm hover:bg-slate-100 transition-colors">
+                <input type="checkbox" v-model="formData.servicios.luz"
+                  class="mt-1 h-5 w-5 rounded border-gray-300 text-slate-600 focus:ring-slate-500">
+                <span class="text-sm font-medium text-slate-700">Luz eléctrica</span>
+              </label>
+              <label class="flex items-start space-x-3 p-3 bg-white rounded-lg shadow-sm hover:bg-slate-100 transition-colors">
+                <input type="checkbox" v-model="formData.servicios.cloacas"
+                  class="mt-1 h-5 w-5 rounded border-gray-300 text-slate-600 focus:ring-slate-500">
+                <span class="text-sm font-medium text-slate-700">Cloacas</span>
+              </label>
+              <label class="flex items-start space-x-3 p-3 bg-white rounded-lg shadow-sm hover:bg-slate-100 transition-colors">
+                <input type="checkbox" v-model="formData.servicios.gas"
+                  class="mt-1 h-5 w-5 rounded border-gray-300 text-slate-600 focus:ring-slate-500">
+                <span class="text-sm font-medium text-slate-700">Gas natural</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Amenities - Solo para propiedades residenciales -->
+          <div v-if="showAmenitiesSection" class="mb-8">
+            <h3 class="text-lg font-medium text-slate-700 mb-4">Amenities</h3>
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-4 p-4 bg-slate-50 rounded-xl">
+              <label v-if="showGarageField" class="flex items-start space-x-3 p-3 bg-white rounded-lg shadow-sm hover:bg-slate-100 transition-colors">
                 <input type="checkbox" v-model="formData.garage"
-                  class="h-5 w-5 rounded bg-white border-gray-500 border shadow-sm accent-black focus:ring-2 focus:ring-slate-300 hover:ring hover:ring-slate-200 transition" />
-                <span>Garage</span>
+                  class="mt-1 h-5 w-5 rounded border-gray-300 text-slate-600 focus:ring-slate-500">
+                <span class="text-sm font-medium text-slate-700">Garage</span>
               </label>
-              <label v-if="showGardenField" class="flex items-center space-x-3 text-slate-700 cursor-pointer">
+              <label v-if="showGardenField" class="flex items-start space-x-3 p-3 bg-white rounded-lg shadow-sm hover:bg-slate-100 transition-colors">
                 <input type="checkbox" v-model="formData.jardin"
-                  class="h-5 w-5 rounded bg-white border-gray-500 border shadow-sm accent-black focus:ring-2 focus:ring-slate-300 hover:ring hover:ring-slate-200 transition" />
-                <span>Jardín</span>
+                  class="mt-1 h-5 w-5 rounded border-gray-300 text-slate-600 focus:ring-slate-500">
+                <span class="text-sm font-medium text-slate-700">Jardín</span>
               </label>
-              <label v-if="showPoolField" class="flex items-center space-x-3 text-slate-700 cursor-pointer">
+              <label v-if="showPoolField" class="flex items-start space-x-3 p-3 bg-white rounded-lg shadow-sm hover:bg-slate-100 transition-colors">
                 <input type="checkbox" v-model="formData.piscina"
-                  class="h-5 w-5 rounded bg-white border-gray-500 border shadow-sm accent-black focus:ring-2 focus:ring-slate-300 hover:ring hover:ring-slate-200 transition" />
-                <span>Piscina</span>
+                  class="mt-1 h-5 w-5 rounded border-gray-300 text-slate-600 focus:ring-slate-500">
+                <span class="text-sm font-medium text-slate-700">Piscina</span>
               </label>
-              <label v-if="showBalconyField" class="flex items-center space-x-3 text-slate-700 cursor-pointer">
+              <label v-if="showBalconyField" class="flex items-start space-x-3 p-3 bg-white rounded-lg shadow-sm hover:bg-slate-100 transition-colors">
                 <input type="checkbox" v-model="formData.balcon"
-                  class="h-5 w-5 rounded bg-white border-gray-500 border shadow-sm accent-black focus:ring-2 focus:ring-slate-300 hover:ring hover:ring-slate-200 transition" />
-                <span>Balcón</span>
+                  class="mt-1 h-5 w-5 rounded border-gray-300 text-slate-600 focus:ring-slate-500">
+                <span class="text-sm font-medium text-slate-700">Balcón</span>
               </label>
-              <label v-if="showTerraceField" class="flex items-center space-x-3 text-slate-700 cursor-pointer">
+              <label v-if="showTerraceField" class="flex items-start space-x-3 p-3 bg-white rounded-lg shadow-sm hover:bg-slate-100 transition-colors">
                 <input type="checkbox" v-model="formData.terraza"
-                  class="h-5 w-5 rounded bg-white border-gray-500 border shadow-sm accent-black focus:ring-2 focus:ring-slate-300 hover:ring hover:ring-slate-200 transition" />
-                <span>Terraza</span>
+                  class="mt-1 h-5 w-5 rounded border-gray-300 text-slate-600 focus:ring-slate-500">
+                <span class="text-sm font-medium text-slate-700">Terraza</span>
               </label>
-              <label v-if="showGrillField" class="flex items-center space-x-3 text-slate-700 cursor-pointer">
+              <label v-if="showGrillField" class="flex items-start space-x-3 p-3 bg-white rounded-lg shadow-sm hover:bg-slate-100 transition-colors">
                 <input type="checkbox" v-model="formData.parrilla"
-                  class="h-5 w-5 rounded bg-white border-gray-500 border shadow-sm accent-black focus:ring-2 focus:ring-slate-300 hover:ring hover:ring-slate-200 transition" />
-                <span>Parrilla</span>
+                  class="mt-1 h-5 w-5 rounded border-gray-300 text-slate-600 focus:ring-slate-500">
+                <span class="text-sm font-medium text-slate-700">Parrilla</span>
               </label>
             </div>
           </div>
         </div>
 
-        <!-- Imágenes - Solo visible cuando se selecciona un tipo de propiedad -->
+        <!-- Imágenes -->
         <div v-if="showImagesSection" class="bg-white rounded-3xl shadow-sm border border-gray-100 p-8">
-          <h2 class="text-xl font-light text-slate-900 mb-6">
-            Imágenes
-          </h2>
+          <h2 class="text-xl font-light text-slate-900 mb-6">Imágenes</h2>
 
-          <!-- Input de tipo file oculto -->
           <input type="file" id="file-upload" ref="fileInput" class="hidden" multiple accept="image/png, image/jpeg"
             @change="handleFileUpload">
 
@@ -237,18 +264,13 @@
                 d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z">
               </path>
             </svg>
-            <p class="text-slate-600 mb-2">
-              Arrastra las imágenes aquí o
-            </p>
+            <p class="text-slate-600 mb-2">Arrastra las imágenes aquí o</p>
             <span class="text-slate-900 font-medium hover:text-slate-700 transition-colors duration-200">
               selecciona archivos
             </span>
-            <p class="text-xs text-slate-500 mt-2">
-              PNG, JPG hasta 10MB cada una
-            </p>
+            <p class="text-xs text-slate-500 mt-2">PNG, JPG hasta 10MB cada una</p>
           </label>
 
-          <!-- Mostrar previsualización de imágenes seleccionadas -->
           <div v-if="files.length > 0" class="mt-4 grid grid-cols-3 gap-4">
             <div v-for="(file, index) in files" :key="index" class="relative">
               <img :src="file.preview" class="w-full h-32 object-cover rounded-lg">
@@ -260,7 +282,7 @@
           </div>
         </div>
 
-        <!-- Botones de acción - Solo visibles cuando se selecciona un tipo de propiedad -->
+        <!-- Botones de acción -->
         <div v-if="showActionButtons" class="flex justify-end space-x-4">
           <button type="button" @click="resetForm"
             class="px-8 py-4 border-2 border-gray-300 text-slate-700 rounded-xl font-medium hover:bg-gray-50 transition-colors duration-200">
@@ -299,60 +321,71 @@ const formData = ref({
   },
   descripcion: '',
   antiguedad: null,
-  categoria: '', // Inicialmente vacío
-  tipoOperacion: '', // Inicialmente vacío
+  categoria: '',
+  tipoOperacion: '',
   precio: {
     monto: null,
-    moneda: 'ARS' // Valor por defecto
+    moneda: 'ARS'
   },
+  // Características
   baños: null,
   dormitorios: null,
   ambientes: null,
+  superficieTotal: null,
+  superficieCubierta: null,
+  largo: null,
+  ancho: null,
+  // Amenities
   piscina: false,
   parrilla: false,
   jardin: false,
   terraza: false,
   garage: false,
   balcon: false,
-  superficieTotal: null,
-  superficieCubierta: null,
+  // Servicios
+  servicios: {
+    agua: false,
+    luz: false,
+    cloacas: false,
+    gas: false
+  },
   imagenes: []
 })
 
-// Computed properties para controlar la visibilidad de las secciones
+// Computed properties para controlar la visibilidad
 const showLocationSection = computed(() => !!formData.value.categoria)
 const showFeaturesSection = computed(() => !!formData.value.categoria)
 const showImagesSection = computed(() => !!formData.value.categoria)
 const showActionButtons = computed(() => !!formData.value.categoria)
 
-// Computed properties para controlar qué campos mostrar según el tipo de propiedad
+// Campos según tipo de propiedad
 const showBedroomsField = computed(() => ['Casa', 'Departamento'].includes(formData.value.categoria))
 const showBathroomsField = computed(() => ['Casa', 'Departamento', 'Local comercial'].includes(formData.value.categoria))
-const showTotalSurfaceField = computed(() => true) // Mostrar para todos los tipos
+const showTotalSurfaceField = computed(() => true)
 const showCoveredSurfaceField = computed(() => ['Casa', 'Departamento', 'Local comercial'].includes(formData.value.categoria))
 const showAgeField = computed(() => ['Casa', 'Departamento', 'Local comercial'].includes(formData.value.categoria))
 const showRoomsField = computed(() => ['Casa', 'Departamento'].includes(formData.value.categoria))
+const showBasicServicesSection = computed(() => 
+  ['Casa', 'Departamento', 'Local comercial', 'Fondo de Comercio', 'Terreno'].includes(formData.value.categoria)
+)
 
-// Amenities fields
+// Amenities
 const showGarageField = computed(() => ['Casa', 'Departamento'].includes(formData.value.categoria))
 const showGardenField = computed(() => ['Casa'].includes(formData.value.categoria))
 const showPoolField = computed(() => ['Casa'].includes(formData.value.categoria))
-const showBalconyField = computed(() => ['Departamento'].includes(formData.value.categoria))
+const showBalconyField = computed(() => ['Casa', 'Departamento'].includes(formData.value.categoria))
 const showTerraceField = computed(() => ['Casa', 'Departamento'].includes(formData.value.categoria))
 const showGrillField = computed(() => ['Casa'].includes(formData.value.categoria))
-
-// Amenities section
 const showAmenitiesSection = computed(() => ['Casa', 'Departamento'].includes(formData.value.categoria))
 
-// Manejar cambio de tipo de propiedad
+// Manejo de eventos
 const handlePropertyTypeChange = () => {
-  // Aquí puedes agregar lógica adicional si es necesario cuando cambia el tipo de propiedad
   console.log('Tipo de propiedad seleccionado:', formData.value.categoria)
 }
 
-// Manejo de archivos
 const handleFileUpload = (event) => {
   const uploadedFiles = Array.from(event.target.files)
+  files.value = []
 
   uploadedFiles.forEach(file => {
     if (!file.type.match('image.*')) return
@@ -375,23 +408,37 @@ const handleFileUpload = (event) => {
   })
 }
 
-// Enviar formulario
 const submitForm = async () => {
   try {
-    // Validación básica
+    // Validaciones básicas
     if (!formData.value.tituloPublicacion || !formData.value.ubicacion.localidad) {
       alert('Por favor complete el título y la localidad')
       return
     }
 
-    // Convertir coordenadas si es necesario
+    if (!formData.value.categoria) {
+      alert('Por favor seleccione un tipo de propiedad')
+      return
+    }
+
+    if (!formData.value.tipoOperacion) {
+      alert('Por favor seleccione un tipo de operación')
+      return
+    }
+
+    if (!formData.value.precio.monto || formData.value.precio.monto <= 0) {
+      alert('Por favor ingrese un precio válido')
+      return
+    }
+
+    // Convertir coordenadas
     if (typeof formData.value.ubicacion.coordenadas === 'string') {
       const [lat, lng] = formData.value.ubicacion.coordenadas.split(',').map(Number)
       formData.value.ubicacion.coordenadas = { lat, lng }
     }
 
-    // Enviar datos al backend
-    const response = await fetch('http://localhost:3000/api/nueva-casa', {
+    // Enviar datos
+    const response = await fetch('http://localhost:3000/api/propiedades', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -412,7 +459,6 @@ const submitForm = async () => {
   }
 }
 
-// Resetear formulario
 const resetForm = () => {
   formData.value = {
     tituloPublicacion: '',
@@ -437,14 +483,22 @@ const resetForm = () => {
     baños: null,
     dormitorios: null,
     ambientes: null,
+    superficieTotal: null,
+    superficieCubierta: null,
+    largo: null,
+    ancho: null,
     piscina: false,
     parrilla: false,
     jardin: false,
     terraza: false,
     garage: false,
     balcon: false,
-    superficieTotal: null,
-    superficieCubierta: null,
+    servicios: {
+      agua: false,
+      luz: false,
+      cloacas: false,
+      gas: false
+    },
     imagenes: []
   }
   files.value = []
