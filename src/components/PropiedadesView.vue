@@ -221,7 +221,7 @@ onMounted(async () => {
 
     // Cargar propiedades
     try {
-        const res = await api.get('/admin/todas-casas')
+        const res = await api.get('/admin/todas-propiedades')
         casas.value = res.data.casas
     } catch (err) {
         console.error('Error al cargar casas:', err)
