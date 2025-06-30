@@ -316,6 +316,19 @@
             Guardar Propiedad
           </button>
         </div>
+
+        <!-- Mensajes de estado -->
+        <div v-if="mostrarMensaje" class="mt-4">
+          <div v-if="mensajeExito"
+            class="bg-green-100 border border-green-300 text-green-800 px-4 py-3 rounded-xl text-sm shadow transition-opacity duration-300">
+            {{ mensajeExito }}
+          </div>
+          <div v-else-if="mensajeError"
+            class="bg-red-100 border border-red-300 text-red-800 px-4 py-3 rounded-xl text-sm shadow transition-opacity duration-300">
+            {{ mensajeError }}
+          </div>
+        </div>
+
       </form>
     </div>
   </div>
@@ -329,6 +342,9 @@ import api from '../api'
 const router = useRouter()
 const fileInput = ref(null)
 const files = ref([])
+const mensajeExito = ref('')
+const mensajeError = ref('')
+const mostrarMensaje = ref(false)
 
 // Estado inicial del formulario
 const initialFormData = {
@@ -431,7 +447,7 @@ const preparePayload = (formData) => {
   const payload = JSON.parse(JSON.stringify(formData))
 
   // Eliminar campos que no deben enviarse
-  delete payload.tipoOperacion 
+  delete payload.tipoOperacion
   delete payload.hectareas
 
   // Validar operación
@@ -443,7 +459,7 @@ const preparePayload = (formData) => {
   delete payload.hectareas
 
   // Transformaciones específicas por tipo de propiedad
-  switch(formData.categoria) {
+  switch (formData.categoria) {
     case 'Campo':
       if (formData.hectareas) {
         payload.superficieTotal = formData.hectareas * 10000
@@ -452,7 +468,7 @@ const preparePayload = (formData) => {
       delete payload.ubicacion.altura
       delete payload.ubicacion.entreCalles
       break
-      
+
     case 'Terreno':
       payload.dimensiones = {
         largo: formData.largo,
@@ -500,56 +516,69 @@ const handleFileUpload = (event) => {
 
 const submitForm = async () => {
   try {
+    // Resetear mensajes
+    mensajeExito.value = ''
+    mensajeError.value = ''
+    mostrarMensaje.value = false
+
     // 1. Verificación de autenticación
     const token = localStorage.getItem('auth-token')
     if (!token) {
-      alert('No estás autenticado. Por favor inicia sesión.')
-      return router.push('/login')
+      mensajeError.value = '❌ No estás autenticado. Por favor inicia sesión.'
+      mostrarMensaje.value = true
+      setTimeout(() => router.push('/login'), 2000)
+      return
     }
 
     // 2. Validaciones básicas
     if (!formData.value.tituloPublicacion) {
-      alert('Por favor complete el título de la propiedad')
+      mensajeError.value = '❌ Por favor complete el título de la propiedad'
+      mostrarMensaje.value = true
       return
     }
 
     if (!formData.value.ubicacion.localidad) {
-      alert('Por favor ingrese la localidad')
+      mensajeError.value = '❌ Por favor ingrese la localidad'
+      mostrarMensaje.value = true
       return
     }
 
     if (!formData.value.categoria) {
-      alert('Por favor seleccione un tipo de propiedad')
+      mensajeError.value = '❌ Por favor seleccione un tipo de propiedad'
+      mostrarMensaje.value = true
       return
     }
 
     if (!formData.value.operacion) {
-      alert('Por favor seleccione un tipo de operación')
+      mensajeError.value = '❌ Por favor seleccione un tipo de operación'
+      mostrarMensaje.value = true
       return
     }
 
     // Validación específica para operación
     const operacionesValidas = ['venta', 'alquiler', 'alquiler temporal']
     if (!operacionesValidas.includes(formData.value.operacion)) {
-      alert('Tipo de operación no válido')
+      mensajeError.value = '❌ Tipo de operación no válido'
+      mostrarMensaje.value = true
       return
     }
 
     if (!formData.value.precio.monto || formData.value.precio.monto <= 0) {
-      alert('Por favor ingrese un precio válido')
+      mensajeError.value = '❌ Por favor ingrese un precio válido'
+      mostrarMensaje.value = true
       return
     }
 
     // 3. Obtener el endpoint correcto
     const endpoint = getEndpoint(formData.value.categoria)
     if (!endpoint) {
-      alert('Tipo de propiedad no válido o no implementado')
+      mensajeError.value = '❌ Tipo de propiedad no válido o no implementado'
+      mostrarMensaje.value = true
       return
     }
 
     // 4. Preparar el payload específico
     const payload = preparePayload(formData.value)
-    console.log('Payload final a enviar:', payload)
 
     // 5. Convertir coordenadas si es necesario
     if (typeof payload.ubicacion.coordenadas === 'string') {
@@ -558,36 +587,43 @@ const submitForm = async () => {
     }
 
     // 6. Enviar los datos
-    console.log('Payload completo a enviar:', payload) 
-    console.log(`Enviando datos a ${endpoint}:`, payload)
     const response = await api.post(endpoint, payload)
 
     // 7. Manejar respuesta exitosa
-    alert(`${formData.value.categoria} creado con éxito!`)
-    router.push(`/propiedad/${response.data.id}`)
+    mensajeExito.value = `✅ ${formData.value.categoria} creado con éxito! Redirigiendo...`
+    mostrarMensaje.value = true
+
+    setTimeout(() => {
+      router.push(`/propiedad/${response.data.id}`)
+    }, 2000)
 
   } catch (error) {
     console.error('Error al enviar el formulario:', error)
 
-    // Manejo mejorado de errores
-    let errorMessage = 'Error al guardar la propiedad'
+    let errorMessage = '❌ Error al guardar la propiedad'
 
     if (error.response) {
-      // Error específico del backend
       if (error.response.data?.message) {
-        errorMessage = error.response.data.message
+        errorMessage = `❌ ${error.response.data.message}`
       }
 
-      // Manejo de no autorizado
       if (error.response.status === 401) {
-        errorMessage = 'Sesión expirada. Por favor inicie sesión nuevamente.'
-        router.push('/login')
+        errorMessage = '❌ Sesión expirada. Por favor inicie sesión nuevamente.'
+        setTimeout(() => router.push('/login'), 2000)
       }
     } else if (error.message) {
-      errorMessage = error.message
+      errorMessage = `❌ ${error.message}`
     }
 
-    alert(errorMessage)
+    mensajeError.value = errorMessage
+    mostrarMensaje.value = true
+  } finally {
+    // Ocultar mensaje después de 5 segundos
+    if (mostrarMensaje.value) {
+      setTimeout(() => {
+        mostrarMensaje.value = false
+      }, 5000)
+    }
   }
 }
 
