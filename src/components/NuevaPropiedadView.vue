@@ -52,12 +52,12 @@
             <div>
               <label class="block mb-2 text-sm font-medium text-slate-700" for="tipo-operacion">Tipo de
                 operación</label>
-              <select id="tipo-operacion" v-model="formData.tipoOperacion"
+              <select id="tipo-operacion" v-model="formData.operacion"
                 class="w-full p-4 border-2 border-gray-300 rounded-xl hover:border-gray-400 focus:outline-none focus:border-slate-600 focus:ring-2 focus:ring-slate-200 transition-all duration-200 shadow-sm appearance-none bg-white">
-                <option value="">Seleccionar operación</option>
-                <option>Venta</option>
-                <option>Alquiler</option>
-                <option>Alquiler temporal</option>
+                <option value="">Seleccionar tipo</option>
+                <option value="venta">Venta</option>
+                <option value="alquiler">Alquiler</option>
+                <option value="alquiler temporal">Alquiler temporal</option>
               </select>
             </div>
 
@@ -324,6 +324,7 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
+import api from '../api'
 
 const router = useRouter()
 const fileInput = ref(null)
@@ -332,6 +333,8 @@ const files = ref([])
 // Estado inicial del formulario
 const initialFormData = {
   tituloPublicacion: '',
+  operacion: '',
+  visible: false,
   ubicacion: {
     calle: '',
     altura: null,
@@ -408,6 +411,61 @@ const showTerraceField = computed(() => ['Casa', 'Departamento'].includes(formDa
 const showGrillField = computed(() => ['Casa'].includes(formData.value.categoria))
 const showAmenitiesSection = computed(() => ['Casa', 'Departamento'].includes(formData.value.categoria))
 
+const endpointsPorCategoria = {
+  'Casa': '/admin/nueva-casa',
+  'Departamento': '/admin/nuevo-dpto',
+  'Campo': '/admin/nuevo-campo',
+  'Fondo de Comercio': '/admin/nuevo-fondo',
+  'Local comercial': '/admin/nuevo-local',
+  'Terreno': '/admin/nuevo-terreno'
+}
+
+// Función para obtener el endpoint
+const getEndpoint = (categoria) => {
+  return endpointsPorCategoria[categoria]
+}
+
+// Función para preparar el payload según el tipo
+const preparePayload = (formData) => {
+  // Clonamos el objeto para no modificar el original
+  const payload = JSON.parse(JSON.stringify(formData))
+
+  // Eliminar campos que no deben enviarse
+  delete payload.tipoOperacion 
+  delete payload.hectareas
+
+  // Validar operación
+  if (!['venta', 'alquiler', 'alquiler temporal'].includes(payload.operacion)) {
+    throw new Error('Tipo de operación no válido')
+  }
+
+  // Eliminamos campos que no deben enviarse para ningún tipo
+  delete payload.hectareas
+
+  // Transformaciones específicas por tipo de propiedad
+  switch(formData.categoria) {
+    case 'Campo':
+      if (formData.hectareas) {
+        payload.superficieTotal = formData.hectareas * 10000
+      }
+      delete payload.ubicacion.calle
+      delete payload.ubicacion.altura
+      delete payload.ubicacion.entreCalles
+      break
+      
+    case 'Terreno':
+      payload.dimensiones = {
+        largo: formData.largo,
+        ancho: formData.ancho
+      }
+      delete payload.largo
+      delete payload.ancho
+      break
+  }
+
+  return payload
+}
+
 // Manejo de eventos
 const handlePropertyTypeChange = () => {
   // Limpiar todos los campos cuando cambia el tipo de propiedad
@@ -442,9 +500,21 @@ const handleFileUpload = (event) => {
 
 const submitForm = async () => {
   try {
-    // Validaciones básicas
-    if (!formData.value.tituloPublicacion || !formData.value.ubicacion.localidad) {
-      alert('Por favor complete el título y la localidad')
+    // 1. Verificación de autenticación
+    const token = localStorage.getItem('auth-token')
+    if (!token) {
+      alert('No estás autenticado. Por favor inicia sesión.')
+      return router.push('/login')
+    }
+
+    // 2. Validaciones básicas
+    if (!formData.value.tituloPublicacion) {
+      alert('Por favor complete el título de la propiedad')
+      return
+    }
+
+    if (!formData.value.ubicacion.localidad) {
+      alert('Por favor ingrese la localidad')
       return
     }
 
@@ -453,8 +523,15 @@ const submitForm = async () => {
       return
     }
 
-    if (!formData.value.tipoOperacion) {
+    if (!formData.value.operacion) {
       alert('Por favor seleccione un tipo de operación')
+      return
+    }
+
+    // Validación específica para operación
+    const operacionesValidas = ['venta', 'alquiler', 'alquiler temporal']
+    if (!operacionesValidas.includes(formData.value.operacion)) {
+      alert('Tipo de operación no válido')
       return
     }
 
@@ -463,38 +540,60 @@ const submitForm = async () => {
       return
     }
 
-    // Convertir coordenadas
-    if (typeof formData.value.ubicacion.coordenadas === 'string') {
-      const [lat, lng] = formData.value.ubicacion.coordenadas.split(',').map(Number)
-      formData.value.ubicacion.coordenadas = { lat, lng }
+    // 3. Obtener el endpoint correcto
+    const endpoint = getEndpoint(formData.value.categoria)
+    if (!endpoint) {
+      alert('Tipo de propiedad no válido o no implementado')
+      return
     }
 
-    // Enviar datos
-    const response = await fetch('http://localhost:3000/api/propiedades', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${localStorage.getItem('token')}`
-      },
-      body: JSON.stringify(formData.value)
-    })
+    // 4. Preparar el payload específico
+    const payload = preparePayload(formData.value)
+    console.log('Payload final a enviar:', payload)
 
-    if (!response.ok) throw new Error('Error al guardar la propiedad')
+    // 5. Convertir coordenadas si es necesario
+    if (typeof payload.ubicacion.coordenadas === 'string') {
+      const [lat, lng] = payload.ubicacion.coordenadas.split(',').map(Number)
+      payload.ubicacion.coordenadas = { lat, lng }
+    }
 
-    const data = await response.json()
-    alert('Propiedad creada con éxito!')
-    router.push(`/propiedad/${data.id}`)
+    // 6. Enviar los datos
+    console.log('Payload completo a enviar:', payload) 
+    console.log(`Enviando datos a ${endpoint}:`, payload)
+    const response = await api.post(endpoint, payload)
+
+    // 7. Manejar respuesta exitosa
+    alert(`${formData.value.categoria} creado con éxito!`)
+    router.push(`/propiedad/${response.data.id}`)
 
   } catch (error) {
-    console.error('Error:', error)
-    alert('Hubo un error al guardar la propiedad. Por favor intente nuevamente.')
+    console.error('Error al enviar el formulario:', error)
+
+    // Manejo mejorado de errores
+    let errorMessage = 'Error al guardar la propiedad'
+
+    if (error.response) {
+      // Error específico del backend
+      if (error.response.data?.message) {
+        errorMessage = error.response.data.message
+      }
+
+      // Manejo de no autorizado
+      if (error.response.status === 401) {
+        errorMessage = 'Sesión expirada. Por favor inicie sesión nuevamente.'
+        router.push('/login')
+      }
+    } else if (error.message) {
+      errorMessage = error.message
+    }
+
+    alert(errorMessage)
   }
 }
 
 const resetForm = () => {
-  // Guardar solo el tipo de propiedad y operación seleccionados
+  // Guardar solo los valores que queremos mantener
   const categoria = formData.value.categoria
-  const tipoOperacion = formData.value.tipoOperacion
   const moneda = formData.value.precio.moneda
 
   // Resetear todo el formulario
@@ -502,8 +601,8 @@ const resetForm = () => {
 
   // Restaurar los valores seleccionados
   formData.value.categoria = categoria
-  formData.value.tipoOperacion = tipoOperacion
   formData.value.precio.moneda = moneda
+  // Operación se reinicia a vacío (placeholder)
 
   files.value = []
 }
