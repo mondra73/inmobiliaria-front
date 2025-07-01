@@ -563,24 +563,13 @@ const confirmarEliminacion = () => {
 // Manejo de edición
 const activarEdicion = () => {
   editando.value = true
-  
-  // Para terrenos, necesitamos transformar la estructura
-  if (propiedad.value.tipo === 'Terreno') {
-    // Parsear coordenadas si vienen como string
-    let coordenadas = { lat: 0, lng: 0 }
-    if (typeof propiedad.value.coordenadas === 'string') {
-      const [lat, lng] = propiedad.value.coordenadas.split(',').map(Number)
-      coordenadas = { lat, lng }
-    } else if (propiedad.value.coordenadas) {
-      coordenadas = propiedad.value.coordenadas
-    }
+  form.value = JSON.parse(JSON.stringify(propiedad.value))
 
-    form.value = {
-      tituloPublicacion: propiedad.value.tituloPublicacion,
-      precio: propiedad.value.precio ? {...propiedad.value.precio} : { monto: 0, moneda: 'ARS' },
-      operacion: propiedad.value.operacion,
-      visible: propiedad.value.visible,
-      ubicacion: {
+  // Transformación específica para cada tipo
+  switch(propiedad.value.tipo) {
+    case 'Terreno':
+      // Convertir estructura plana a estructura anidada
+      form.value.ubicacion = {
         calle: propiedad.value.calle || '',
         altura: propiedad.value.altura || null,
         entreCalles: {
@@ -588,30 +577,31 @@ const activarEdicion = () => {
           calle2: propiedad.value.entreCalle2 || ''
         },
         localidad: propiedad.value.localidad || '',
-        coordenadas: coordenadas,
+        coordenadas: typeof propiedad.value.coordenadas === 'string'
+          ? propiedad.value.coordenadas.split(',').reduce((obj, val, i) => {
+              obj[i === 0 ? 'lat' : 'lng'] = parseFloat(val.trim()) || 0
+              return obj
+            }, {})
+          : propiedad.value.coordenadas || { lat: 0, lng: 0 },
         mapaUrl: propiedad.value.mapaUrl || ''
-      },
-      superficieTotal: propiedad.value.superficie || null,
-      largo: propiedad.value.dimensiones?.largo || null,
-      ancho: propiedad.value.dimensiones?.ancho || null,
-      descripcion: propiedad.value.descripcion || '',
-      servicios: propiedad.value.servicios ? {...propiedad.value.servicios} : {
-        agua: false,
-        luz: false,
-        gas: false,
-        cloacas: false
-      },
-      imagenes: propiedad.value.imagenes ? [...propiedad.value.imagenes] : []
-    }
-  } else {
-    // Para otros tipos de propiedades
-    form.value = JSON.parse(JSON.stringify(propiedad.value))
-    
-    // Parsear coordenadas si vienen como string
-    if (form.value.ubicacion?.coordenadas && typeof form.value.ubicacion.coordenadas === 'string') {
-      const [lat, lng] = form.value.ubicacion.coordenadas.split(',').map(Number)
-      form.value.ubicacion.coordenadas = { lat, lng }
-    }
+      }
+      form.value.superficieTotal = propiedad.value.superficie
+      form.value.largo = propiedad.value.dimensiones?.largo
+      form.value.ancho = propiedad.value.dimensiones?.ancho
+      break;
+
+    case 'Departamento':
+    case 'Casa':
+    default:
+      // Convertir string de coordenadas a objeto si es necesario
+      if (form.value.ubicacion?.coordenadas && typeof form.value.ubicacion.coordenadas === 'string') {
+        const [lat, lng] = form.value.ubicacion.coordenadas.split(',').map(Number)
+        form.value.ubicacion.coordenadas = {
+          lat: isNaN(lat) ? 0 : lat,
+          lng: isNaN(lng) ? 0 : lng
+        }
+      }
+      break;
   }
 
   // Inicializar objetos anidados si no existen
@@ -637,59 +627,56 @@ const guardarCambios = async () => {
     const id = route.params.id
     let datosAEnviar = JSON.parse(JSON.stringify(form.value))
     
-    // Transformación específica para terrenos (MANTENIENDO LO QUE YA FUNCIONABA)
-    if (propiedad.value.tipo === 'Terreno') {
-      // Convertir coordenadas a string si es un objeto
-      const coordenadas = typeof datosAEnviar.ubicacion.coordenadas === 'object' 
-        ? `${datosAEnviar.ubicacion.coordenadas.lat}, ${datosAEnviar.ubicacion.coordenadas.lng}`
-        : datosAEnviar.ubicacion.coordenadas
+    // Transformación específica para cada tipo de propiedad
+    switch(propiedad.value.tipo) {
+      case 'Terreno':
+        // Mantenemos la lógica original para terrenos
+        datosAEnviar = {
+          ...datosAEnviar,
+          calle: datosAEnviar.ubicacion.calle,
+          altura: datosAEnviar.ubicacion.altura,
+          entreCalle1: datosAEnviar.ubicacion.entreCalles.calle1,
+          entreCalle2: datosAEnviar.ubicacion.entreCalles.calle2,
+          localidad: datosAEnviar.ubicacion.localidad,
+          coordenadas: typeof datosAEnviar.ubicacion.coordenadas === 'object' 
+            ? `${datosAEnviar.ubicacion.coordenadas.lat}, ${datosAEnviar.ubicacion.coordenadas.lng}`
+            : datosAEnviar.ubicacion.coordenadas,
+          superficie: datosAEnviar.superficieTotal,
+          dimensiones: {
+            largo: datosAEnviar.largo,
+            ancho: datosAEnviar.ancho
+          }
+        }
+        delete datosAEnviar.ubicacion
+        delete datosAEnviar.superficieTotal
+        delete datosAEnviar.largo
+        delete datosAEnviar.ancho
+        break;
 
-      datosAEnviar = {
-        tituloPublicacion: datosAEnviar.tituloPublicacion,
-        precio: datosAEnviar.precio,
-        operacion: datosAEnviar.operacion,
-        visible: datosAEnviar.visible,
-        calle: datosAEnviar.ubicacion.calle,
-        altura: datosAEnviar.ubicacion.altura,
-        entreCalle1: datosAEnviar.ubicacion.entreCalles.calle1,
-        entreCalle2: datosAEnviar.ubicacion.entreCalles.calle2,
-        localidad: datosAEnviar.ubicacion.localidad,
-        coordenadas: coordenadas,
-        superficie: datosAEnviar.superficieTotal,
-        dimensiones: {
-          largo: datosAEnviar.largo,
-          ancho: datosAEnviar.ancho
-        },
-        descripcion: datosAEnviar.descripcion,
-        servicios: datosAEnviar.servicios,
-        imagenes: datosAEnviar.imagenes
-      }
-      
-      delete datosAEnviar.ubicacion
-      delete datosAEnviar.superficieTotal
-      delete datosAEnviar.largo
-      delete datosAEnviar.ancho
-    } 
-    // Para otros tipos de propiedades (DEPARTAMENTOS, CASAS, etc.)
-    else {
-      // Validación especial para coordenadas
-      if (datosAEnviar.ubicacion?.coordenadas) {
-        // Si es objeto, convertirlo a string
-        if (typeof datosAEnviar.ubicacion.coordenadas === 'object') {
-          const lat = datosAEnviar.ubicacion.coordenadas.lat ?? 0
-          const lng = datosAEnviar.ubicacion.coordenadas.lng ?? 0
-          datosAEnviar.ubicacion.coordenadas = `${lat}, ${lng}`
+      case 'Departamento':
+      case 'Casa':
+      default:
+        // Para departamentos y otros tipos que esperan un objeto en coordenadas
+        if (datosAEnviar.ubicacion?.coordenadas) {
+          // Si viene como string, convertirlo a objeto
+          if (typeof datosAEnviar.ubicacion.coordenadas === 'string') {
+            const [lat, lng] = datosAEnviar.ubicacion.coordenadas.split(',').map(Number)
+            datosAEnviar.ubicacion.coordenadas = {
+              lat: isNaN(lat) ? 0 : lat,
+              lng: isNaN(lng) ? 0 : lng
+            }
+          }
+          // Si es null/undefined, establecer objeto vacío
+          else if (!datosAEnviar.ubicacion.coordenadas) {
+            datosAEnviar.ubicacion.coordenadas = { lat: 0, lng: 0 }
+          }
+        } else {
+          datosAEnviar.ubicacion = {
+            ...datosAEnviar.ubicacion,
+            coordenadas: { lat: 0, lng: 0 }
+          }
         }
-        // Si es string pero inválido ("null, undefined")
-        else if (typeof datosAEnviar.ubicacion.coordenadas === 'string' && 
-                (datosAEnviar.ubicacion.coordenadas.includes('null') || 
-                 datosAEnviar.ubicacion.coordenadas.includes('undefined'))) {
-          datosAEnviar.ubicacion.coordenadas = '0, 0' // Valor por defecto
-        }
-      } else {
-        // Si no hay coordenadas, establecer valor por defecto
-        datosAEnviar.ubicacion.coordenadas = '0, 0'
-      }
+        break;
     }
 
     console.log('Datos a enviar:', datosAEnviar) // Para depuración
