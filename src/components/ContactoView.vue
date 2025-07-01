@@ -160,7 +160,7 @@ const enviarConsulta = async () => {
   mostrarMensaje.value = false
 
   try {
-    await api.post('/api/user/contacto', formData.value)
+    await api.post('/user/contacto', formData.value)
 
     mensajeExito.value = '✅ Tu consulta fue enviada con éxito. En breve nos pondremos en contacto.'
     formData.value = {
