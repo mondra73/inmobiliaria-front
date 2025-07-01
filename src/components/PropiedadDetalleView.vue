@@ -102,7 +102,8 @@
 
                 <div class="grid grid-cols-4 gap-2">
                   <div v-for="(imagen, index) in form.imagenes" :key="index" class="relative group">
-                    <img :src="imagen.url" class="w-full h-20 object-cover rounded-lg" />
+                    <img :src="imagen.url" :class="['w-full h-20 object-cover rounded-lg',
+                      imagenSeleccionada === index ? 'ring-2 ring-blue-500' : '']" />
                     <button @click="eliminarImagen(index)"
                       class="absolute top-0 right-0 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center opacity-0 group-hover:opacity-100">
                       ×
@@ -218,7 +219,7 @@
 
               <div v-if="!editando" class="space-y-2">
                 <p class="text-slate-700">{{ propiedad.tipo === 'Terreno' ? propiedad.calle : propiedad.ubicacion?.calle
-                  }}
+                }}
                   {{ propiedad.tipo === 'Terreno' ? propiedad.altura : propiedad.ubicacion?.altura }}</p>
                 <p class="text-slate-700">{{ propiedad.tipo === 'Terreno' ? propiedad.localidad :
                   propiedad.ubicacion?.localidad }}</p>
@@ -426,6 +427,7 @@ import { onMounted, onUnmounted, ref, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import api from '../api'
 import { Home, Users, Building, Wrench, MapPin, DollarSign, Calendar } from 'lucide-vue-next'
+import { uploadImageToCloudinary } from '../../utils/uploadToCloudinary'
 
 // Estados reactivos
 const propiedad = ref(null)
@@ -506,30 +508,40 @@ const cerrarModal = () => {
 
 // Manejo de imágenes
 const handleImageUpload = async (event) => {
-  const files = event.target.files
-  if (!files.length) return
+  const uploadedFiles = Array.from(event.target.files)
+  if (!uploadedFiles.length) return
 
   try {
-    for (let i = 0; i < files.length; i++) {
-      const file = files[i]
-      const imageUrl = URL.createObjectURL(file)
-
-      form.value.imagenes.push({
-        url: imageUrl,
-        descripcion: '',
-        orden: form.value.imagenes.length,
-        esPortada: false
-      })
+    for (const file of uploadedFiles) {
+      if (!file.type.match('image.*')) continue
+      
+      // Subir a Cloudinary
+      const cloudinaryResponse = await uploadImageToCloudinary(file)
+      
+      // Asegurarse que la URL existe antes de agregar
+      if (cloudinaryResponse?.secure_url) {
+        form.value.imagenes.push({
+          url: cloudinaryResponse.secure_url, // URL permanente
+          descripcion: '',
+          orden: form.value.imagenes.length,
+          esPortada: false
+        })
+      } else {
+        throw new Error('No se pudo obtener URL de la imagen')
+      }
     }
-    mostrarMensajeTemporal('exito', 'Imágenes cargadas correctamente')
+    mostrarMensajeTemporal('exito', 'Imágenes subidas correctamente')
   } catch (error) {
     console.error('Error al subir imágenes:', error)
-    mostrarMensajeTemporal('error', 'Error al subir imágenes')
+    mostrarMensajeTemporal('error', 'Error al subir imágenes: ' + error.message)
   }
 }
 
-const eliminarImagen = (index) => {
+const eliminarImagen = async (index) => {
+  // Opcional: Puedes agregar lógica para borrar la imagen de Cloudinary
+  // si necesitas eliminar el archivo físico también
   form.value.imagenes.splice(index, 1)
+
   if (imagenSeleccionada.value >= form.value.imagenes.length) {
     imagenSeleccionada.value = Math.max(0, form.value.imagenes.length - 1)
   }
@@ -565,8 +577,17 @@ const activarEdicion = () => {
   editando.value = true
   form.value = JSON.parse(JSON.stringify(propiedad.value))
 
+  // Convertir imágenes con URLs blob a URLs permanentes si es necesario
+  form.value.imagenes = form.value.imagenes.map(img => {
+    if (img.url.startsWith('blob:')) {
+      // Marcar para re-subir o ignorar
+      return { ...img, necesitaReupload: true }
+    }
+    return img
+  })
+
   // Transformación específica para cada tipo
-  switch(propiedad.value.tipo) {
+  switch (propiedad.value.tipo) {
     case 'Terreno':
       // Convertir estructura plana a estructura anidada
       form.value.ubicacion = {
@@ -579,9 +600,9 @@ const activarEdicion = () => {
         localidad: propiedad.value.localidad || '',
         coordenadas: typeof propiedad.value.coordenadas === 'string'
           ? propiedad.value.coordenadas.split(',').reduce((obj, val, i) => {
-              obj[i === 0 ? 'lat' : 'lng'] = parseFloat(val.trim()) || 0
-              return obj
-            }, {})
+            obj[i === 0 ? 'lat' : 'lng'] = parseFloat(val.trim()) || 0
+            return obj
+          }, {})
           : propiedad.value.coordenadas || { lat: 0, lng: 0 },
         mapaUrl: propiedad.value.mapaUrl || ''
       }
@@ -626,9 +647,19 @@ const guardarCambios = async () => {
   try {
     const id = route.params.id
     let datosAEnviar = JSON.parse(JSON.stringify(form.value))
-    
+
+    // Filtrar imágenes sin URL válida
+    datosAEnviar.imagenes = datosAEnviar.imagenes.filter(img => 
+      img.url && typeof img.url === 'string' && img.url.trim() !== ''
+    )
+
+    // Verificar que al menos haya una imagen si es requerido
+    if (datosAEnviar.imagenes.length === 0) {
+      throw new Error('Debe agregar al menos una imagen válida')
+    }
+
     // Transformación específica para cada tipo de propiedad
-    switch(propiedad.value.tipo) {
+    switch (propiedad.value.tipo) {
       case 'Terreno':
         // Mantenemos la lógica original para terrenos
         datosAEnviar = {
@@ -638,7 +669,7 @@ const guardarCambios = async () => {
           entreCalle1: datosAEnviar.ubicacion.entreCalles.calle1,
           entreCalle2: datosAEnviar.ubicacion.entreCalles.calle2,
           localidad: datosAEnviar.ubicacion.localidad,
-          coordenadas: typeof datosAEnviar.ubicacion.coordenadas === 'object' 
+          coordenadas: typeof datosAEnviar.ubicacion.coordenadas === 'object'
             ? `${datosAEnviar.ubicacion.coordenadas.lat}, ${datosAEnviar.ubicacion.coordenadas.lng}`
             : datosAEnviar.ubicacion.coordenadas,
           superficie: datosAEnviar.superficieTotal,
