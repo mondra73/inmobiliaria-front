@@ -217,9 +217,13 @@
               <h2 class="text-xl font-light mb-4 text-slate-900 font-semibold">Ubicación</h2>
 
               <div v-if="!editando" class="space-y-2">
-                <p class="text-slate-700">{{ propiedad.ubicacion?.calle }} {{ propiedad.ubicacion?.altura }}</p>
-                <p class="text-slate-700">{{ propiedad.ubicacion?.localidad }}</p>
-                <p v-if="propiedad.ubicacion?.entreCalles" class="text-slate-500 text-sm">
+                <p class="text-slate-700">{{ propiedad.tipo === 'Terreno' ? propiedad.calle : propiedad.ubicacion?.calle
+                  }}
+                  {{ propiedad.tipo === 'Terreno' ? propiedad.altura : propiedad.ubicacion?.altura }}</p>
+                <p class="text-slate-700">{{ propiedad.tipo === 'Terreno' ? propiedad.localidad :
+                  propiedad.ubicacion?.localidad }}</p>
+                <p v-if="propiedad.tipo !== 'Terreno' && propiedad.ubicacion?.entreCalles"
+                  class="text-slate-500 text-sm">
                   Entre {{ propiedad.ubicacion.entreCalles.calle1 }} y {{ propiedad.ubicacion.entreCalles.calle2 }}
                 </p>
               </div>
@@ -241,7 +245,7 @@
                   </div>
                 </div>
 
-                <div class="grid grid-cols-2 gap-4">
+                <div v-if="propiedad.tipo !== 'Terreno'" class="grid grid-cols-2 gap-4">
                   <div>
                     <label class="block text-sm font-medium text-slate-700 mb-1">Entre calle 1</label>
                     <input v-model="form.ubicacion.entreCalles.calle1" class="w-full border rounded p-2" />
@@ -418,7 +422,7 @@
 </template>
 
 <script setup>
-import { onMounted, onUnmounted, ref } from 'vue'
+import { onMounted, onUnmounted, ref, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import api from '../api'
 import { Home, Users, Building, Wrench, MapPin, DollarSign, Calendar } from 'lucide-vue-next'
@@ -440,6 +444,7 @@ const mensajeError = ref('')
 const mostrarMensaje = ref(false)
 const mostrarModalConfirmacion = ref(false)
 const eliminando = ref(false)
+const isTerreno = computed(() => propiedad.value?.tipo === 'Terreno')
 
 // Función para mostrar mensajes temporales
 const mostrarMensajeTemporal = (tipo, texto, duracion = 3000) => {
@@ -558,12 +563,62 @@ const confirmarEliminacion = () => {
 // Manejo de edición
 const activarEdicion = () => {
   editando.value = true
-  form.value = JSON.parse(JSON.stringify(propiedad.value))
+  
+  // Para terrenos, necesitamos transformar la estructura
+  if (propiedad.value.tipo === 'Terreno') {
+    // Parsear coordenadas si vienen como string
+    let coordenadas = { lat: 0, lng: 0 }
+    if (typeof propiedad.value.coordenadas === 'string') {
+      const [lat, lng] = propiedad.value.coordenadas.split(',').map(Number)
+      coordenadas = { lat, lng }
+    } else if (propiedad.value.coordenadas) {
+      coordenadas = propiedad.value.coordenadas
+    }
+
+    form.value = {
+      tituloPublicacion: propiedad.value.tituloPublicacion,
+      precio: propiedad.value.precio ? {...propiedad.value.precio} : { monto: 0, moneda: 'ARS' },
+      operacion: propiedad.value.operacion,
+      visible: propiedad.value.visible,
+      ubicacion: {
+        calle: propiedad.value.calle || '',
+        altura: propiedad.value.altura || null,
+        entreCalles: {
+          calle1: propiedad.value.entreCalle1 || '',
+          calle2: propiedad.value.entreCalle2 || ''
+        },
+        localidad: propiedad.value.localidad || '',
+        coordenadas: coordenadas,
+        mapaUrl: propiedad.value.mapaUrl || ''
+      },
+      superficieTotal: propiedad.value.superficie || null,
+      largo: propiedad.value.dimensiones?.largo || null,
+      ancho: propiedad.value.dimensiones?.ancho || null,
+      descripcion: propiedad.value.descripcion || '',
+      servicios: propiedad.value.servicios ? {...propiedad.value.servicios} : {
+        agua: false,
+        luz: false,
+        gas: false,
+        cloacas: false
+      },
+      imagenes: propiedad.value.imagenes ? [...propiedad.value.imagenes] : []
+    }
+  } else {
+    // Para otros tipos de propiedades
+    form.value = JSON.parse(JSON.stringify(propiedad.value))
+    
+    // Parsear coordenadas si vienen como string
+    if (form.value.ubicacion?.coordenadas && typeof form.value.ubicacion.coordenadas === 'string') {
+      const [lat, lng] = form.value.ubicacion.coordenadas.split(',').map(Number)
+      form.value.ubicacion.coordenadas = { lat, lng }
+    }
+  }
 
   // Inicializar objetos anidados si no existen
   if (!form.value.precio) form.value.precio = { monto: 0, moneda: 'ARS' }
   if (!form.value.ubicacion) form.value.ubicacion = {}
   if (!form.value.ubicacion.coordenadas) form.value.ubicacion.coordenadas = { lat: 0, lng: 0 }
+  if (!form.value.ubicacion.entreCalles) form.value.ubicacion.entreCalles = { calle1: '', calle2: '' }
   if (!form.value.imagenes) form.value.imagenes = []
 }
 
@@ -580,9 +635,68 @@ const toggleVisibilidad = () => {
 const guardarCambios = async () => {
   try {
     const id = route.params.id
+    let datosAEnviar = JSON.parse(JSON.stringify(form.value))
+    
+    // Transformación específica para terrenos (MANTENIENDO LO QUE YA FUNCIONABA)
+    if (propiedad.value.tipo === 'Terreno') {
+      // Convertir coordenadas a string si es un objeto
+      const coordenadas = typeof datosAEnviar.ubicacion.coordenadas === 'object' 
+        ? `${datosAEnviar.ubicacion.coordenadas.lat}, ${datosAEnviar.ubicacion.coordenadas.lng}`
+        : datosAEnviar.ubicacion.coordenadas
+
+      datosAEnviar = {
+        tituloPublicacion: datosAEnviar.tituloPublicacion,
+        precio: datosAEnviar.precio,
+        operacion: datosAEnviar.operacion,
+        visible: datosAEnviar.visible,
+        calle: datosAEnviar.ubicacion.calle,
+        altura: datosAEnviar.ubicacion.altura,
+        entreCalle1: datosAEnviar.ubicacion.entreCalles.calle1,
+        entreCalle2: datosAEnviar.ubicacion.entreCalles.calle2,
+        localidad: datosAEnviar.ubicacion.localidad,
+        coordenadas: coordenadas,
+        superficie: datosAEnviar.superficieTotal,
+        dimensiones: {
+          largo: datosAEnviar.largo,
+          ancho: datosAEnviar.ancho
+        },
+        descripcion: datosAEnviar.descripcion,
+        servicios: datosAEnviar.servicios,
+        imagenes: datosAEnviar.imagenes
+      }
+      
+      delete datosAEnviar.ubicacion
+      delete datosAEnviar.superficieTotal
+      delete datosAEnviar.largo
+      delete datosAEnviar.ancho
+    } 
+    // Para otros tipos de propiedades (DEPARTAMENTOS, CASAS, etc.)
+    else {
+      // Validación especial para coordenadas
+      if (datosAEnviar.ubicacion?.coordenadas) {
+        // Si es objeto, convertirlo a string
+        if (typeof datosAEnviar.ubicacion.coordenadas === 'object') {
+          const lat = datosAEnviar.ubicacion.coordenadas.lat ?? 0
+          const lng = datosAEnviar.ubicacion.coordenadas.lng ?? 0
+          datosAEnviar.ubicacion.coordenadas = `${lat}, ${lng}`
+        }
+        // Si es string pero inválido ("null, undefined")
+        else if (typeof datosAEnviar.ubicacion.coordenadas === 'string' && 
+                (datosAEnviar.ubicacion.coordenadas.includes('null') || 
+                 datosAEnviar.ubicacion.coordenadas.includes('undefined'))) {
+          datosAEnviar.ubicacion.coordenadas = '0, 0' // Valor por defecto
+        }
+      } else {
+        // Si no hay coordenadas, establecer valor por defecto
+        datosAEnviar.ubicacion.coordenadas = '0, 0'
+      }
+    }
+
+    console.log('Datos a enviar:', datosAEnviar) // Para depuración
+
     const response = await api.put(`/admin/editar-propiedad/${id}`, {
       tipo: propiedad.value.tipo,
-      propiedad: form.value
+      propiedad: datosAEnviar
     })
 
     propiedad.value = response.data.propiedad

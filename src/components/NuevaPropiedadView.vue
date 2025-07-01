@@ -129,6 +129,13 @@
                 placeholder="-34.6037, -58.3816"
                 class="w-full p-4 border-2 border-gray-300 rounded-xl hover:border-gray-400 focus:outline-none focus:border-slate-600 focus:ring-2 focus:ring-slate-200 transition-all duration-200 shadow-sm" />
             </div>
+            <div class="mt-2">
+              <label class="block mb-2 text-sm font-medium text-slate-700" for="mapa-url">URL de Google Maps
+                (opcional)</label>
+              <input id="mapa-url" type="text" v-model="formData.ubicacion.mapaUrl"
+                placeholder="https://maps.app.goo.gl/..."
+                class="w-full p-4 border-2 border-gray-300 rounded-xl hover:border-gray-400 focus:outline-none focus:border-slate-600 focus:ring-2 focus:ring-slate-200 transition-all duration-200 shadow-sm" />
+            </div>
           </div>
         </div>
 
@@ -307,13 +314,23 @@
 
         <!-- Botones de acción -->
         <div v-if="showActionButtons" class="flex justify-end space-x-4">
-          <button type="button" @click="resetForm"
-            class="px-8 py-4 border-2 border-gray-300 text-slate-700 rounded-xl font-medium hover:bg-gray-50 transition-colors duration-200">
+          <button type="button" @click="resetForm" :disabled="isLoading"
+            class="px-8 py-4 border-2 border-gray-300 text-slate-700 rounded-xl font-medium hover:bg-gray-50 transition-colors duration-200 disabled:opacity-70 disabled:cursor-not-allowed">
             Cancelar
           </button>
-          <button type="submit"
-            class="px-8 py-4 bg-slate-900 hover:bg-slate-800 text-white rounded-xl font-medium transition-colors duration-200 shadow-md">
-            Guardar Propiedad
+          <button type="submit" :disabled="isLoading"
+            class="px-8 py-4 bg-slate-900 hover:bg-slate-800 text-white rounded-xl font-medium transition-colors duration-200 shadow-md disabled:opacity-70 disabled:cursor-not-allowed">
+            <span v-if="!isLoading">Guardar Propiedad</span>
+            <span v-else class="flex items-center justify-center">
+              <svg class="animate-spin -ml-1 mr-2 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none"
+                viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                </path>
+              </svg>
+              Guardando...
+            </span>
           </button>
         </div>
 
@@ -331,6 +348,50 @@
 
       </form>
     </div>
+
+    <!-- Skeleton Loader -->
+    <div v-if="isLoading" class="fixed inset-0 bg-white bg-opacity-75 flex items-center justify-center z-50">
+      <div class="max-w-4xl w-full mx-auto px-6 py-8">
+        <div class="animate-pulse space-y-8">
+          <!-- Header Skeleton -->
+          <div class="mb-8">
+            <div class="flex items-center space-x-4 mb-4">
+              <div class="h-8 w-8 bg-slate-200 rounded-full"></div>
+              <div class="h-8 w-64 bg-slate-200 rounded"></div>
+            </div>
+            <div class="h-4 w-80 bg-slate-200 rounded"></div>
+          </div>
+
+          <!-- Form Skeleton -->
+          <div class="space-y-6">
+            <!-- Sección 1 -->
+            <div class="bg-white rounded-3xl p-8 space-y-6">
+              <div class="h-6 w-48 bg-slate-200 rounded"></div>
+              <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div class="space-y-2">
+                  <div class="h-4 w-32 bg-slate-200 rounded"></div>
+                  <div class="h-12 bg-slate-200 rounded-xl"></div>
+                </div>
+                <div class="space-y-2">
+                  <div class="h-4 w-32 bg-slate-200 rounded"></div>
+                  <div class="h-12 bg-slate-200 rounded-xl"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Sección 2 -->
+            <div class="bg-white rounded-3xl p-8 space-y-6">
+              <div class="h-6 w-48 bg-slate-200 rounded"></div>
+              <div class="grid grid-cols-2 gap-4">
+                <div class="h-10 bg-slate-200 rounded-xl"></div>
+                <div class="h-10 bg-slate-200 rounded-xl"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </div>
 </template>
 
@@ -346,6 +407,7 @@ const files = ref([])
 const mensajeExito = ref('')
 const mensajeError = ref('')
 const mostrarMensaje = ref(false)
+const isLoading = ref(false)
 
 // Estado inicial del formulario
 const initialFormData = {
@@ -474,8 +536,23 @@ const preparePayload = (formData) => {
         largo: formData.largo,
         ancho: formData.ancho
       }
+      // Mapear campos de ubicación a la raíz para el backend
+      payload.calle = formData.ubicacion.calle
+      payload.altura = formData.ubicacion.altura
+      payload.entreCalle1 = formData.ubicacion.entreCalles.calle1
+      payload.entreCalle2 = formData.ubicacion.entreCalles.calle2
+      payload.localidad = formData.ubicacion.localidad
+      payload.coordenadas = formData.ubicacion.coordenadas
+
+      // Mapear superficie
+      payload.superficie = formData.superficieTotal
+
+      // Eliminar campos que no necesita el backend
       delete payload.largo
       delete payload.ancho
+      delete payload.ubicacion
+      delete payload.superficieTotal
+      delete payload.superficieCubierta
       break
   }
 
@@ -516,6 +593,8 @@ const handleFileUpload = (event) => {
 
 const submitForm = async () => {
   try {
+    isLoading.value = true
+
     // Resetear mensajes
     mensajeExito.value = ''
     mensajeError.value = ''
@@ -580,8 +659,8 @@ const submitForm = async () => {
     // 4. Preparar el payload específico
     const payload = preparePayload(formData.value)
 
-    // 5. Convertir coordenadas si es necesario
-    if (typeof payload.ubicacion.coordenadas === 'string') {
+    // 5. Convertir coordenadas si es necesario (antes de eliminar ubicacion)
+    if (typeof payload.ubicacion?.coordenadas === 'string') {
       const [lat, lng] = payload.ubicacion.coordenadas.split(',').map(Number)
       payload.ubicacion.coordenadas = { lat, lng }
     }
@@ -632,6 +711,7 @@ const submitForm = async () => {
     mensajeError.value = errorMessage
     mostrarMensaje.value = true
   } finally {
+    isLoading.value = false
     // Ocultar mensaje después de 5 segundos
     if (mostrarMensaje.value) {
       setTimeout(() => {
