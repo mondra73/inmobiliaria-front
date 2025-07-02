@@ -69,7 +69,7 @@
               <span v-else>Eliminando...</span>
             </button>
 
-            <a :href="`/propiedad/${propiedad._id}`" target="_blank"
+            <a v-if="puedeEditarEliminar" :href="`/propiedad/${propiedad._id}`" target="_blank"
               class="border border-slate-200 bg-white px-4 py-2 rounded-xl text-sm">
               Vista Pública
             </a>
@@ -334,7 +334,7 @@
 
               <div v-if="!editando" class="space-y-2">
                 <p class="text-slate-700">{{ propiedad.tipo === 'Terreno' ? propiedad.calle : propiedad.ubicacion?.calle
-                  }}
+                }}
                   {{ propiedad.tipo === 'Terreno' ? propiedad.altura : propiedad.ubicacion?.altura }}</p>
                 <p class="text-slate-700">{{ propiedad.tipo === 'Terreno' ? propiedad.localidad :
                   propiedad.ubicacion?.localidad }}</p>
@@ -614,7 +614,7 @@ const showPoolField = computed(() => ['Casa'].includes(propiedad.value?.tipo))
 const showBalconyField = computed(() => ['Casa', 'Departamento'].includes(propiedad.value?.tipo))
 const showTerraceField = computed(() => ['Casa', 'Departamento'].includes(propiedad.value?.tipo))
 const showGrillField = computed(() => ['Casa'].includes(propiedad.value?.tipo))
-const showAmenitiesSection = computed(() => ['Casa', 'Departamento'].includes(propiedad.value?.tipo))
+const showAmenitiesSection = computed(() => ['Departamento'].includes(propiedad.value?.tipo))
 
 //caracteristicas
 const showHabitaciones = computed(() => ['Casa', 'Departamento', 'Local comercial'].includes(propiedad.value?.tipo))
