@@ -214,27 +214,38 @@
               <h2 class="text-xl font-light mb-4 text-slate-900 font-semibold">Servicios Básicos</h2>
 
               <div class="grid grid-cols-2 md:grid-cols-4 gap-4 p-4 bg-slate-50 rounded-xl">
-                <label
+                <!-- Agua -->
+                <label v-if="editando || (propiedad.servicios && propiedad.servicios.agua)"
                   class="flex items-start space-x-3 p-3 bg-white rounded-lg shadow-sm hover:bg-slate-100 transition-colors">
-                  <input type="checkbox" v-model="form.servicios.agua" :disabled="!editando"
+                  <input type="checkbox" :checked="editando ? form.servicios.agua : propiedad.servicios.agua"
+                    @change="editando ? form.servicios.agua = $event.target.checked : null" :disabled="!editando"
                     class="mt-1 h-5 w-5 rounded border-gray-300 text-slate-600 focus:ring-slate-500">
                   <span class="text-sm font-medium text-slate-700">Agua corriente</span>
                 </label>
-                <label
+
+                <!-- Luz -->
+                <label v-if="editando || (propiedad.servicios && propiedad.servicios.luz)"
                   class="flex items-start space-x-3 p-3 bg-white rounded-lg shadow-sm hover:bg-slate-100 transition-colors">
-                  <input type="checkbox" v-model="form.servicios.luz" :disabled="!editando"
+                  <input type="checkbox" :checked="editando ? form.servicios.luz : propiedad.servicios.luz"
+                    @change="editando ? form.servicios.luz = $event.target.checked : null" :disabled="!editando"
                     class="mt-1 h-5 w-5 rounded border-gray-300 text-slate-600 focus:ring-slate-500">
                   <span class="text-sm font-medium text-slate-700">Luz eléctrica</span>
                 </label>
-                <label
+
+                <!-- Cloacas -->
+                <label v-if="editando || (propiedad.servicios && propiedad.servicios.cloacas)"
                   class="flex items-start space-x-3 p-3 bg-white rounded-lg shadow-sm hover:bg-slate-100 transition-colors">
-                  <input type="checkbox" v-model="form.servicios.cloacas" :disabled="!editando"
+                  <input type="checkbox" :checked="editando ? form.servicios.cloacas : propiedad.servicios.cloacas"
+                    @change="editando ? form.servicios.cloacas = $event.target.checked : null" :disabled="!editando"
                     class="mt-1 h-5 w-5 rounded border-gray-300 text-slate-600 focus:ring-slate-500">
                   <span class="text-sm font-medium text-slate-700">Cloacas</span>
                 </label>
-                <label
+
+                <!-- Gas -->
+                <label v-if="editando || (propiedad.servicios && propiedad.servicios.gas)"
                   class="flex items-start space-x-3 p-3 bg-white rounded-lg shadow-sm hover:bg-slate-100 transition-colors">
-                  <input type="checkbox" v-model="form.servicios.gas" :disabled="!editando"
+                  <input type="checkbox" :checked="editando ? form.servicios.gas : propiedad.servicios.gas"
+                    @change="editando ? form.servicios.gas = $event.target.checked : null" :disabled="!editando"
                     class="mt-1 h-5 w-5 rounded border-gray-300 text-slate-600 focus:ring-slate-500">
                   <span class="text-sm font-medium text-slate-700">Gas natural</span>
                 </label>
@@ -246,37 +257,37 @@
               <h2 class="text-xl font-light mb-4 text-slate-900 font-semibold">Amenities</h2>
 
               <div class="grid grid-cols-2 md:grid-cols-3 gap-4 p-4 bg-slate-50 rounded-xl">
-                <label v-if="showGarageField"
+                <label v-if="(editando || form.garage) && showGarageField"
                   class="flex items-start space-x-3 p-3 bg-white rounded-lg shadow-sm hover:bg-slate-100 transition-colors">
                   <input type="checkbox" v-model="form.garage" :disabled="!editando"
                     class="mt-1 h-5 w-5 rounded border-gray-300 text-slate-600 focus:ring-slate-500">
                   <span class="text-sm font-medium text-slate-700">Garage</span>
                 </label>
-                <label v-if="showGardenField"
+                <label v-if="(editando || form.jardin) && showGardenField"
                   class="flex items-start space-x-3 p-3 bg-white rounded-lg shadow-sm hover:bg-slate-100 transition-colors">
                   <input type="checkbox" v-model="form.jardin" :disabled="!editando"
                     class="mt-1 h-5 w-5 rounded border-gray-300 text-slate-600 focus:ring-slate-500">
                   <span class="text-sm font-medium text-slate-700">Jardín</span>
                 </label>
-                <label v-if="showPoolField"
+                <label v-if="(editando || form.piscina) && showPoolField"
                   class="flex items-start space-x-3 p-3 bg-white rounded-lg shadow-sm hover:bg-slate-100 transition-colors">
                   <input type="checkbox" v-model="form.piscina" :disabled="!editando"
                     class="mt-1 h-5 w-5 rounded border-gray-300 text-slate-600 focus:ring-slate-500">
                   <span class="text-sm font-medium text-slate-700">Piscina</span>
                 </label>
-                <label v-if="showBalconyField"
+                <label v-if="(editando || form.balcon) && showBalconyField"
                   class="flex items-start space-x-3 p-3 bg-white rounded-lg shadow-sm hover:bg-slate-100 transition-colors">
                   <input type="checkbox" v-model="form.balcon" :disabled="!editando"
                     class="mt-1 h-5 w-5 rounded border-gray-300 text-slate-600 focus:ring-slate-500">
                   <span class="text-sm font-medium text-slate-700">Balcón</span>
                 </label>
-                <label v-if="showTerraceField"
+                <label v-if="(editando || form.terraza) && showTerraceField"
                   class="flex items-start space-x-3 p-3 bg-white rounded-lg shadow-sm hover:bg-slate-100 transition-colors">
                   <input type="checkbox" v-model="form.terraza" :disabled="!editando"
                     class="mt-1 h-5 w-5 rounded border-gray-300 text-slate-600 focus:ring-slate-500">
                   <span class="text-sm font-medium text-slate-700">Terraza</span>
                 </label>
-                <label v-if="showGrillField"
+                <label v-if="(editando || form.parrilla) && showGrillField"
                   class="flex items-start space-x-3 p-3 bg-white rounded-lg shadow-sm hover:bg-slate-100 transition-colors">
                   <input type="checkbox" v-model="form.parrilla" :disabled="!editando"
                     class="mt-1 h-5 w-5 rounded border-gray-300 text-slate-600 focus:ring-slate-500">
@@ -584,12 +595,12 @@ const showAmenitiesSection = computed(() => ['Casa', 'Departamento'].includes(pr
 
 const handleVolver = () => {
   const token = localStorage.getItem('auth-token');
-  
+
   if (token) {
     try {
       const decoded = jwtDecode(token);
       const currentTime = Date.now() / 1000;
-      
+
       // Verificar si el token es válido y no ha expirado
       if (decoded.exp > currentTime) {
         router.push('/propiedades');
