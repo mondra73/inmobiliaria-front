@@ -26,7 +26,7 @@
               </span>
 
               <!-- Visibilidad -->
-              <button @click="toggleVisibilidad" :class="[
+              <button v-if="puedeEditarEliminar" @click="toggleVisibilidad" :class="[
                 'text-xs font-medium px-2 py-1 rounded',
                 editando ? form.visible ? 'bg-gray-100 text-gray-800' : 'bg-slate-200 text-slate-600'
                   : propiedad.visible ? 'bg-gray-100 text-gray-800' : 'bg-slate-200 text-slate-600',
@@ -334,7 +334,7 @@
 
               <div v-if="!editando" class="space-y-2">
                 <p class="text-slate-700">{{ propiedad.tipo === 'Terreno' ? propiedad.calle : propiedad.ubicacion?.calle
-                }}
+                  }}
                   {{ propiedad.tipo === 'Terreno' ? propiedad.altura : propiedad.ubicacion?.altura }}</p>
                 <p class="text-slate-700">{{ propiedad.tipo === 'Terreno' ? propiedad.localidad :
                   propiedad.ubicacion?.localidad }}</p>
