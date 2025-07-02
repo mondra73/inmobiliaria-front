@@ -48,31 +48,32 @@
           </div>
 
           <div class="flex space-x-2">
-  <button v-if="!editando && puedeEditarEliminar" @click="activarEdicion"
-    class="bg-slate-900 text-white px-4 py-2 rounded-xl text-sm">
-    Editar
-  </button>
-  <button v-else-if="editando && puedeEditarEliminar" @click="guardarCambios" class="bg-green-600 text-white px-4 py-2 rounded-xl text-sm">
-    Guardar
-  </button>
-  <button v-if="editando && puedeEditarEliminar" @click="cancelarEdicion"
-    class="border border-slate-200 bg-white px-4 py-2 rounded-xl text-sm">
-    Cancelar
-  </button>
+            <button v-if="!editando && puedeEditarEliminar" @click="activarEdicion"
+              class="bg-slate-900 text-white px-4 py-2 rounded-xl text-sm">
+              Editar
+            </button>
+            <button v-else-if="editando && puedeEditarEliminar" @click="guardarCambios"
+              class="bg-green-600 text-white px-4 py-2 rounded-xl text-sm">
+              Guardar
+            </button>
+            <button v-if="editando && puedeEditarEliminar" @click="cancelarEdicion"
+              class="border border-slate-200 bg-white px-4 py-2 rounded-xl text-sm">
+              Cancelar
+            </button>
 
-  <button v-if="puedeEditarEliminar" @click="confirmarEliminacion" :disabled="eliminando" :class="[
-      'px-4 py-2 rounded-xl text-sm transition-colors',
-      eliminando ? 'bg-red-400 cursor-wait' : 'bg-red-600 hover:bg-red-700 text-white'
-    ]">
-    <span v-if="!eliminando">Eliminar</span>
-    <span v-else>Eliminando...</span>
-  </button>
+            <button v-if="puedeEditarEliminar" @click="confirmarEliminacion" :disabled="eliminando" :class="[
+              'px-4 py-2 rounded-xl text-sm transition-colors',
+              eliminando ? 'bg-red-400 cursor-wait' : 'bg-red-600 hover:bg-red-700 text-white'
+            ]">
+              <span v-if="!eliminando">Eliminar</span>
+              <span v-else>Eliminando...</span>
+            </button>
 
-  <a :href="`/propiedad/${propiedad._id}`" target="_blank"
-    class="border border-slate-200 bg-white px-4 py-2 rounded-xl text-sm">
-    Vista Pública
-  </a>
-</div>
+            <a :href="`/propiedad/${propiedad._id}`" target="_blank"
+              class="border border-slate-200 bg-white px-4 py-2 rounded-xl text-sm">
+              Vista Pública
+            </a>
+          </div>
 
         </div>
 
@@ -299,7 +300,7 @@
 
               <div v-if="!editando" class="space-y-2">
                 <p class="text-slate-700">{{ propiedad.tipo === 'Terreno' ? propiedad.calle : propiedad.ubicacion?.calle
-                  }}
+                }}
                   {{ propiedad.tipo === 'Terreno' ? propiedad.altura : propiedad.ubicacion?.altura }}</p>
                 <p class="text-slate-700">{{ propiedad.tipo === 'Terreno' ? propiedad.localidad :
                   propiedad.ubicacion?.localidad }}</p>
