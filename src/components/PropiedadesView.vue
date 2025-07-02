@@ -68,12 +68,12 @@
                 <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                     <div class="relative">
                         <Search class="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-4 h-4" />
-                        <input type="text" placeholder="Buscar propiedades..."
+                        <input type="text" v-model="filtroTitulo" placeholder="Buscar propiedades..."
                             class="pl-10 border-2 border-gray-300 rounded-xl hover:border-gray-400 focus:border-slate-600 focus:ring-2 focus:ring-slate-200 transition-all duration-200 w-full" />
                     </div>
-                    <select
+                    <select v-model="filtroTipo"
                         class="border-2 border-gray-300 rounded-xl hover:border-gray-400 focus:border-slate-600 w-full">
-                        <option disabled selected>Tipo de propiedad</option>
+                        <option value="">Tipo de propiedad</option>
                         <option>Casa</option>
                         <option>Departamento</option>
                         <option>Terreno</option>
@@ -81,16 +81,16 @@
                         <option>Campo</option>
                         <option>Fondo de comercio</option>
                     </select>
-                    <select
+                    <select v-model="filtroOperacion"
                         class="border-2 border-gray-300 rounded-xl hover:border-gray-400 focus:border-slate-600 w-full">
-                        <option disabled selected>Operación</option>
+                        <option value="">Operación</option>
                         <option>Venta</option>
                         <option>Alquiler</option>
                         <option>Alquiler temporal</option>
                     </select>
-                    <select
+                    <select v-model="filtroEstado"
                         class="border-2 border-gray-300 rounded-xl hover:border-gray-400 focus:border-slate-600 w-full">
-                        <option disabled selected>Estado</option>
+                        <option value="">Estado</option>
                         <option>Visible</option>
                         <option>Oculta</option>
                     </select>
@@ -99,7 +99,7 @@
 
             <!-- Tarjetas de propiedades -->
             <section class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 mt-4">
-                <div v-for="casa in casas" :key="casa.id" @click="irADetallePropiedad(casa.id)"
+                <div v-for="casa in casasFiltradas" :key="casa.id" @click="irADetallePropiedad(casa.id)"
                     class="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow duration-200 cursor-pointer">
                     <div class="relative">
                         <img :src="casa.imagenes?.[0]?.url || '/placeholder.svg?height=200&width=300'"
@@ -122,7 +122,7 @@
                         <div class="text-slate-600 text-sm mb-1 flex items-center">
                             <Home class="w-4 h-4 mr-1" />
                             <span>{{ casa.ubicacion.calle }} {{ casa.ubicacion.altura }}, {{ casa.ubicacion.localidad
-                                }}</span>
+                            }}</span>
                         </div>
                         <div class="text-slate-600 text-sm mb-3 flex items-center">
                             <span>Publicado: {{ formatDate(casa.fechaPublicada) }}</span>
@@ -135,7 +135,7 @@
                                 dorm.</span>
                             <span v-if="casa.caracteristicas.baños">{{ casa.caracteristicas.baños }} baños</span>
                             <span v-if="casa.caracteristicas.superficieTotal">{{ casa.caracteristicas.superficieTotal
-                                }}m²</span>
+                            }}m²</span>
                         </div>
                     </div>
                 </div>
@@ -163,7 +163,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { Plus, Home, Search } from 'lucide-vue-next'
 import { useRouter } from 'vue-router'
 import api from '../api'
@@ -186,6 +186,28 @@ function parseJwt(token) {
         return null
     }
 }
+
+// Variables para los filtros (AÑADIDO)
+const filtroTitulo = ref('')
+const filtroTipo = ref('')
+const filtroOperacion = ref('')
+const filtroEstado = ref('')
+
+// Propiedad computada para casas filtradas (AÑADIDO)
+const casasFiltradas = computed(() => {
+  return casas.value.filter((casa) => {
+    const coincideTitulo = casa.titulo.toLowerCase().includes(filtroTitulo.value.toLowerCase())
+    const coincideTipo = filtroTipo.value ? casa.tipo === filtroTipo.value : true
+    const coincideOperacion = filtroOperacion.value 
+      ? casa.operacion.toLowerCase().includes(filtroOperacion.value.toLowerCase())
+      : true
+    const coincideEstado = filtroEstado.value 
+      ? (filtroEstado.value === 'Visible' ? casa.visible : !casa.visible) 
+      : true
+    
+    return coincideTitulo && coincideTipo && coincideOperacion && coincideEstado
+  })
+})
 
 function irANuevaPropiedad() {
     router.push('/nueva-propiedad')
