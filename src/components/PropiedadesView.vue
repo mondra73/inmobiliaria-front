@@ -116,13 +116,18 @@
                     </div>
 
                     <div class="p-6">
+                        <!-- Nuevo: Badge de tipo de propiedad -->
+                        <span class="inline-block bg-blue-100 text-blue-800 px-2 py-1 text-xs font-medium rounded mb-2">
+                            {{ casa.tipo }}
+                        </span>
+
                         <h3 class="font-semibold text-slate-900 text-lg mb-1 line-clamp-2">
                             {{ casa.titulo }}
                         </h3>
                         <div class="text-slate-600 text-sm mb-1 flex items-center">
                             <Home class="w-4 h-4 mr-1" />
                             <span>{{ casa.ubicacion.calle }} {{ casa.ubicacion.altura }}, {{ casa.ubicacion.localidad
-                            }}</span>
+                                }}</span>
                         </div>
                         <div class="text-slate-600 text-sm mb-3 flex items-center">
                             <span>Publicado: {{ formatDate(casa.fechaPublicada) }}</span>
@@ -135,7 +140,7 @@
                                 dorm.</span>
                             <span v-if="casa.caracteristicas.baños">{{ casa.caracteristicas.baños }} baños</span>
                             <span v-if="casa.caracteristicas.superficieTotal">{{ casa.caracteristicas.superficieTotal
-                            }}m²</span>
+                                }}m²</span>
                         </div>
                     </div>
                 </div>
@@ -195,18 +200,18 @@ const filtroEstado = ref('')
 
 // Propiedad computada para casas filtradas (AÑADIDO)
 const casasFiltradas = computed(() => {
-  return casas.value.filter((casa) => {
-    const coincideTitulo = casa.titulo.toLowerCase().includes(filtroTitulo.value.toLowerCase())
-    const coincideTipo = filtroTipo.value ? casa.tipo === filtroTipo.value : true
-    const coincideOperacion = filtroOperacion.value 
-      ? casa.operacion.toLowerCase().includes(filtroOperacion.value.toLowerCase())
-      : true
-    const coincideEstado = filtroEstado.value 
-      ? (filtroEstado.value === 'Visible' ? casa.visible : !casa.visible) 
-      : true
-    
-    return coincideTitulo && coincideTipo && coincideOperacion && coincideEstado
-  })
+    return casas.value.filter((casa) => {
+        const coincideTitulo = casa.titulo.toLowerCase().includes(filtroTitulo.value.toLowerCase())
+        const coincideTipo = filtroTipo.value ? casa.tipo === filtroTipo.value : true
+        const coincideOperacion = filtroOperacion.value
+            ? casa.operacion.toLowerCase().includes(filtroOperacion.value.toLowerCase())
+            : true
+        const coincideEstado = filtroEstado.value
+            ? (filtroEstado.value === 'Visible' ? casa.visible : !casa.visible)
+            : true
+
+        return coincideTitulo && coincideTipo && coincideOperacion && coincideEstado
+    })
 })
 
 function irANuevaPropiedad() {

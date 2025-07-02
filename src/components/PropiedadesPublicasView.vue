@@ -45,25 +45,28 @@
             <!-- Tarjetas de propiedades -->
             <section class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 mt-4">
                 <div v-for="casa in propiedadesVisibles" :key="casa.id" @click="irADetallePropiedad(casa.id)"
-                    class="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow duration-200 cursor-pointer">
-                    <div class="relative">
-                        <img :src="casa.imagenes?.[0]?.url || '/placeholder.svg?height=200&width=300'"
-                            :alt="casa.titulo" class="w-full h-48 object-cover" />
-                        <span
-                            class="absolute top-4 left-4 bg-green-100 text-green-800 px-2 py-1 text-xs font-medium rounded">
-                            {{ casa.operacion }}
-                        </span>
-                    </div>
+    class="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow duration-200 cursor-pointer">
+    <div class="relative">
+        <img :src="casa.imagenes?.[0]?.url || '/placeholder.svg?height=200&width=300'"
+            :alt="casa.titulo" class="w-full h-48 object-cover" />
+        <span class="absolute top-4 left-4 bg-green-100 text-green-800 px-2 py-1 text-xs font-medium rounded">
+            {{ casa.operacion }}
+        </span>
+    </div>
 
-                    <div class="p-6">
-                        <h3 class="font-semibold text-slate-900 text-lg mb-1 line-clamp-2">
-                            {{ casa.titulo }}
-                        </h3>
-                        <div class="text-slate-600 text-sm mb-1 flex items-center">
-                            <Home class="w-4 h-4 mr-1" />
-                            <span>{{ casa.ubicacion.calle }} {{ casa.ubicacion.altura }}, {{ casa.ubicacion.localidad
-                                }}</span>
-                        </div>
+    <div class="p-6">
+        <!-- Nueva línea para el tipo de propiedad -->
+        <span class="inline-block bg-blue-100 text-blue-800 px-2 py-1 text-xs font-medium rounded mb-2">
+            {{ casa.tipo }}
+        </span>
+        
+        <h3 class="font-semibold text-slate-900 text-lg mb-1 line-clamp-2">
+            {{ casa.titulo }}
+        </h3>
+        <div class="text-slate-600 text-sm mb-1 flex items-center">
+            <Home class="w-4 h-4 mr-1" />
+            <span>{{ casa.ubicacion.calle }} {{ casa.ubicacion.altura }}, {{ casa.ubicacion.localidad }}</span>
+        </div>
                         <div class="text-slate-600 text-sm mb-3 flex items-center">
                             <span>Publicado: {{ formatDate(casa.fechaPublicada) }}</span>
                         </div>
