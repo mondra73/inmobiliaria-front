@@ -134,8 +134,8 @@
             <div class="bg-white rounded-3xl border border-gray-100 p-6">
               <h2 class="text-xl font-light mb-4 text-slate-900 font-semibold">Características</h2>
               <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
-                <!-- Dormitorios -->
-                <div class="flex items-center space-x-2">
+                <!-- Dormitorios (solo para Casa/Departamento/Local) -->
+                <div v-if="showHabitaciones" class="flex items-center space-x-2">
                   <div class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
                     <Home class="w-4 h-4 text-blue-600" />
                   </div>
@@ -147,7 +147,7 @@
                 </div>
 
                 <!-- Baños -->
-                <div class="flex items-center space-x-2">
+                <div v-if="showBanos" class="flex items-center space-x-2">
                   <div class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
                     <Users class="w-4 h-4 text-blue-600" />
                   </div>
@@ -159,7 +159,7 @@
                 </div>
 
                 <!-- Ambientes -->
-                <div class="flex items-center space-x-2">
+                <div v-if="showAmbientes" class="flex items-center space-x-2">
                   <div class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
                     <Building class="w-4 h-4 text-blue-600" />
                   </div>
@@ -183,7 +183,7 @@
                 </div>
 
                 <!-- Superficie Cubierta -->
-                <div class="flex items-center space-x-2">
+                <div v-if="showSuperficieCubierta" class="flex items-center space-x-2">
                   <div class="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
                     <Home class="w-4 h-4 text-green-600" />
                   </div>
@@ -195,8 +195,31 @@
                   </div>
                 </div>
 
+                <!-- Largo y Ancho (solo para Terreno/Campo) -->
+                <div v-if="showLargoAncho" class="flex items-center space-x-2">
+                  <div class="w-8 h-8 bg-yellow-100 rounded-lg flex items-center justify-center">
+                    <Calendar class="w-4 h-4 text-yellow-600" />
+                  </div>
+                  <div>
+                    <p class="text-sm text-slate-600">Largo (m)</p>
+                    <p v-if="!editando" class="font-medium text-slate-900">{{ propiedad.largo || '-' }}</p>
+                    <input v-else v-model.number="form.largo" type="number" class="w-16 border rounded p-1" />
+                  </div>
+                </div>
+
+                <div v-if="showLargoAncho" class="flex items-center space-x-2">
+                  <div class="w-8 h-8 bg-yellow-100 rounded-lg flex items-center justify-center">
+                    <Calendar class="w-4 h-4 text-yellow-600" />
+                  </div>
+                  <div>
+                    <p class="text-sm text-slate-600">Ancho (m)</p>
+                    <p v-if="!editando" class="font-medium text-slate-900">{{ propiedad.ancho || '-' }}</p>
+                    <input v-else v-model.number="form.ancho" type="number" class="w-16 border rounded p-1" />
+                  </div>
+                </div>
+
                 <!-- Antigüedad -->
-                <div class="flex items-center space-x-2">
+                <div v-if="showAntiguedad" class="flex items-center space-x-2">
                   <div class="w-8 h-8 bg-yellow-100 rounded-lg flex items-center justify-center">
                     <Calendar class="w-4 h-4 text-yellow-600" />
                   </div>
@@ -311,7 +334,7 @@
 
               <div v-if="!editando" class="space-y-2">
                 <p class="text-slate-700">{{ propiedad.tipo === 'Terreno' ? propiedad.calle : propiedad.ubicacion?.calle
-                }}
+                  }}
                   {{ propiedad.tipo === 'Terreno' ? propiedad.altura : propiedad.ubicacion?.altura }}</p>
                 <p class="text-slate-700">{{ propiedad.tipo === 'Terreno' ? propiedad.localidad :
                   propiedad.ubicacion?.localidad }}</p>
@@ -592,6 +615,15 @@ const showBalconyField = computed(() => ['Casa', 'Departamento'].includes(propie
 const showTerraceField = computed(() => ['Casa', 'Departamento'].includes(propiedad.value?.tipo))
 const showGrillField = computed(() => ['Casa'].includes(propiedad.value?.tipo))
 const showAmenitiesSection = computed(() => ['Casa', 'Departamento'].includes(propiedad.value?.tipo))
+
+//caracteristicas
+const showHabitaciones = computed(() => ['Casa', 'Departamento', 'Local comercial'].includes(propiedad.value?.tipo))
+const showBanos = computed(() => ['Casa', 'Departamento', 'Local comercial'].includes(propiedad.value?.tipo))
+const showAmbientes = computed(() => ['Casa', 'Departamento'].includes(propiedad.value?.tipo))
+const showAntiguedad = computed(() => ['Casa', 'Departamento', 'Local comercial'].includes(propiedad.value?.tipo))
+const showSuperficieTotal = computed(() => true) // Siempre visible
+const showSuperficieCubierta = computed(() => ['Casa', 'Departamento', 'Local comercial'].includes(propiedad.value?.tipo))
+const showLargoAncho = computed(() => ['Terreno', 'Campo'].includes(propiedad.value?.tipo))
 
 const handleVolver = () => {
   const token = localStorage.getItem('auth-token');
