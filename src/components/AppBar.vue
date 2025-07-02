@@ -2,8 +2,7 @@
   <div>
     <v-app-bar app flat elevate-on-scroll color="surface" class="glass-app-bar">
       <!-- Logo en lugar del texto -->
-      <v-img :src="logo" max-height="50" max-width="120" contain @click="goToHome"
-        class="cursor-pointer"></v-img>
+      <v-img :src="logo" max-height="50" max-width="120" contain @click="goToHome" class="cursor-pointer"></v-img>
 
       <v-spacer></v-spacer>
 
@@ -11,17 +10,13 @@
       <div class="d-none d-md-flex">
         <template v-if="!isAuthenticated">
           <v-btn variant="text" class="text-white" @click="scrollTo('nosotros')">Nosotros</v-btn>
-          <v-btn variant="text" class="text-white" @click="scrollTo('propiedades')">Propiedades</v-btn>
+          <v-btn variant="text" class="text-white" @click="router.push('/propiedades-publicas')">Propiedades</v-btn>
           <v-btn variant="text" class="text-white" @click="goToContacto">Consultar</v-btn>
         </template>
         <template v-else>
           <v-btn variant="text" class="text-white" @click="goToDashboard">Dashboard</v-btn>
         </template>
-        <v-btn
-          variant="text"
-          class="text-white"
-          @click="isAuthenticated ? handleLogout() : goToLogin()"
-        >
+        <v-btn variant="text" class="text-white" @click="isAuthenticated ? handleLogout() : goToLogin()">
           {{ isAuthenticated ? 'Cerrar Sesión' : 'Login' }}
         </v-btn>
       </div>
@@ -100,6 +95,8 @@ const scrollTo = (id) => {
 const navAction = (id) => {
   if (id === 'consultar') {
     goToContacto()
+  } else if (id === 'propiedades') {
+    router.push('/propiedades-publicas')
   } else {
     scrollTo(id)
   }

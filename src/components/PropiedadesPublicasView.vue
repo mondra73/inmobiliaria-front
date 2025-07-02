@@ -1,7 +1,7 @@
 <template>
     <div class="bg-slate-50 min-h-screen">
         <!-- Main content -->
-        <main class="p-8">
+        <main class="p-8" v-if="!isLoading">
             <header class="flex justify-between items-center mb-8">
                 <div>
                     <h2 class="text-3xl font-light text-slate-900">
@@ -97,6 +97,38 @@
             </div>
         </main>
     </div>
+
+    <!-- Skeleton Loader -->
+<div v-if="isLoading" class="fixed inset-0 bg-white bg-opacity-75 flex items-center justify-center z-50">
+  <div class="max-w-6xl w-full mx-auto px-6 py-8">
+    <div class="animate-pulse space-y-8">
+      <!-- Título -->
+      <div class="space-y-2">
+        <div class="h-8 w-64 bg-slate-200 rounded"></div>
+        <div class="h-4 w-80 bg-slate-200 rounded"></div>
+      </div>
+
+      <!-- Filtros -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="h-12 bg-slate-200 rounded-xl"></div>
+        <div class="h-12 bg-slate-200 rounded-xl"></div>
+        <div class="h-12 bg-slate-200 rounded-xl"></div>
+      </div>
+
+      <!-- Tarjetas -->
+      <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 mt-4">
+        <div v-for="i in 6" :key="i" class="bg-white rounded-3xl shadow-sm border border-gray-100 p-4 space-y-4">
+          <div class="h-48 bg-slate-200 rounded-xl"></div>
+          <div class="h-4 w-3/4 bg-slate-200 rounded"></div>
+          <div class="h-4 w-1/2 bg-slate-200 rounded"></div>
+          <div class="h-4 w-1/3 bg-slate-200 rounded"></div>
+          <div class="h-6 w-1/2 bg-slate-200 rounded"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 </template>
 
 <script setup>
@@ -107,6 +139,7 @@ import api from '../api'
 
 const router = useRouter()
 const propiedades = ref([])
+const isLoading = ref(true)
 
 function irADetallePropiedad(id) {
     router.push(`/propiedad/${id}`)
@@ -129,12 +162,15 @@ const propiedadesVisibles = computed(() => {
 onMounted(async () => {
   try {
     const res = await api.get('/user/propiedades-publicas')
-    propiedades.value = res.data.propiedades || [] 
+    propiedades.value = res.data.propiedades || []
   } catch (err) {
     console.error('Error al cargar propiedades:', err)
-    propiedades.value = [] 
+    propiedades.value = []
+  } finally {
+    isLoading.value = false
   }
 })
+
 
 </script>
 
