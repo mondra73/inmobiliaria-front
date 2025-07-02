@@ -16,12 +16,13 @@
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div class="relative">
                         <Search class="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-4 h-4" />
-                        <input type="text" placeholder="Buscar propiedades..."
+                        <input type="text" v-model="filtroTitulo" placeholder="Buscar propiedades..."
                             class="pl-10 border-2 border-gray-300 rounded-xl hover:border-gray-400 focus:border-slate-600 focus:ring-2 focus:ring-slate-200 transition-all duration-200 w-full" />
+
                     </div>
-                    <select
+                    <select v-model="filtroTipo"
                         class="border-2 border-gray-300 rounded-xl hover:border-gray-400 focus:border-slate-600 w-full">
-                        <option disabled selected>Tipo de propiedad</option>
+                        <option value="">Tipo de propiedad</option>
                         <option>Casa</option>
                         <option>Departamento</option>
                         <option>Terreno</option>
@@ -29,13 +30,15 @@
                         <option>Campo</option>
                         <option>Fondo de comercio</option>
                     </select>
-                    <select
+
+                    <select v-model="filtroOperacion"
                         class="border-2 border-gray-300 rounded-xl hover:border-gray-400 focus:border-slate-600 w-full">
-                        <option disabled selected>Operación</option>
+                        <option value="">Operación</option>
                         <option>Venta</option>
                         <option>Alquiler</option>
                         <option>Alquiler temporal</option>
                     </select>
+
                 </div>
             </section>
 
@@ -79,7 +82,8 @@
             </section>
 
             <!-- Si no hay resultados -->
-            <p v-if="propiedadesVisibles.length === 0" class="text-center text-slate-500 mt-12">No hay propiedades disponibles en este momento.</p>
+            <p v-if="propiedadesVisibles.length === 0" class="text-center text-slate-500 mt-12">No hay propiedades
+                disponibles en este momento.</p>
 
             <!-- Paginación -->
             <div class="flex justify-center mt-8">
@@ -99,35 +103,36 @@
     </div>
 
     <!-- Skeleton Loader -->
-<div v-if="isLoading" class="fixed inset-0 bg-white bg-opacity-75 flex items-center justify-center z-50">
-  <div class="max-w-6xl w-full mx-auto px-6 py-8">
-    <div class="animate-pulse space-y-8">
-      <!-- Título -->
-      <div class="space-y-2">
-        <div class="h-8 w-64 bg-slate-200 rounded"></div>
-        <div class="h-4 w-80 bg-slate-200 rounded"></div>
-      </div>
+    <div v-if="isLoading" class="fixed inset-0 bg-white bg-opacity-75 flex items-center justify-center z-50">
+        <div class="max-w-6xl w-full mx-auto px-6 py-8">
+            <div class="animate-pulse space-y-8">
+                <!-- Título -->
+                <div class="space-y-2">
+                    <div class="h-8 w-64 bg-slate-200 rounded"></div>
+                    <div class="h-4 w-80 bg-slate-200 rounded"></div>
+                </div>
 
-      <!-- Filtros -->
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div class="h-12 bg-slate-200 rounded-xl"></div>
-        <div class="h-12 bg-slate-200 rounded-xl"></div>
-        <div class="h-12 bg-slate-200 rounded-xl"></div>
-      </div>
+                <!-- Filtros -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="h-12 bg-slate-200 rounded-xl"></div>
+                    <div class="h-12 bg-slate-200 rounded-xl"></div>
+                    <div class="h-12 bg-slate-200 rounded-xl"></div>
+                </div>
 
-      <!-- Tarjetas -->
-      <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 mt-4">
-        <div v-for="i in 6" :key="i" class="bg-white rounded-3xl shadow-sm border border-gray-100 p-4 space-y-4">
-          <div class="h-48 bg-slate-200 rounded-xl"></div>
-          <div class="h-4 w-3/4 bg-slate-200 rounded"></div>
-          <div class="h-4 w-1/2 bg-slate-200 rounded"></div>
-          <div class="h-4 w-1/3 bg-slate-200 rounded"></div>
-          <div class="h-6 w-1/2 bg-slate-200 rounded"></div>
+                <!-- Tarjetas -->
+                <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 mt-4">
+                    <div v-for="i in 6" :key="i"
+                        class="bg-white rounded-3xl shadow-sm border border-gray-100 p-4 space-y-4">
+                        <div class="h-48 bg-slate-200 rounded-xl"></div>
+                        <div class="h-4 w-3/4 bg-slate-200 rounded"></div>
+                        <div class="h-4 w-1/2 bg-slate-200 rounded"></div>
+                        <div class="h-4 w-1/3 bg-slate-200 rounded"></div>
+                        <div class="h-6 w-1/2 bg-slate-200 rounded"></div>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
     </div>
-  </div>
-</div>
 
 </template>
 
@@ -136,6 +141,10 @@ import { ref, computed, onMounted } from 'vue'
 import { Home, Search } from 'lucide-vue-next'
 import { useRouter } from 'vue-router'
 import api from '../api'
+const filtroTitulo = ref('')
+const filtroTipo = ref('')
+const filtroOperacion = ref('')
+
 
 const router = useRouter()
 const propiedades = ref([])
@@ -156,19 +165,30 @@ function formatPrice(precio) {
 }
 
 const propiedadesVisibles = computed(() => {
-  return propiedades.value || [] // Esto previene el error
+  return propiedades.value.filter((p) => {
+    const coincideTitulo = p.titulo.toLowerCase().includes(filtroTitulo.value.toLowerCase())
+    const coincideTipo = filtroTipo.value
+      ? p.tipo.toLowerCase() === filtroTipo.value.toLowerCase()
+      : true
+    const coincideOperacion = filtroOperacion.value
+      ? p.operacion.toLowerCase() === filtroOperacion.value.toLowerCase()
+      : true
+    return coincideTitulo && coincideTipo && coincideOperacion
+  })
 })
 
+
+
 onMounted(async () => {
-  try {
-    const res = await api.get('/user/propiedades-publicas')
-    propiedades.value = res.data.propiedades || []
-  } catch (err) {
-    console.error('Error al cargar propiedades:', err)
-    propiedades.value = []
-  } finally {
-    isLoading.value = false
-  }
+    try {
+        const res = await api.get('/user/propiedades-publicas')
+        propiedades.value = res.data.propiedades || []
+    } catch (err) {
+        console.error('Error al cargar propiedades:', err)
+        propiedades.value = []
+    } finally {
+        isLoading.value = false
+    }
 })
 
 
