@@ -102,8 +102,8 @@
 
                 <div class="grid grid-cols-4 gap-2">
                   <div v-for="(imagen, index) in form.imagenes" :key="index" class="relative group">
-                    <img :src="imagen.url" :class="['w-full h-20 object-cover rounded-lg',
-                      imagenSeleccionada === index ? 'ring-2 ring-blue-500' : '']" />
+                    <img :src="imagen.url"
+                      :class="['w-full h-20 object-cover rounded-lg', imagenSeleccionada === index ? 'ring-2 ring-blue-500' : '']" />
                     <button @click="eliminarImagen(index)"
                       class="absolute top-0 right-0 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center opacity-0 group-hover:opacity-100">
                       ×
@@ -219,7 +219,7 @@
 
               <div v-if="!editando" class="space-y-2">
                 <p class="text-slate-700">{{ propiedad.tipo === 'Terreno' ? propiedad.calle : propiedad.ubicacion?.calle
-                }}
+                  }}
                   {{ propiedad.tipo === 'Terreno' ? propiedad.altura : propiedad.ubicacion?.altura }}</p>
                 <p class="text-slate-700">{{ propiedad.tipo === 'Terreno' ? propiedad.localidad :
                   propiedad.ubicacion?.localidad }}</p>
@@ -514,14 +514,13 @@ const handleImageUpload = async (event) => {
   try {
     for (const file of uploadedFiles) {
       if (!file.type.match('image.*')) continue
-      
-      // Subir a Cloudinary
-      const cloudinaryResponse = await uploadImageToCloudinary(file)
-      
-      // Asegurarse que la URL existe antes de agregar
-      if (cloudinaryResponse?.secure_url) {
+
+      // Subir a Cloudinary (esto devuelve directamente la URL string)
+      const imageUrl = await uploadImageToCloudinary(file)
+
+      if (imageUrl) {
         form.value.imagenes.push({
-          url: cloudinaryResponse.secure_url, // URL permanente
+          url: imageUrl, // Usamos la URL directamente
           descripcion: '',
           orden: form.value.imagenes.length,
           esPortada: false
@@ -531,6 +530,7 @@ const handleImageUpload = async (event) => {
       }
     }
     mostrarMensajeTemporal('exito', 'Imágenes subidas correctamente')
+    event.target.value = null // Limpiar el input
   } catch (error) {
     console.error('Error al subir imágenes:', error)
     mostrarMensajeTemporal('error', 'Error al subir imágenes: ' + error.message)
@@ -575,16 +575,25 @@ const confirmarEliminacion = () => {
 // Manejo de edición
 const activarEdicion = () => {
   editando.value = true
-  form.value = JSON.parse(JSON.stringify(propiedad.value))
+  // Hacer una copia profunda incluyendo las imágenes
+  form.value = JSON.parse(JSON.stringify({
+    ...propiedad.value,
+    imagenes: propiedad.value.imagenes?.map(img => ({
+      ...img,
+      // Asegurar que todos los campos necesarios existan
+      descripcion: img.descripcion || '',
+      orden: img.orden || 0,
+      esPortada: img.esPortada || false
+    })) || []
+  }));
 
-  // Convertir imágenes con URLs blob a URLs permanentes si es necesario
-  form.value.imagenes = form.value.imagenes.map(img => {
-    if (img.url.startsWith('blob:')) {
-      // Marcar para re-subir o ignorar
-      return { ...img, necesitaReupload: true }
+  // Para Departamentos específicamente
+  if (propiedad.value.tipo === 'Departamento') {
+    // Mapear habitaciones a dormitorios si es necesario
+    if (form.value.habitaciones !== undefined && form.value.dormitorios === undefined) {
+      form.value.dormitorios = form.value.habitaciones
     }
-    return img
-  })
+  }
 
   // Transformación específica para cada tipo
   switch (propiedad.value.tipo) {
@@ -631,6 +640,8 @@ const activarEdicion = () => {
   if (!form.value.ubicacion.coordenadas) form.value.ubicacion.coordenadas = { lat: 0, lng: 0 }
   if (!form.value.ubicacion.entreCalles) form.value.ubicacion.entreCalles = { calle1: '', calle2: '' }
   if (!form.value.imagenes) form.value.imagenes = []
+
+  console.log('Imágenes después de activar edición:', JSON.stringify(form.value.imagenes, null, 2));
 }
 
 const cancelarEdicion = () => {
@@ -646,10 +657,28 @@ const toggleVisibilidad = () => {
 const guardarCambios = async () => {
   try {
     const id = route.params.id
-    let datosAEnviar = JSON.parse(JSON.stringify(form.value))
+    let datosAEnviar = {
+      ...JSON.parse(JSON.stringify(form.value)),
+      // Asegurar que las imágenes tengan la estructura correcta
+      imagenes: form.value.imagenes.filter(img => img.url).map(img => ({
+        url: img.url,
+        descripcion: img.descripcion || '',
+        orden: img.orden || 0,
+        esPortada: img.esPortada || false
+      }))
+    }
+
+    // Transformación específica para Departamentos
+    if (propiedad.value.tipo === 'Departamento') {
+      // Asegurar que dormitorios se guarde como habitaciones si ese es el campo en el schema
+      if (datosAEnviar.dormitorios !== undefined) {
+        datosAEnviar.habitaciones = datosAEnviar.dormitorios
+        delete datosAEnviar.dormitorios
+      }
+    }
 
     // Filtrar imágenes sin URL válida
-    datosAEnviar.imagenes = datosAEnviar.imagenes.filter(img => 
+    datosAEnviar.imagenes = datosAEnviar.imagenes.filter(img =>
       img.url && typeof img.url === 'string' && img.url.trim() !== ''
     )
 
