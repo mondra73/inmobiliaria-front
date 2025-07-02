@@ -2,9 +2,9 @@
   <div>
     <div v-if="propiedad" class="bg-slate-50 min-h-screen">
       <div class="max-w-6xl mx-auto px-6 py-8">
-        <!-- Header -->
+        <!-- Header - MODIFICADO EL BOTÓN VOLVER -->
         <div class="flex items-center space-x-4 mb-8">
-          <button @click="$router.push('/propiedades')"
+          <button @click="handleVolver"
             class="rounded-xl bg-white hover:bg-slate-50 px-3 py-2 text-sm flex items-center border border-slate-200">
             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
@@ -581,6 +581,33 @@ const showBalconyField = computed(() => ['Casa', 'Departamento'].includes(propie
 const showTerraceField = computed(() => ['Casa', 'Departamento'].includes(propiedad.value?.tipo))
 const showGrillField = computed(() => ['Casa'].includes(propiedad.value?.tipo))
 const showAmenitiesSection = computed(() => ['Casa', 'Departamento'].includes(propiedad.value?.tipo))
+
+const handleVolver = () => {
+  const token = localStorage.getItem('auth-token');
+  
+  if (token) {
+    try {
+      const decoded = jwtDecode(token);
+      const currentTime = Date.now() / 1000;
+      
+      // Verificar si el token es válido y no ha expirado
+      if (decoded.exp > currentTime) {
+        router.push('/propiedades');
+      } else {
+        // Token expirado
+        localStorage.removeItem('auth-token');
+        router.push('/propiedades-publicas');
+      }
+    } catch (error) {
+      // Token inválido
+      localStorage.removeItem('auth-token');
+      router.push('/propiedades-publicas');
+    }
+  } else {
+    // No hay token
+    router.push('/propiedades-publicas');
+  }
+};
 
 const puedeEditarEliminar = computed(() => {
   try {
