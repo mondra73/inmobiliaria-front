@@ -28,10 +28,11 @@
               <!-- Visibilidad -->
               <button @click="toggleVisibilidad" :class="[
                 'text-xs font-medium px-2 py-1 rounded',
-                propiedad.visible ? 'bg-gray-100 text-gray-800' : 'bg-slate-200 text-slate-600',
+                editando ? form.visible ? 'bg-gray-100 text-gray-800' : 'bg-slate-200 text-slate-600'
+                  : propiedad.visible ? 'bg-gray-100 text-gray-800' : 'bg-slate-200 text-slate-600',
                 !editando && 'opacity-50 cursor-not-allowed'
               ]" :disabled="!editando">
-                {{ propiedad.visible ? 'Visible' : 'Oculta' }}
+                {{ editando ? form.visible ? 'Visible' : 'Oculta' : propiedad.visible ? 'Visible' : 'Oculta' }}
               </button>
 
               <!-- Tipo -->
@@ -219,7 +220,7 @@
 
               <div v-if="!editando" class="space-y-2">
                 <p class="text-slate-700">{{ propiedad.tipo === 'Terreno' ? propiedad.calle : propiedad.ubicacion?.calle
-                  }}
+                }}
                   {{ propiedad.tipo === 'Terreno' ? propiedad.altura : propiedad.ubicacion?.altura }}</p>
                 <p class="text-slate-700">{{ propiedad.tipo === 'Terreno' ? propiedad.localidad :
                   propiedad.ubicacion?.localidad }}</p>
@@ -578,6 +579,7 @@ const activarEdicion = () => {
   // Hacer una copia profunda incluyendo las imágenes
   form.value = JSON.parse(JSON.stringify({
     ...propiedad.value,
+    visible: propiedad.value.visible,
     imagenes: propiedad.value.imagenes?.map(img => ({
       ...img,
       // Asegurar que todos los campos necesarios existan
@@ -641,7 +643,6 @@ const activarEdicion = () => {
   if (!form.value.ubicacion.entreCalles) form.value.ubicacion.entreCalles = { calle1: '', calle2: '' }
   if (!form.value.imagenes) form.value.imagenes = []
 
-  console.log('Imágenes después de activar edición:', JSON.stringify(form.value.imagenes, null, 2));
 }
 
 const cancelarEdicion = () => {
@@ -738,8 +739,6 @@ const guardarCambios = async () => {
         }
         break;
     }
-
-    console.log('Datos a enviar:', datosAEnviar) // Para depuración
 
     const response = await api.put(`/admin/editar-propiedad/${id}`, {
       tipo: propiedad.value.tipo,
