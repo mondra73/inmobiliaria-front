@@ -103,12 +103,15 @@
 
                 <div class="grid grid-cols-4 gap-2">
                   <div v-for="(imagen, index) in form.imagenes" :key="index" class="relative group">
-                    <img :src="imagen.url"
-                      :class="['w-full h-20 object-cover rounded-lg', imagenSeleccionada === index ? 'ring-2 ring-blue-500' : '']" />
-                    <button @click="eliminarImagen(index)"
-                      class="absolute top-0 right-0 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center opacity-0 group-hover:opacity-100">
+                    <img :src="imagen.url" :class="['w-full h-20 object-cover rounded-lg',
+                      imagenSeleccionada === index ? 'ring-2 ring-blue-500' : '']" />
+
+                    <!-- Botón de eliminar (cruz) -->
+                    <button @click.stop="eliminarImagen(index)" class="absolute top-1 right-1 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center 
+               opacity-80 hover:opacity-100 transition-opacity delete-image-btn" title="Eliminar imagen">
                       ×
                     </button>
+
                     <input v-model="imagen.descripcion" placeholder="Descripción"
                       class="text-xs w-full mt-1 p-1 border rounded" />
                   </div>
@@ -220,7 +223,7 @@
 
               <div v-if="!editando" class="space-y-2">
                 <p class="text-slate-700">{{ propiedad.tipo === 'Terreno' ? propiedad.calle : propiedad.ubicacion?.calle
-                }}
+                  }}
                   {{ propiedad.tipo === 'Terreno' ? propiedad.altura : propiedad.ubicacion?.altura }}</p>
                 <p class="text-slate-700">{{ propiedad.tipo === 'Terreno' ? propiedad.localidad :
                   propiedad.ubicacion?.localidad }}</p>
@@ -404,6 +407,26 @@
       </div>
     </div>
 
+    <!-- Modal de Confirmación para Eliminar Imagen -->
+    <div v-if="mostrarModalConfirmacionImagen"
+      class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div class="bg-white rounded-xl p-6 max-w-md w-full">
+        <h3 class="text-lg font-medium mb-4">Confirmar eliminación</h3>
+        <p class="mb-6">¿Estás seguro que deseas eliminar esta imagen?</p>
+
+        <div class="flex justify-end space-x-3">
+          <button @click="mostrarModalConfirmacionImagen = false"
+            class="px-4 py-2 border border-gray-300 rounded-xl text-sm">
+            Cancelar
+          </button>
+          <button @click="confirmarEliminacionImagen"
+            class="px-4 py-2 bg-red-600 text-white rounded-xl text-sm hover:bg-red-700">
+            Eliminar
+          </button>
+        </div>
+      </div>
+    </div>
+
     <!-- Mensajes de estado - Posición fija -->
     <div class="fixed bottom-4 right-4 z-50">
       <transition name="fade">
@@ -447,7 +470,8 @@ const mensajeError = ref('')
 const mostrarMensaje = ref(false)
 const mostrarModalConfirmacion = ref(false)
 const eliminando = ref(false)
-const isTerreno = computed(() => propiedad.value?.tipo === 'Terreno')
+const mostrarModalConfirmacionImagen = ref(false)
+const imagenAEliminar = ref(null)
 
 // Función para mostrar mensajes temporales
 const mostrarMensajeTemporal = (tipo, texto, duracion = 3000) => {
@@ -538,14 +562,31 @@ const handleImageUpload = async (event) => {
   }
 }
 
-const eliminarImagen = async (index) => {
-  // Opcional: Puedes agregar lógica para borrar la imagen de Cloudinary
-  // si necesitas eliminar el archivo físico también
+const eliminarImagen = (index) => {
+  imagenAEliminar.value = index
+  mostrarModalConfirmacionImagen.value = true
+}
+
+const confirmarEliminacionImagen = async () => {
+  const index = imagenAEliminar.value
+  mostrarModalConfirmacionImagen.value = false
+
+  // Animación de fade out (opcional)
+  const imageElement = document.querySelector(`.image-container-${index}`);
+  if (imageElement) {
+    imageElement.classList.add('fade-out');
+    await new Promise(resolve => setTimeout(resolve, 200));
+  }
+
+  // Eliminar la imagen
   form.value.imagenes.splice(index, 1)
 
+  // Ajustar la imagen seleccionada si es necesario
   if (imagenSeleccionada.value >= form.value.imagenes.length) {
     imagenSeleccionada.value = Math.max(0, form.value.imagenes.length - 1)
   }
+
+  mostrarMensajeTemporal('exito', 'Imagen eliminada')
 }
 
 const eliminarPropiedad = async () => {
@@ -652,16 +693,29 @@ const cancelarEdicion = () => {
 const toggleVisibilidad = () => {
   if (editando.value) {
     form.value.visible = !form.value.visible
+    console.log('Nuevo estado de visible:', form.value.visible);
   }
 }
 
 const guardarCambios = async () => {
   try {
     const id = route.params.id
+    
+    // 1. Validar que tenemos un tipo de propiedad válido
+    if (!propiedad.value?.tipo) {
+      throw new Error('Tipo de propiedad no definido')
+    }
+
+    // 2. Normalizar el tipo de propiedad de manera segura
+    const tipoPropiedad = normalizarTipoPropiedad(propiedad.value.tipo)
+    if (!tipoPropiedad) {
+      throw new Error('Tipo de propiedad no válido')
+    }
+
+    // 3. Preparar datos para enviar
     let datosAEnviar = {
       ...JSON.parse(JSON.stringify(form.value)),
-      // Asegurar que las imágenes tengan la estructura correcta
-      imagenes: form.value.imagenes.filter(img => img.url).map(img => ({
+      imagenes: form.value.imagenes.filter(img => img?.url).map(img => ({
         url: img.url,
         descripcion: img.descripcion || '',
         orden: img.orden || 0,
@@ -669,89 +723,78 @@ const guardarCambios = async () => {
       }))
     }
 
-    // Transformación específica para Departamentos
-    if (propiedad.value.tipo === 'Departamento') {
-      // Asegurar que dormitorios se guarde como habitaciones si ese es el campo en el schema
-      if (datosAEnviar.dormitorios !== undefined) {
-        datosAEnviar.habitaciones = datosAEnviar.dormitorios
-        delete datosAEnviar.dormitorios
-      }
+    // 4. Transformaciones específicas por tipo
+    if (tipoPropiedad === 'Departamento' && datosAEnviar.dormitorios !== undefined) {
+      datosAEnviar.habitaciones = datosAEnviar.dormitorios
+      delete datosAEnviar.dormitorios
     }
 
-    // Filtrar imágenes sin URL válida
-    datosAEnviar.imagenes = datosAEnviar.imagenes.filter(img =>
-      img.url && typeof img.url === 'string' && img.url.trim() !== ''
-    )
+    if (tipoPropiedad === 'Terreno') {
+      datosAEnviar = transformarTerreno(datosAEnviar)
+    }
 
-    // Verificar que al menos haya una imagen si es requerido
-    if (datosAEnviar.imagenes.length === 0) {
+    // 5. Validación mínima
+    if (!datosAEnviar.imagenes?.length) {
       throw new Error('Debe agregar al menos una imagen válida')
     }
 
-    // Transformación específica para cada tipo de propiedad
-    switch (propiedad.value.tipo) {
-      case 'Terreno':
-        // Mantenemos la lógica original para terrenos
-        datosAEnviar = {
-          ...datosAEnviar,
-          calle: datosAEnviar.ubicacion.calle,
-          altura: datosAEnviar.ubicacion.altura,
-          entreCalle1: datosAEnviar.ubicacion.entreCalles.calle1,
-          entreCalle2: datosAEnviar.ubicacion.entreCalles.calle2,
-          localidad: datosAEnviar.ubicacion.localidad,
-          coordenadas: typeof datosAEnviar.ubicacion.coordenadas === 'object'
-            ? `${datosAEnviar.ubicacion.coordenadas.lat}, ${datosAEnviar.ubicacion.coordenadas.lng}`
-            : datosAEnviar.ubicacion.coordenadas,
-          superficie: datosAEnviar.superficieTotal,
-          dimensiones: {
-            largo: datosAEnviar.largo,
-            ancho: datosAEnviar.ancho
-          }
-        }
-        delete datosAEnviar.ubicacion
-        delete datosAEnviar.superficieTotal
-        delete datosAEnviar.largo
-        delete datosAEnviar.ancho
-        break;
-
-      case 'Departamento':
-      case 'Casa':
-      default:
-        // Para departamentos y otros tipos que esperan un objeto en coordenadas
-        if (datosAEnviar.ubicacion?.coordenadas) {
-          // Si viene como string, convertirlo a objeto
-          if (typeof datosAEnviar.ubicacion.coordenadas === 'string') {
-            const [lat, lng] = datosAEnviar.ubicacion.coordenadas.split(',').map(Number)
-            datosAEnviar.ubicacion.coordenadas = {
-              lat: isNaN(lat) ? 0 : lat,
-              lng: isNaN(lng) ? 0 : lng
-            }
-          }
-          // Si es null/undefined, establecer objeto vacío
-          else if (!datosAEnviar.ubicacion.coordenadas) {
-            datosAEnviar.ubicacion.coordenadas = { lat: 0, lng: 0 }
-          }
-        } else {
-          datosAEnviar.ubicacion = {
-            ...datosAEnviar.ubicacion,
-            coordenadas: { lat: 0, lng: 0 }
-          }
-        }
-        break;
-    }
-
+    // 6. Enviar datos
     const response = await api.put(`/admin/editar-propiedad/${id}`, {
-      tipo: propiedad.value.tipo,
+      tipo: tipoPropiedad,
       propiedad: datosAEnviar
     })
 
+    // 7. Actualizar estado
     propiedad.value = response.data.propiedad
     editando.value = false
     mostrarMensajeTemporal('exito', 'Propiedad actualizada correctamente')
 
   } catch (error) {
-    console.error('Error al actualizar la propiedad:', error)
-    mostrarMensajeTemporal('error', 'Error al actualizar: ' + (error.response?.data?.error || error.message))
+    console.error('Error en guardarCambios:', {
+      error: error.message,
+      stack: error.stack,
+      tipo: propiedad.value?.tipo,
+      formData: form.value
+    })
+    mostrarMensajeTemporal('error', error.message || 'Error al actualizar la propiedad')
+  }
+}
+
+// Funciones auxiliares
+const normalizarTipoPropiedad = (tipo) => {
+  if (!tipo) return null
+  
+  const tiposValidos = {
+    'departamento': 'Departamento',
+    'depto': 'Departamento',
+    'casa': 'Casa',
+    'terreno': 'Terreno',
+    'campo': 'Campo',
+    'galpon': 'Galpon',
+    'local': 'Local',
+    'fondo comercio': 'FondoComercio',
+    'fondocomercio': 'FondoComercio'
+  }
+
+  return tiposValidos[tipo.toString().toLowerCase().trim()] || tipo
+}
+
+const transformarTerreno = (datos) => {
+  return {
+    ...datos,
+    calle: datos.ubicacion?.calle || '',
+    altura: datos.ubicacion?.altura || null,
+    entreCalle1: datos.ubicacion?.entreCalles?.calle1 || '',
+    entreCalle2: datos.ubicacion?.entreCalles?.calle2 || '',
+    localidad: datos.ubicacion?.localidad || '',
+    coordenadas: typeof datos.ubicacion?.coordenadas === 'object'
+      ? `${datos.ubicacion.coordenadas.lat}, ${datos.ubicacion.coordenadas.lng}`
+      : datos.ubicacion?.coordenadas || '',
+    superficie: datos.superficieTotal || 0,
+    dimensiones: {
+      largo: datos.largo || 0,
+      ancho: datos.ancho || 0
+    }
   }
 }
 
@@ -789,4 +832,21 @@ onUnmounted(() => {
 .fade-leave-to {
   opacity: 0;
 }
+
+/* Estilo para el botón de eliminar */
+.delete-image-btn {
+  transition: all 0.2s ease;
+}
+
+.delete-image-btn:hover {
+  transform: scale(1.1);
+  background-color: #ef4444;
+  /* Rojo más intenso */
+}
+
+.fade-out {
+  opacity: 0;
+  transition: opacity 0.2s ease-out;
+}
+
 </style>
