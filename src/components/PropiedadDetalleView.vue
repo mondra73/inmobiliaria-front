@@ -140,8 +140,8 @@
                   </div>
                   <div>
                     <p class="text-sm text-slate-600">Dormitorios</p>
-                    <p v-if="!editando" class="font-medium text-slate-900">{{ propiedad.dormitorios || '-' }}</p>
-                    <input v-else v-model.number="form.dormitorios" type="number" class="w-16 border rounded p-1" />
+                    <p v-if="!editando" class="font-medium text-slate-900">{{ propiedad.habitaciones || '-' }}</p>
+                    <input v-else v-model.number="form.habitaciones" type="number" class="w-16 border rounded p-1" />
                   </div>
                 </div>
 
@@ -208,6 +208,82 @@
               </div>
             </div>
 
+            <!-- Servicios Básicos -->
+            <div class="bg-white rounded-3xl border border-gray-100 p-6" v-if="showBasicServicesSection">
+              <h2 class="text-xl font-light mb-4 text-slate-900 font-semibold">Servicios Básicos</h2>
+
+              <div class="grid grid-cols-2 md:grid-cols-4 gap-4 p-4 bg-slate-50 rounded-xl">
+                <label
+                  class="flex items-start space-x-3 p-3 bg-white rounded-lg shadow-sm hover:bg-slate-100 transition-colors">
+                  <input type="checkbox" v-model="form.servicios.agua" :disabled="!editando"
+                    class="mt-1 h-5 w-5 rounded border-gray-300 text-slate-600 focus:ring-slate-500">
+                  <span class="text-sm font-medium text-slate-700">Agua corriente</span>
+                </label>
+                <label
+                  class="flex items-start space-x-3 p-3 bg-white rounded-lg shadow-sm hover:bg-slate-100 transition-colors">
+                  <input type="checkbox" v-model="form.servicios.luz" :disabled="!editando"
+                    class="mt-1 h-5 w-5 rounded border-gray-300 text-slate-600 focus:ring-slate-500">
+                  <span class="text-sm font-medium text-slate-700">Luz eléctrica</span>
+                </label>
+                <label
+                  class="flex items-start space-x-3 p-3 bg-white rounded-lg shadow-sm hover:bg-slate-100 transition-colors">
+                  <input type="checkbox" v-model="form.servicios.cloacas" :disabled="!editando"
+                    class="mt-1 h-5 w-5 rounded border-gray-300 text-slate-600 focus:ring-slate-500">
+                  <span class="text-sm font-medium text-slate-700">Cloacas</span>
+                </label>
+                <label
+                  class="flex items-start space-x-3 p-3 bg-white rounded-lg shadow-sm hover:bg-slate-100 transition-colors">
+                  <input type="checkbox" v-model="form.servicios.gas" :disabled="!editando"
+                    class="mt-1 h-5 w-5 rounded border-gray-300 text-slate-600 focus:ring-slate-500">
+                  <span class="text-sm font-medium text-slate-700">Gas natural</span>
+                </label>
+              </div>
+            </div>
+
+            <!-- Amenities -->
+            <div class="bg-white rounded-3xl border border-gray-100 p-6" v-if="showAmenitiesSection">
+              <h2 class="text-xl font-light mb-4 text-slate-900 font-semibold">Amenities</h2>
+
+              <div class="grid grid-cols-2 md:grid-cols-3 gap-4 p-4 bg-slate-50 rounded-xl">
+                <label v-if="showGarageField"
+                  class="flex items-start space-x-3 p-3 bg-white rounded-lg shadow-sm hover:bg-slate-100 transition-colors">
+                  <input type="checkbox" v-model="form.garage" :disabled="!editando"
+                    class="mt-1 h-5 w-5 rounded border-gray-300 text-slate-600 focus:ring-slate-500">
+                  <span class="text-sm font-medium text-slate-700">Garage</span>
+                </label>
+                <label v-if="showGardenField"
+                  class="flex items-start space-x-3 p-3 bg-white rounded-lg shadow-sm hover:bg-slate-100 transition-colors">
+                  <input type="checkbox" v-model="form.jardin" :disabled="!editando"
+                    class="mt-1 h-5 w-5 rounded border-gray-300 text-slate-600 focus:ring-slate-500">
+                  <span class="text-sm font-medium text-slate-700">Jardín</span>
+                </label>
+                <label v-if="showPoolField"
+                  class="flex items-start space-x-3 p-3 bg-white rounded-lg shadow-sm hover:bg-slate-100 transition-colors">
+                  <input type="checkbox" v-model="form.piscina" :disabled="!editando"
+                    class="mt-1 h-5 w-5 rounded border-gray-300 text-slate-600 focus:ring-slate-500">
+                  <span class="text-sm font-medium text-slate-700">Piscina</span>
+                </label>
+                <label v-if="showBalconyField"
+                  class="flex items-start space-x-3 p-3 bg-white rounded-lg shadow-sm hover:bg-slate-100 transition-colors">
+                  <input type="checkbox" v-model="form.balcon" :disabled="!editando"
+                    class="mt-1 h-5 w-5 rounded border-gray-300 text-slate-600 focus:ring-slate-500">
+                  <span class="text-sm font-medium text-slate-700">Balcón</span>
+                </label>
+                <label v-if="showTerraceField"
+                  class="flex items-start space-x-3 p-3 bg-white rounded-lg shadow-sm hover:bg-slate-100 transition-colors">
+                  <input type="checkbox" v-model="form.terraza" :disabled="!editando"
+                    class="mt-1 h-5 w-5 rounded border-gray-300 text-slate-600 focus:ring-slate-500">
+                  <span class="text-sm font-medium text-slate-700">Terraza</span>
+                </label>
+                <label v-if="showGrillField"
+                  class="flex items-start space-x-3 p-3 bg-white rounded-lg shadow-sm hover:bg-slate-100 transition-colors">
+                  <input type="checkbox" v-model="form.parrilla" :disabled="!editando"
+                    class="mt-1 h-5 w-5 rounded border-gray-300 text-slate-600 focus:ring-slate-500">
+                  <span class="text-sm font-medium text-slate-700">Parrilla</span>
+                </label>
+              </div>
+            </div>
+
             <!-- Descripción editable -->
             <div class="bg-white rounded-3xl border border-gray-100 p-6">
               <h2 class="text-xl font-light mb-4 text-slate-900 font-semibold">Descripción</h2>
@@ -223,7 +299,7 @@
 
               <div v-if="!editando" class="space-y-2">
                 <p class="text-slate-700">{{ propiedad.tipo === 'Terreno' ? propiedad.calle : propiedad.ubicacion?.calle
-                  }}
+                }}
                   {{ propiedad.tipo === 'Terreno' ? propiedad.altura : propiedad.ubicacion?.altura }}</p>
                 <p class="text-slate-700">{{ propiedad.tipo === 'Terreno' ? propiedad.localidad :
                   propiedad.ubicacion?.localidad }}</p>
@@ -463,7 +539,19 @@ const editando = ref(false)
 const form = ref({
   precio: { monto: 0, moneda: 'ARS' },
   ubicacion: { coordenadas: { lat: 0, lng: 0 } },
-  imagenes: []
+  imagenes: [],
+  servicios: {
+    agua: false,
+    luz: false,
+    cloacas: false,
+    gas: false
+  },
+  garage: false,
+  jardin: false,
+  piscina: false,
+  balcon: false,
+  terraza: false,
+  parrilla: false
 })
 const mensajeExito = ref('')
 const mensajeError = ref('')
@@ -472,6 +560,25 @@ const mostrarModalConfirmacion = ref(false)
 const eliminando = ref(false)
 const mostrarModalConfirmacionImagen = ref(false)
 const imagenAEliminar = ref(null)
+
+// Campos según tipo de propiedad
+const showBedroomsField = computed(() => ['Casa', 'Departamento'].includes(propiedad.value?.tipo))
+const showBathroomsField = computed(() => ['Casa', 'Departamento', 'Local comercial'].includes(propiedad.value?.tipo))
+const showCoveredSurfaceField = computed(() => ['Casa', 'Departamento', 'Local comercial'].includes(propiedad.value?.tipo))
+const showAgeField = computed(() => ['Casa', 'Departamento', 'Local comercial'].includes(propiedad.value?.tipo))
+const showRoomsField = computed(() => ['Casa', 'Departamento'].includes(propiedad.value?.tipo))
+const showBasicServicesSection = computed(() =>
+  ['Casa', 'Departamento', 'Local comercial', 'Fondo de Comercio', 'Terreno'].includes(propiedad.value?.tipo)
+)
+
+// Amenities
+const showGarageField = computed(() => ['Casa', 'Departamento'].includes(propiedad.value?.tipo))
+const showGardenField = computed(() => ['Casa'].includes(propiedad.value?.tipo))
+const showPoolField = computed(() => ['Casa'].includes(propiedad.value?.tipo))
+const showBalconyField = computed(() => ['Casa', 'Departamento'].includes(propiedad.value?.tipo))
+const showTerraceField = computed(() => ['Casa', 'Departamento'].includes(propiedad.value?.tipo))
+const showGrillField = computed(() => ['Casa'].includes(propiedad.value?.tipo))
+const showAmenitiesSection = computed(() => ['Casa', 'Departamento'].includes(propiedad.value?.tipo))
 
 // Función para mostrar mensajes temporales
 const mostrarMensajeTemporal = (tipo, texto, duracion = 3000) => {
@@ -623,12 +730,23 @@ const activarEdicion = () => {
     visible: propiedad.value.visible,
     imagenes: propiedad.value.imagenes?.map(img => ({
       ...img,
-      // Asegurar que todos los campos necesarios existan
       descripcion: img.descripcion || '',
       orden: img.orden || 0,
       esPortada: img.esPortada || false
-    })) || []
-  }));
+    })) || [],
+    servicios: propiedad.value.servicios || {
+      agua: false,
+      luz: false,
+      cloacas: false,
+      gas: false
+    },
+    garage: propiedad.value.garage || false,
+    jardin: propiedad.value.jardin || false,
+    piscina: propiedad.value.piscina || false,
+    balcon: propiedad.value.balcon || false,
+    terraza: propiedad.value.terraza || false,
+    parrilla: propiedad.value.parrilla || false
+  }))
 
   // Para Departamentos específicamente
   if (propiedad.value.tipo === 'Departamento') {
@@ -700,7 +818,7 @@ const toggleVisibilidad = () => {
 const guardarCambios = async () => {
   try {
     const id = route.params.id
-    
+
     // 1. Validar que tenemos un tipo de propiedad válido
     if (!propiedad.value?.tipo) {
       throw new Error('Tipo de propiedad no definido')
@@ -763,7 +881,7 @@ const guardarCambios = async () => {
 // Funciones auxiliares
 const normalizarTipoPropiedad = (tipo) => {
   if (!tipo) return null
-  
+
   const tiposValidos = {
     'departamento': 'Departamento',
     'depto': 'Departamento',
@@ -848,5 +966,4 @@ onUnmounted(() => {
   opacity: 0;
   transition: opacity 0.2s ease-out;
 }
-
 </style>
