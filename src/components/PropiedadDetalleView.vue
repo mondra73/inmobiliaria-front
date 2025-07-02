@@ -48,32 +48,32 @@
           </div>
 
           <div class="flex space-x-2">
-            <button v-if="!editando" @click="activarEdicion"
-              class="bg-slate-900 text-white px-4 py-2 rounded-xl text-sm">
-              Editar
-            </button>
-            <button v-else @click="guardarCambios" class="bg-green-600 text-white px-4 py-2 rounded-xl text-sm">
-              Guardar
-            </button>
-            <button v-if="editando" @click="cancelarEdicion"
-              class="border border-slate-200 bg-white px-4 py-2 rounded-xl text-sm">
-              Cancelar
-            </button>
+  <button v-if="!editando && puedeEditarEliminar" @click="activarEdicion"
+    class="bg-slate-900 text-white px-4 py-2 rounded-xl text-sm">
+    Editar
+  </button>
+  <button v-else-if="editando && puedeEditarEliminar" @click="guardarCambios" class="bg-green-600 text-white px-4 py-2 rounded-xl text-sm">
+    Guardar
+  </button>
+  <button v-if="editando && puedeEditarEliminar" @click="cancelarEdicion"
+    class="border border-slate-200 bg-white px-4 py-2 rounded-xl text-sm">
+    Cancelar
+  </button>
 
-            <!-- Botón Eliminar -->
-            <button @click="confirmarEliminacion" :disabled="eliminando" :class="[
-              'px-4 py-2 rounded-xl text-sm transition-colors',
-              eliminando ? 'bg-red-400 cursor-wait' : 'bg-red-600 hover:bg-red-700 text-white'
-            ]">
-              <span v-if="!eliminando">Eliminar</span>
-              <span v-else>Eliminando...</span>
-            </button>
+  <button v-if="puedeEditarEliminar" @click="confirmarEliminacion" :disabled="eliminando" :class="[
+      'px-4 py-2 rounded-xl text-sm transition-colors',
+      eliminando ? 'bg-red-400 cursor-wait' : 'bg-red-600 hover:bg-red-700 text-white'
+    ]">
+    <span v-if="!eliminando">Eliminar</span>
+    <span v-else>Eliminando...</span>
+  </button>
 
-            <a :href="`/propiedad/${propiedad._id}`" target="_blank"
-              class="border border-slate-200 bg-white px-4 py-2 rounded-xl text-sm">
-              Vista Pública
-            </a>
-          </div>
+  <a :href="`/propiedad/${propiedad._id}`" target="_blank"
+    class="border border-slate-200 bg-white px-4 py-2 rounded-xl text-sm">
+    Vista Pública
+  </a>
+</div>
+
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -299,7 +299,7 @@
 
               <div v-if="!editando" class="space-y-2">
                 <p class="text-slate-700">{{ propiedad.tipo === 'Terreno' ? propiedad.calle : propiedad.ubicacion?.calle
-                }}
+                  }}
                   {{ propiedad.tipo === 'Terreno' ? propiedad.altura : propiedad.ubicacion?.altura }}</p>
                 <p class="text-slate-700">{{ propiedad.tipo === 'Terreno' ? propiedad.localidad :
                   propiedad.ubicacion?.localidad }}</p>
@@ -526,8 +526,9 @@
 import { onMounted, onUnmounted, ref, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import api from '../api'
-import { Home, Users, Building, Wrench, MapPin, DollarSign, Calendar } from 'lucide-vue-next'
+import { Home, Users, Building, Wrench, DollarSign, Calendar } from 'lucide-vue-next'
 import { uploadImageToCloudinary } from '../../utils/uploadToCloudinary'
+import { jwtDecode } from 'jwt-decode';
 
 // Estados reactivos
 const propiedad = ref(null)
@@ -579,6 +580,27 @@ const showBalconyField = computed(() => ['Casa', 'Departamento'].includes(propie
 const showTerraceField = computed(() => ['Casa', 'Departamento'].includes(propiedad.value?.tipo))
 const showGrillField = computed(() => ['Casa'].includes(propiedad.value?.tipo))
 const showAmenitiesSection = computed(() => ['Casa', 'Departamento'].includes(propiedad.value?.tipo))
+
+const puedeEditarEliminar = computed(() => {
+  try {
+    const token = localStorage.getItem('auth-token');
+    if (!token) {
+      return false; // Si no hay token, no puede editar/eliminar
+    }
+
+    const decoded = jwtDecode(token);
+    // Verificar si el rol es 'admin' Y si el token no ha expirado
+    const currentTime = Date.now() / 1000; // Fecha actual en segundos UNIX
+    return decoded.rol === 'admin' && decoded.exp > currentTime;
+
+  } catch (error) {
+    // Si hay un error decodificando (el token es inválido, corrupto, etc.),
+    // o si falta alguna propiedad, asumimos que no está autorizado.
+    console.error('Error al decodificar el token o token inválido:', error);
+    return false;
+  }
+});
+
 
 // Función para mostrar mensajes temporales
 const mostrarMensajeTemporal = (tipo, texto, duracion = 3000) => {
