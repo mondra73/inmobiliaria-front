@@ -146,8 +146,8 @@
           <!-- Características numéricas -->
           <div class="grid grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
             <div v-if="showBedroomsField">
-              <label class="block mb-2 text-sm font-medium text-slate-700" for="dormitorios">Dormitorios</label>
-              <input id="dormitorios" type="number" v-model.number="formData.dormitorios" placeholder="0" min="0"
+              <label class="block mb-2 text-sm font-medium text-slate-700" for="habitaciones">Habitaciones</label>
+              <input id="habitaciones" type="number" v-model.number="formData.habitaciones" placeholder="0" min="0"
                 class="w-full p-4 border-2 border-gray-300 rounded-xl hover:border-gray-400 focus:outline-none focus:border-slate-600 focus:ring-2 focus:ring-slate-200 transition-all duration-200 shadow-sm" />
             </div>
 
@@ -427,28 +427,24 @@ const initialFormData = {
   descripcion: '',
   antiguedad: null,
   categoria: '',
-  tipoOperacion: '',
   precio: {
     monto: null,
     moneda: 'ARS'
   },
-  // Características
   baños: null,
-  dormitorios: null,
+  habitaciones: null,
   ambientes: null,
   superficieTotal: null,
   superficieCubierta: null,
   hectareas: null,
   largo: null,
   ancho: null,
-  // Amenities
   piscina: false,
   parrilla: false,
   jardin: false,
   terraza: false,
   garage: false,
   balcon: false,
-  // Servicios
   servicios: {
     agua: false,
     luz: false,
@@ -503,9 +499,21 @@ const getEndpoint = (categoria) => {
   return endpointsPorCategoria[categoria]
 }
 
+// Añadir esta función para normalizar los tipos
+const normalizePropertyType = (type) => {
+  const types = {
+    'Casa': 'Casa',
+    'Departamento': 'Departamento',
+    'Local comercial': 'Local',
+    'Terreno': 'Terreno',
+    'Campo': 'Campo',
+    'Fondo de Comercio': 'FondoComercio'
+  }
+  return types[type] || type
+}
+
 // Función para preparar el payload según el tipo
 const preparePayload = (formData) => {
-  // Clonamos el objeto para no modificar el original
   const payload = JSON.parse(JSON.stringify(formData))
 
   // Eliminar campos que no deben enviarse
@@ -517,8 +525,33 @@ const preparePayload = (formData) => {
     throw new Error('Tipo de operación no válido')
   }
 
-  // Eliminamos campos que no deben enviarse para ningún tipo
-  delete payload.hectareas
+  // Convertir campos numéricos
+  const numericFields = [
+    'altura', 'antiguedad', 'baños', 'habitaciones', 'ambientes',
+    'superficieTotal', 'superficieCubierta', 'largo', 'ancho'
+  ]
+
+  numericFields.forEach(field => {
+    if (payload[field] !== null && payload[field] !== undefined && payload[field] !== '') {
+      payload[field] = Number(payload[field])
+    } else {
+      payload[field] = null
+    }
+  })
+
+  // Convertir coordenadas si es string
+  if (payload.ubicacion?.coordenadas && typeof payload.ubicacion.coordenadas === 'string') {
+    const [lat, lng] = payload.ubicacion.coordenadas.split(',').map(Number)
+    payload.ubicacion.coordenadas = { lat, lng }
+  }
+
+  // Asegurar que los servicios siempre sean booleanos
+  payload.servicios = {
+    agua: formData.servicios.agua === true || formData.servicios.agua === 'true',
+    luz: formData.servicios.luz === true || formData.servicios.luz === 'true',
+    cloacas: formData.servicios.cloacas === true || formData.servicios.cloacas === 'true',
+    gas: formData.servicios.gas === true || formData.servicios.gas === 'true'
+  }
 
   // Transformaciones específicas por tipo de propiedad
   switch (formData.categoria) {
@@ -554,6 +587,33 @@ const preparePayload = (formData) => {
       delete payload.superficieTotal
       delete payload.superficieCubierta
       break
+
+    case 'Casa':
+      payload.garage = Boolean(payload.garage);
+      payload.jardin = Boolean(payload.jardin);
+      payload.piscina = Boolean(payload.piscina);
+      payload.balcon = Boolean(payload.balcon);
+      payload.terraza = Boolean(payload.terraza);
+      payload.parrilla = Boolean(payload.parrilla);
+
+      // Estructura específica para servicios
+      payload.servicios = {
+        agua: !!payload.servicios?.agua,
+        luz: !!payload.servicios?.luz,
+        cloacas: !!payload.servicios?.cloacas,
+        gas: !!payload.servicios?.gas
+      };
+      break;
+
+    case 'Departamento':
+      // Asegurar que los campos booleanos sean booleanos
+      payload.garage = Boolean(payload.garage)
+      payload.jardin = Boolean(payload.jardin)
+      payload.piscina = Boolean(payload.piscina)
+      payload.balcon = Boolean(payload.balcon)
+      payload.terraza = Boolean(payload.terraza)
+      payload.parrilla = Boolean(payload.parrilla)
+      break
   }
 
   return payload
@@ -566,160 +626,92 @@ const handlePropertyTypeChange = () => {
   console.log('Tipo de propiedad seleccionado:', formData.value.categoria)
 }
 
-const handleFileUpload = (event) => {
-  const uploadedFiles = Array.from(event.target.files)
-  files.value = []
-
-  uploadedFiles.forEach(file => {
-    if (!file.type.match('image.*')) return
-
-    const reader = new FileReader()
-    reader.onload = (e) => {
-      files.value.push({
-        file: file,
-        preview: e.target.result
-      })
-
-      formData.value.imagenes.push({
-        url: URL.createObjectURL(file),
-        descripcion: '',
-        orden: formData.value.imagenes.length,
-        esPortada: formData.value.imagenes.length === 0
-      })
+const handleFileUpload = async (event) => {
+  try {
+    const uploadedFiles = Array.from(event.target.files)
+    files.value = []
+    
+    for (const file of uploadedFiles) {
+      if (!file.type.match('image.*')) continue
+      
+      const reader = new FileReader()
+      reader.onload = (e) => {
+        files.value.push({
+          file: file,
+          preview: e.target.result,
+          descripcion: ''
+        })
+      }
+      reader.readAsDataURL(file)
     }
-    reader.readAsDataURL(file)
-  })
+  } catch (error) {
+    console.error('Error al cargar imágenes:', error)
+    mostrarMensaje.value = true
+    mensajeError.value = 'Error al cargar imágenes. Asegúrese de que son archivos válidos.'
+  }
 }
 
 const submitForm = async () => {
   try {
-    isLoading.value = true
+    isLoading.value = true;
+    mensajeExito.value = '';
+    mensajeError.value = '';
+    mostrarMensaje.value = false;
 
-    // Resetear mensajes
-    mensajeExito.value = ''
-    mensajeError.value = ''
-    mostrarMensaje.value = false
-
-    // 1. Verificación de autenticación
-    const token = localStorage.getItem('auth-token')
-    if (!token) {
-      mensajeError.value = '❌ No estás autenticado. Por favor inicia sesión.'
-      mostrarMensaje.value = true
-      setTimeout(() => router.push('/login'), 2000)
-      return
+    // Validación adicional para servicios básicos
+    if (showBasicServicesSection.value) {
+      if (!Object.values(formData.value.servicios).some(v => v)) {
+        console.warn('Ningún servicio básico seleccionado')
+      }
     }
 
-    // 2. Validaciones básicas
-    if (!formData.value.tituloPublicacion) {
-      mensajeError.value = '❌ Por favor complete el título de la propiedad'
-      mostrarMensaje.value = true
-      return
-    }
+    // Validaciones básicas
+    if (!formData.value.tituloPublicacion) throw new Error('Por favor complete el título de la propiedad');
+    if (!formData.value.ubicacion.localidad) throw new Error('Por favor ingrese la localidad');
+    if (!formData.value.categoria) throw new Error('Por favor seleccione un tipo de propiedad');
+    if (!formData.value.operacion) throw new Error('Por favor seleccione un tipo de operación');
+    if (!formData.value.precio.monto || formData.value.precio.monto <= 0) throw new Error('Por favor ingrese un precio válido');
+    if (files.value.length === 0) throw new Error('Debe subir al menos una imagen');
 
-    if (!formData.value.ubicacion.localidad) {
-      mensajeError.value = '❌ Por favor ingrese la localidad'
-      mostrarMensaje.value = true
-      return
-    }
-
-    if (!formData.value.categoria) {
-      mensajeError.value = '❌ Por favor seleccione un tipo de propiedad'
-      mostrarMensaje.value = true
-      return
-    }
-
-    if (!formData.value.operacion) {
-      mensajeError.value = '❌ Por favor seleccione un tipo de operación'
-      mostrarMensaje.value = true
-      return
-    }
-
-    // Validación específica para operación
-    const operacionesValidas = ['venta', 'alquiler', 'alquiler temporal']
-    if (!operacionesValidas.includes(formData.value.operacion)) {
-      mensajeError.value = '❌ Tipo de operación no válido'
-      mostrarMensaje.value = true
-      return
-    }
-
-    if (!formData.value.precio.monto || formData.value.precio.monto <= 0) {
-      mensajeError.value = '❌ Por favor ingrese un precio válido'
-      mostrarMensaje.value = true
-      return
-    }
-
-    // 3. Obtener el endpoint correcto
-    const endpoint = getEndpoint(formData.value.categoria)
-    if (!endpoint) {
-      mensajeError.value = '❌ Tipo de propiedad no válido o no implementado'
-      mostrarMensaje.value = true
-      return
-    }
-
-    // 4. Preparar el payload específico
-    const payload = preparePayload(formData.value)
-
-    // 5. Convertir coordenadas si es necesario (antes de eliminar ubicacion)
-    if (typeof payload.ubicacion?.coordenadas === 'string') {
-      const [lat, lng] = payload.ubicacion.coordenadas.split(',').map(Number)
-      payload.ubicacion.coordenadas = { lat, lng }
-    }
-
-    const imageUrls = []
-
+    // 1. Subir imágenes a Cloudinary primero
+    const uploadedImages = [];
     for (const file of files.value) {
       const url = await uploadImageToCloudinary(file.file);
-      imageUrls.push({
+      uploadedImages.push({
         url,
-        descripcion: '', // si querés podés agregar esto desde el formulario
-        orden: imageUrls.length,
-        esPortada: imageUrls.length === 0
+        descripcion: file.descripcion || '',
+        orden: uploadedImages.length,
+        esPortada: uploadedImages.length === 0
       });
     }
 
-    payload.imagenes = imageUrls;
+    // 2. Preparar el payload con las URLs reales
+    const payload = preparePayload({
+      ...formData.value,
+      imagenes: uploadedImages
+    });
 
-    // 6. Enviar los datos
-    const response = await api.post(endpoint, payload)
+    // 3. Eliminar campo duplicado de altura si existe
+    if (payload.altura) delete payload.altura;
 
-    // 7. Manejar respuesta exitosa
-    mensajeExito.value = `✅ ${formData.value.categoria} creado con éxito! Redirigiendo...`
-    mostrarMensaje.value = true
+    console.log('Payload final:', JSON.stringify(payload, null, 2));
 
-    setTimeout(() => {
-      router.push(`/propiedad/${response.data.id}`)
-    }, 2000)
+    // 4. Enviar al backend
+    const endpoint = getEndpoint(formData.value.categoria);
+    const response = await api.post(endpoint, payload);
 
+    mensajeExito.value = `✅ ${formData.value.categoria} creada con éxito! Redirigiendo...`;
+    mostrarMensaje.value = true;
+
+    setTimeout(() => router.push(`/propiedad/${response.data.id}`), 2000);
   } catch (error) {
-    console.error('Error al enviar el formulario:', error)
-
-    let errorMessage = '❌ Error al guardar la propiedad'
-
-    if (error.response) {
-      if (error.response.data?.message) {
-        errorMessage = `❌ ${error.response.data.message}`
-      }
-
-      if (error.response.status === 401) {
-        errorMessage = '❌ Sesión expirada. Por favor inicie sesión nuevamente.'
-        setTimeout(() => router.push('/login'), 2000)
-      }
-    } else if (error.message) {
-      errorMessage = `❌ ${error.message}`
-    }
-
-    mensajeError.value = errorMessage
-    mostrarMensaje.value = true
+    console.error('Error:', error);
+    mensajeError.value = `❌ ${error.response?.data?.message || error.message}`;
+    mostrarMensaje.value = true;
   } finally {
-    isLoading.value = false
-    // Ocultar mensaje después de 5 segundos
-    if (mostrarMensaje.value) {
-      setTimeout(() => {
-        mostrarMensaje.value = false
-      }, 5000)
-    }
+    isLoading.value = false;
   }
-}
+};
 
 const resetForm = () => {
   // Guardar solo los valores que queremos mantener
