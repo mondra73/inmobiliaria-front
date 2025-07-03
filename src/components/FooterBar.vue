@@ -17,7 +17,7 @@
 
             <p class="footer-copy text-caption">
                 Matrícula Profesional Tomo I Folio 81 Nº 241 C.M.P. <br>
-                © 2024 Martillero Público. Todos los derechos reservados.
+                © 2025 Martillero Público. Todos los derechos reservados.
             </p>
         </v-container>
     </v-footer>
