@@ -11,7 +11,7 @@
         <template v-if="!isAuthenticated">
           <v-btn variant="text" class="text-white" @click="scrollTo('nosotros')">Nosotros</v-btn>
           <v-btn variant="text" class="text-white" @click="router.push('/propiedades-publicas')">Propiedades</v-btn>
-          <v-btn variant="text" class="text-white" @click="goToContacto">Consultar</v-btn>
+          <v-btn variant="text" class="text-white" @click="goToContacto">Contacto</v-btn>
         </template>
         <template v-else>
           <v-btn variant="text" class="text-white" @click="goToDashboard">Dashboard</v-btn>
