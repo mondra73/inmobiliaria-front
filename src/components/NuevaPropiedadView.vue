@@ -276,6 +276,25 @@
                   class="mt-1 h-5 w-5 rounded border-gray-300 text-slate-600 focus:ring-slate-500">
                 <span class="text-sm font-medium text-slate-700">Parrilla</span>
               </label>
+              <label v-if="formData.categoria === 'Departamento'"
+      class="flex items-start space-x-3 p-3 bg-white rounded-lg shadow-sm hover:bg-slate-100 transition-colors">
+      <input type="checkbox" v-model="formData.tieneAscensor"
+        class="mt-1 h-5 w-5 rounded border-gray-300 text-slate-600 focus:ring-slate-500">
+      <span class="text-sm font-medium text-slate-700">Ascensor</span>
+    </label>
+    <label v-if="formData.categoria === 'Departamento'"
+      class="flex items-start space-x-3 p-3 bg-white rounded-lg shadow-sm hover:bg-slate-100 transition-colors">
+      <input type="checkbox" v-model="formData.seguridad24hs"
+        class="mt-1 h-5 w-5 rounded border-gray-300 text-slate-600 focus:ring-slate-500">
+      <span class="text-sm font-medium text-slate-700">Seguridad 24hs</span>
+    </label>
+    <label v-if="formData.categoria === 'Departamento'"
+      class="flex items-start space-x-3 p-3 bg-white rounded-lg shadow-sm hover:bg-slate-100 transition-colors">
+      <input type="checkbox" v-model="formData.gimnasio"
+        class="mt-1 h-5 w-5 rounded border-gray-300 text-slate-600 focus:ring-slate-500">
+      <span class="text-sm font-medium text-slate-700">Gimnasio</span>
+    </label>
+        
             </div>
           </div>
         </div>
@@ -451,6 +470,9 @@ const initialFormData = {
     cloacas: false,
     gas: false
   },
+  tieneAscensor: false,
+  seguridad24hs: false,
+  gimnasio: false,
   imagenes: []
 }
 
@@ -512,81 +534,91 @@ const normalizePropertyType = (type) => {
   return types[type] || type
 }
 
-// Función para preparar el payload según el tipo
+// Función para preparar el payload según el tipo - VERSIÓN CORREGIDA
 const preparePayload = (formData) => {
-  const payload = JSON.parse(JSON.stringify(formData))
+  const payload = JSON.parse(JSON.stringify(formData));
 
   // Eliminar campos que no deben enviarse
-  delete payload.tipoOperacion
-  delete payload.hectareas
+  delete payload.tipoOperacion;
+  delete payload.hectareas;
 
   // Validar operación
   if (!['venta', 'alquiler', 'alquiler temporal'].includes(payload.operacion)) {
-    throw new Error('Tipo de operación no válido')
+    throw new Error('Tipo de operación no válido');
   }
 
   // Convertir campos numéricos
   const numericFields = [
     'altura', 'antiguedad', 'baños', 'habitaciones', 'ambientes',
     'superficieTotal', 'superficieCubierta', 'largo', 'ancho'
-  ]
+  ];
 
   numericFields.forEach(field => {
     if (payload[field] !== null && payload[field] !== undefined && payload[field] !== '') {
-      payload[field] = Number(payload[field])
+      payload[field] = Number(payload[field]);
     } else {
-      payload[field] = null
+      payload[field] = null;
     }
-  })
+  });
 
   // Convertir coordenadas si es string
   if (payload.ubicacion?.coordenadas && typeof payload.ubicacion.coordenadas === 'string') {
-    const [lat, lng] = payload.ubicacion.coordenadas.split(',').map(Number)
-    payload.ubicacion.coordenadas = { lat, lng }
+    const [lat, lng] = payload.ubicacion.coordenadas.split(',').map(Number);
+    payload.ubicacion.coordenadas = { lat, lng };
   }
 
-  // Asegurar que los servicios siempre sean booleanos
+  // Asegurar que los servicios se mantengan
   payload.servicios = {
-    agua: formData.servicios.agua === true || formData.servicios.agua === 'true',
-    luz: formData.servicios.luz === true || formData.servicios.luz === 'true',
-    cloacas: formData.servicios.cloacas === true || formData.servicios.cloacas === 'true',
-    gas: formData.servicios.gas === true || formData.servicios.gas === 'true'
-  }
+    agua: !!formData.servicios?.agua,
+    luz: !!formData.servicios?.luz,
+    cloacas: !!formData.servicios?.cloacas,
+    gas: !!formData.servicios?.gas
+  };
+
+  // Convertir amenities a boolean
+  const amenities = [
+    'terraza', 'garage', 'balcon', 'tieneAscensor',
+    'seguridad24hs', 'piscina', 'gimnasio', 'salonDeUsosMultiples'
+  ];
+  
+  amenities.forEach(amenity => {
+    payload[amenity] = !!formData[amenity];
+  });
 
   // Transformaciones específicas por tipo de propiedad
   switch (formData.categoria) {
     case 'Campo':
       if (formData.hectareas) {
-        payload.superficieTotal = formData.hectareas * 10000
+        payload.superficieTotal = formData.hectareas * 10000;
       }
-      delete payload.ubicacion.calle
-      delete payload.ubicacion.altura
-      delete payload.ubicacion.entreCalles
-      break
+      delete payload.ubicacion.calle;
+      delete payload.ubicacion.altura;
+      delete payload.ubicacion.entreCalles;
+      break;
 
     case 'Terreno':
       payload.dimensiones = {
         largo: formData.largo,
         ancho: formData.ancho
-      }
+      };
       // Mapear campos de ubicación a la raíz para el backend
-      payload.calle = formData.ubicacion.calle
-      payload.altura = formData.ubicacion.altura
-      payload.entreCalle1 = formData.ubicacion.entreCalles.calle1
-      payload.entreCalle2 = formData.ubicacion.entreCalles.calle2
-      payload.localidad = formData.ubicacion.localidad
-      payload.coordenadas = formData.ubicacion.coordenadas
+      payload.calle = formData.ubicacion.calle;
+      payload.altura = formData.ubicacion.altura;
+      payload.entreCalle1 = formData.ubicacion.entreCalles.calle1;
+      payload.entreCalle2 = formData.ubicacion.entreCalles.calle2;
+      payload.localidad = formData.ubicacion.localidad;
+      payload.coordenadas = formData.ubicacion.coordenadas;
 
       // Mapear superficie
-      payload.superficie = formData.superficieTotal
+      payload.superficie = formData.superficieTotal;
 
       // Eliminar campos que no necesita el backend
-      delete payload.largo
-      delete payload.ancho
-      delete payload.ubicacion
-      delete payload.superficieTotal
-      delete payload.superficieCubierta
-      break
+      delete payload.largo;
+      delete payload.ancho;
+      delete payload.ubicacion;
+      delete payload.superficieTotal;
+      delete payload.superficieCubierta;
+      break;
 
     case 'Casa':
       payload.garage = Boolean(payload.garage);
@@ -595,29 +627,23 @@ const preparePayload = (formData) => {
       payload.balcon = Boolean(payload.balcon);
       payload.terraza = Boolean(payload.terraza);
       payload.parrilla = Boolean(payload.parrilla);
-
-      // Estructura específica para servicios
-      payload.servicios = {
-        agua: !!payload.servicios?.agua,
-        luz: !!payload.servicios?.luz,
-        cloacas: !!payload.servicios?.cloacas,
-        gas: !!payload.servicios?.gas
-      };
       break;
 
     case 'Departamento':
-      // Asegurar que los campos booleanos sean booleanos
-      payload.garage = Boolean(payload.garage)
-      payload.jardin = Boolean(payload.jardin)
-      payload.piscina = Boolean(payload.piscina)
-      payload.balcon = Boolean(payload.balcon)
-      payload.terraza = Boolean(payload.terraza)
-      payload.parrilla = Boolean(payload.parrilla)
-      break
+      // Convertir todos los amenities a boolean
+      const booleanAmenities = [
+        'terraza', 'garage', 'balcon', 'tieneAscensor', 
+        'seguridad24hs', 'piscina', 'gimnasio', 'salonDeUsosMultiples'
+      ];
+      
+      booleanAmenities.forEach(amenity => {
+        payload[amenity] = Boolean(payload[amenity]);
+      });
+      break;
   }
 
-  return payload
-}
+  return payload;
+};
 
 // Manejo de eventos
 const handlePropertyTypeChange = () => {
@@ -658,45 +684,47 @@ const submitForm = async () => {
     mensajeError.value = '';
     mostrarMensaje.value = false;
 
-    // Validación adicional para servicios básicos
-    if (showBasicServicesSection.value) {
-      if (!Object.values(formData.value.servicios).some(v => v)) {
-        console.warn('Ningún servicio básico seleccionado')
-      }
-    }
-
     // Validaciones básicas
     if (!formData.value.tituloPublicacion) throw new Error('Por favor complete el título de la propiedad');
     if (!formData.value.ubicacion.localidad) throw new Error('Por favor ingrese la localidad');
     if (!formData.value.categoria) throw new Error('Por favor seleccione un tipo de propiedad');
     if (!formData.value.operacion) throw new Error('Por favor seleccione un tipo de operación');
     if (!formData.value.precio.monto || formData.value.precio.monto <= 0) throw new Error('Por favor ingrese un precio válido');
-    if (files.value.length === 0) throw new Error('Debe subir al menos una imagen');
-
-    // 1. Subir imágenes a Cloudinary primero
-    const uploadedImages = [];
-    for (const file of files.value) {
-      const url = await uploadImageToCloudinary(file.file);
-      uploadedImages.push({
-        url,
-        descripcion: file.descripcion || '',
-        orden: uploadedImages.length,
-        esPortada: uploadedImages.length === 0
-      });
+    
+    // Validación de imágenes modificada
+    if (files.value.length === 0) {
+      // Si estamos editando y ya hay imágenes, permitir continuar
+      if (!formData.value.imagenes || formData.value.imagenes.length === 0) {
+        throw new Error('Debe subir al menos una imagen');
+      }
     }
 
-    // 2. Preparar el payload con las URLs reales
-    const payload = preparePayload({
-      ...formData.value,
-      imagenes: uploadedImages
-    });
+    // 1. Subir imágenes a Cloudinary solo si hay archivos nuevos
+    let uploadedImages = [];
+    if (files.value.length > 0) {
+      uploadedImages = await Promise.all(
+        files.value.map(async (file) => {
+          const url = await uploadImageToCloudinary(file.file);
+          return {
+            url,
+            descripcion: file.descripcion || '',
+            orden: uploadedImages.length,
+            esPortada: uploadedImages.length === 0
+          };
+        })
+      );
+    }
 
-    // 3. Eliminar campo duplicado de altura si existe
-    if (payload.altura) delete payload.altura;
+    // 2. Preparar el payload
+    const payload = {
+      ...preparePayload(formData.value),
+      // Mantener imágenes existentes si no hay nuevas
+      imagenes: uploadedImages.length > 0 ? uploadedImages : formData.value.imagenes
+    };
 
     console.log('Payload final:', JSON.stringify(payload, null, 2));
 
-    // 4. Enviar al backend
+    // 3. Enviar al backend
     const endpoint = getEndpoint(formData.value.categoria);
     const response = await api.post(endpoint, payload);
 
