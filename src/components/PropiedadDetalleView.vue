@@ -447,13 +447,15 @@
                 <!-- Características adicionales según tipo -->
                 <template v-if="propiedad.tipo === 'Departamento'">
                   <div class="flex items-start space-x-3">
-                    <Building class="w-5 h-5 text-slate-400 mt-0.5" />
-                    <div>
-                      <p class="font-medium text-slate-900">Piso</p>
-                      <p v-if="!editando" class="text-slate-600">{{ propiedad.piso || '-' }}</p>
-                      <input v-else v-model.number="form.piso" type="number" class="w-full border rounded p-1" />
-                    </div>
-                  </div>
+  <Building class="w-5 h-5 text-slate-400 mt-0.5" />
+  <div>
+    <p class="font-medium text-slate-900">Piso</p>
+    <p v-if="!editando" class="text-slate-600">
+      {{ propiedad.piso === 0 ? 'PB' : (propiedad.piso || '-') }}
+    </p>
+    <input v-else v-model.number="form.piso" type="number" class="w-full border rounded p-1" />
+  </div>
+</div>
                   <div class="flex items-start space-x-3">
                     <DollarSign class="w-5 h-5 text-slate-400 mt-0.5" />
                     <div>
