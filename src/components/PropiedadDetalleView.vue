@@ -233,98 +233,103 @@
             </div>
 
             <!-- Servicios Básicos -->
-            <div class="bg-white rounded-3xl border border-gray-100 p-6" v-if="showBasicServicesSection">
+            <div class="bg-white rounded-3xl border border-gray-100 p-6" v-if="propiedad.servicios">
               <h2 class="text-xl font-light mb-4 text-slate-900 font-semibold">Servicios Básicos</h2>
-
               <div class="grid grid-cols-2 md:grid-cols-4 gap-4 p-4 bg-slate-50 rounded-xl">
-                <!-- Agua -->
-                <label v-if="editando || (propiedad.servicios && propiedad.servicios.agua)"
-                  class="flex items-start space-x-3 p-3 bg-white rounded-lg shadow-sm hover:bg-slate-100 transition-colors">
-                  <input type="checkbox" :checked="editando ? form.servicios.agua : propiedad.servicios.agua"
-                    @change="editando ? form.servicios.agua = $event.target.checked : null" :disabled="!editando"
-                    class="mt-1 h-5 w-5 rounded border-gray-300 text-slate-600 focus:ring-slate-500">
+                <div v-if="propiedad.servicios.agua !== undefined"
+                  class="flex items-center space-x-2 p-3 bg-white rounded-lg shadow-sm">
+                  <input type="checkbox" :checked="propiedad.servicios.agua" disabled
+                    class="mt-1 h-5 w-5 rounded border-gray-300 text-slate-600">
                   <span class="text-sm font-medium text-slate-700">Agua corriente</span>
-                </label>
+                </div>
 
-                <!-- Luz -->
-                <label v-if="editando || (propiedad.servicios && propiedad.servicios.luz)"
-                  class="flex items-start space-x-3 p-3 bg-white rounded-lg shadow-sm hover:bg-slate-100 transition-colors">
-                  <input type="checkbox" :checked="editando ? form.servicios.luz : propiedad.servicios.luz"
-                    @change="editando ? form.servicios.luz = $event.target.checked : null" :disabled="!editando"
-                    class="mt-1 h-5 w-5 rounded border-gray-300 text-slate-600 focus:ring-slate-500">
+                <div v-if="propiedad.servicios.luz !== undefined"
+                  class="flex items-center space-x-2 p-3 bg-white rounded-lg shadow-sm">
+                  <input type="checkbox" :checked="propiedad.servicios.luz" disabled
+                    class="mt-1 h-5 w-5 rounded border-gray-300 text-slate-600">
                   <span class="text-sm font-medium text-slate-700">Luz eléctrica</span>
-                </label>
+                </div>
 
-                <!-- Cloacas -->
-                <label v-if="editando || (propiedad.servicios && propiedad.servicios.cloacas)"
-                  class="flex items-start space-x-3 p-3 bg-white rounded-lg shadow-sm hover:bg-slate-100 transition-colors">
-                  <input type="checkbox" :checked="editando ? form.servicios.cloacas : propiedad.servicios.cloacas"
-                    @change="editando ? form.servicios.cloacas = $event.target.checked : null" :disabled="!editando"
-                    class="mt-1 h-5 w-5 rounded border-gray-300 text-slate-600 focus:ring-slate-500">
+                <div v-if="propiedad.servicios.cloacas !== undefined"
+                  class="flex items-center space-x-2 p-3 bg-white rounded-lg shadow-sm">
+                  <input type="checkbox" :checked="propiedad.servicios.cloacas" disabled
+                    class="mt-1 h-5 w-5 rounded border-gray-300 text-slate-600">
                   <span class="text-sm font-medium text-slate-700">Cloacas</span>
-                </label>
+                </div>
 
-                <!-- Gas -->
-                <label v-if="editando || (propiedad.servicios && propiedad.servicios.gas)"
-                  class="flex items-start space-x-3 p-3 bg-white rounded-lg shadow-sm hover:bg-slate-100 transition-colors">
-                  <input type="checkbox" :checked="editando ? form.servicios.gas : propiedad.servicios.gas"
-                    @change="editando ? form.servicios.gas = $event.target.checked : null" :disabled="!editando"
-                    class="mt-1 h-5 w-5 rounded border-gray-300 text-slate-600 focus:ring-slate-500">
+                <div v-if="propiedad.servicios.gas !== undefined"
+                  class="flex items-center space-x-2 p-3 bg-white rounded-lg shadow-sm">
+                  <input type="checkbox" :checked="propiedad.servicios.gas" disabled
+                    class="mt-1 h-5 w-5 rounded border-gray-300 text-slate-600">
                   <span class="text-sm font-medium text-slate-700">Gas natural</span>
-                </label>
+                </div>
               </div>
             </div>
-
             <!-- Amenities -->
-            <!-- Amenities -->
-<div class="bg-white rounded-3xl border border-gray-100 p-6" v-if="showAmenitiesSection">
-  <h2 class="text-xl font-light mb-4 text-slate-900 font-semibold">Amenities</h2>
-  <div class="grid grid-cols-2 md:grid-cols-3 gap-4 p-4 bg-slate-50 rounded-xl">
-    <!-- Amenities generales -->
-    <div v-if="propiedad.garage !== undefined && propiedad.garage !== null" 
-         class="flex items-center space-x-2 p-3 bg-white rounded-lg shadow-sm">
-      <input type="checkbox" :checked="propiedad.garage" disabled 
-             class="mt-1 h-5 w-5 rounded border-gray-300 text-slate-600">
-      <span class="text-sm font-medium text-slate-700">Garage</span>
-    </div>
+            <div class="bg-white rounded-3xl border border-gray-100 p-6" v-if="shouldShowAmenities">
+              <h2 class="text-xl font-light mb-4 text-slate-900 font-semibold">Amenities</h2>
+              <div class="grid grid-cols-2 md:grid-cols-3 gap-4 p-4 bg-slate-50 rounded-xl">
+                <!-- Amenities generales para todos los tipos -->
+                <div v-if="hasAmenity('garage')" class="flex items-center space-x-2 p-3 bg-white rounded-lg shadow-sm">
+                  <input type="checkbox" :checked="propiedad.garage" disabled
+                    class="mt-1 h-5 w-5 rounded border-gray-300 text-slate-600">
+                  <span class="text-sm font-medium text-slate-700">Garage</span>
+                </div>
 
-    <div v-if="propiedad.balcon !== undefined && propiedad.balcon !== null" 
-         class="flex items-center space-x-2 p-3 bg-white rounded-lg shadow-sm">
-      <input type="checkbox" :checked="propiedad.balcon" disabled 
-             class="mt-1 h-5 w-5 rounded border-gray-300 text-slate-600">
-      <span class="text-sm font-medium text-slate-700">Balcón</span>
-    </div>
+                <div v-if="hasAmenity('balcon')" class="flex items-center space-x-2 p-3 bg-white rounded-lg shadow-sm">
+                  <input type="checkbox" :checked="propiedad.balcon" disabled
+                    class="mt-1 h-5 w-5 rounded border-gray-300 text-slate-600">
+                  <span class="text-sm font-medium text-slate-700">Balcón</span>
+                </div>
 
-    <div v-if="propiedad.terraza !== undefined && propiedad.terraza !== null" 
-         class="flex items-center space-x-2 p-3 bg-white rounded-lg shadow-sm">
-      <input type="checkbox" :checked="propiedad.terraza" disabled 
-             class="mt-1 h-5 w-5 rounded border-gray-300 text-slate-600">
-      <span class="text-sm font-medium text-slate-700">Terraza</span>
-    </div>
+                <div v-if="hasAmenity('terraza')" class="flex items-center space-x-2 p-3 bg-white rounded-lg shadow-sm">
+                  <input type="checkbox" :checked="propiedad.terraza" disabled
+                    class="mt-1 h-5 w-5 rounded border-gray-300 text-slate-600">
+                  <span class="text-sm font-medium text-slate-700">Terraza</span>
+                </div>
 
-    <!-- Amenities específicos de departamento -->
-    <div v-if="propiedad.tieneAscensor !== undefined && propiedad.tieneAscensor !== null" 
-         class="flex items-center space-x-2 p-3 bg-white rounded-lg shadow-sm">
-      <input type="checkbox" :checked="propiedad.tieneAscensor" disabled 
-             class="mt-1 h-5 w-5 rounded border-gray-300 text-slate-600">
-      <span class="text-sm font-medium text-slate-700">Ascensor</span>
-    </div>
+                <div v-if="hasAmenity('piscina')" class="flex items-center space-x-2 p-3 bg-white rounded-lg shadow-sm">
+                  <input type="checkbox" :checked="propiedad.piscina" disabled
+                    class="mt-1 h-5 w-5 rounded border-gray-300 text-slate-600">
+                  <span class="text-sm font-medium text-slate-700">Piscina</span>
+                </div>
 
-    <div v-if="propiedad.seguridad24hs !== undefined && propiedad.seguridad24hs !== null" 
-         class="flex items-center space-x-2 p-3 bg-white rounded-lg shadow-sm">
-      <input type="checkbox" :checked="propiedad.seguridad24hs" disabled 
-             class="mt-1 h-5 w-5 rounded border-gray-300 text-slate-600">
-      <span class="text-sm font-medium text-slate-700">Seguridad 24hs</span>
-    </div>
+                <div v-if="hasAmenity('jardin')" class="flex items-center space-x-2 p-3 bg-white rounded-lg shadow-sm">
+                  <input type="checkbox" :checked="propiedad.jardin" disabled
+                    class="mt-1 h-5 w-5 rounded border-gray-300 text-slate-600">
+                  <span class="text-sm font-medium text-slate-700">Jardín</span>
+                </div>
 
-    <div v-if="propiedad.gimnasio !== undefined && propiedad.gimnasio !== null" 
-         class="flex items-center space-x-2 p-3 bg-white rounded-lg shadow-sm">
-      <input type="checkbox" :checked="propiedad.gimnasio" disabled 
-             class="mt-1 h-5 w-5 rounded border-gray-300 text-slate-600">
-      <span class="text-sm font-medium text-slate-700">Gimnasio</span>
-    </div>
-  </div>
-</div>
+                <div v-if="hasAmenity('parrilla')"
+                  class="flex items-center space-x-2 p-3 bg-white rounded-lg shadow-sm">
+                  <input type="checkbox" :checked="propiedad.parrilla" disabled
+                    class="mt-1 h-5 w-5 rounded border-gray-300 text-slate-600">
+                  <span class="text-sm font-medium text-slate-700">Parrilla</span>
+                </div>
+
+                <!-- Amenities específicos de departamento -->
+                <div v-if="propiedad.tipo === 'Departamento' && hasAmenity('tieneAscensor')"
+                  class="flex items-center space-x-2 p-3 bg-white rounded-lg shadow-sm">
+                  <input type="checkbox" :checked="propiedad.tieneAscensor" disabled
+                    class="mt-1 h-5 w-5 rounded border-gray-300 text-slate-600">
+                  <span class="text-sm font-medium text-slate-700">Ascensor</span>
+                </div>
+
+                <div v-if="propiedad.tipo === 'Departamento' && hasAmenity('seguridad24hs')"
+                  class="flex items-center space-x-2 p-3 bg-white rounded-lg shadow-sm">
+                  <input type="checkbox" :checked="propiedad.seguridad24hs" disabled
+                    class="mt-1 h-5 w-5 rounded border-gray-300 text-slate-600">
+                  <span class="text-sm font-medium text-slate-700">Seguridad 24hs</span>
+                </div>
+
+                <div v-if="propiedad.tipo === 'Departamento' && hasAmenity('gimnasio')"
+                  class="flex items-center space-x-2 p-3 bg-white rounded-lg shadow-sm">
+                  <input type="checkbox" :checked="propiedad.gimnasio" disabled
+                    class="mt-1 h-5 w-5 rounded border-gray-300 text-slate-600">
+                  <span class="text-sm font-medium text-slate-700">Gimnasio</span>
+                </div>
+              </div>
+            </div>
 
             <!-- Descripción editable -->
             <div class="bg-white rounded-3xl border border-gray-100 p-6">
@@ -341,7 +346,7 @@
 
               <div v-if="!editando" class="space-y-2">
                 <p class="text-slate-700">{{ propiedad.tipo === 'Terreno' ? propiedad.calle : propiedad.ubicacion?.calle
-                  }}
+                }}
                   {{ propiedad.tipo === 'Terreno' ? propiedad.altura : propiedad.ubicacion?.altura }}</p>
                 <p class="text-slate-700">{{ propiedad.tipo === 'Terreno' ? propiedad.localidad :
                   propiedad.ubicacion?.localidad }}</p>
@@ -447,15 +452,15 @@
                 <!-- Características adicionales según tipo -->
                 <template v-if="propiedad.tipo === 'Departamento'">
                   <div class="flex items-start space-x-3">
-  <Building class="w-5 h-5 text-slate-400 mt-0.5" />
-  <div>
-    <p class="font-medium text-slate-900">Piso</p>
-    <p v-if="!editando" class="text-slate-600">
-      {{ propiedad.piso === 0 ? 'PB' : (propiedad.piso || '-') }}
-    </p>
-    <input v-else v-model.number="form.piso" type="number" class="w-full border rounded p-1" />
-  </div>
-</div>
+                    <Building class="w-5 h-5 text-slate-400 mt-0.5" />
+                    <div>
+                      <p class="font-medium text-slate-900">Piso</p>
+                      <p v-if="!editando" class="text-slate-600">
+                        {{ propiedad.piso === 0 ? 'PB' : (propiedad.piso || '-') }}
+                      </p>
+                      <input v-else v-model.number="form.piso" type="number" class="w-full border rounded p-1" />
+                    </div>
+                  </div>
                   <div class="flex items-start space-x-3">
                     <DollarSign class="w-5 h-5 text-slate-400 mt-0.5" />
                     <div>
@@ -625,15 +630,15 @@ const showTerraceField = computed(() => ['Casa', 'Departamento'].includes(propie
 const showGrillField = computed(() => ['Casa'].includes(propiedad.value?.tipo))
 const showAmenitiesSection = computed(() => {
   if (!propiedad.value) return false;
-  
+
   const amenitiesDepartamento = [
     'garage', 'balcon', 'terraza', 'tieneAscensor',
     'seguridad24hs', 'gimnasio', 'salonDeUsosMultiples'
   ];
-  
+
   // Verifica si es departamento y tiene al menos un amenity definido
-  return propiedad.value.tipo === 'Departamento' && 
-         amenitiesDepartamento.some(a => propiedad.value[a] !== undefined);
+  return propiedad.value.tipo === 'Departamento' &&
+    amenitiesDepartamento.some(a => propiedad.value[a] !== undefined);
 });
 
 //caracteristicas
@@ -1028,6 +1033,27 @@ const transformarTerreno = (datos) => {
     }
   }
 }
+
+// Función para verificar si un amenity debe mostrarse
+const hasAmenity = (amenity) => {
+  return propiedad.value[amenity] !== undefined &&
+    propiedad.value[amenity] !== null &&
+    (propiedad.value.tipo === 'Departamento' || !['tieneAscensor', 'seguridad24hs', 'gimnasio'].includes(amenity));
+};
+
+// Computed property para determinar si mostrar la sección
+const shouldShowAmenities = computed(() => {
+  if (!propiedad.value) return false;
+
+  const generalAmenities = ['garage', 'balcon', 'terraza', 'piscina', 'jardin', 'parrilla'];
+  const deptoAmenities = ['tieneAscensor', 'seguridad24hs', 'gimnasio'];
+
+  const amenitiesToCheck = propiedad.value.tipo === 'Departamento'
+    ? [...generalAmenities, ...deptoAmenities]
+    : generalAmenities;
+
+  return amenitiesToCheck.some(a => propiedad.value[a] !== undefined && propiedad.value[a] !== null);
+});
 
 // Carga inicial
 onMounted(async () => {
