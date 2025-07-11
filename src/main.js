@@ -4,6 +4,7 @@ import App from './App.vue'
 import router from './router'
 import './assets/tailwind.css'
 import vuetify from './plugins/vuetify'
+import './assets/fonts/fonts.css';
 
 const app = createApp(App)
 app.use(vuetify)
