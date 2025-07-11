@@ -5,9 +5,14 @@ module.exports = {
     "./src/**/*.{vue,js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        ubuntu: ['"Ubuntu"', 'sans-serif'],
+        merriweather: ['"Merriweather Sans"', 'sans-serif'],
+      },
+    },
   },
   plugins: [
-    require('@tailwindcss/forms'), // 👈 AGREGALO ACÁ
+    require('@tailwindcss/forms'),
   ],
 }
