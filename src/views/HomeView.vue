@@ -23,7 +23,8 @@
         <div class="text-center mb-16 space-y-4">
           <h2 class="text-4xl font-light text-slate-900">Servicios profesionales</h2>
           <p class="text-xl text-slate-600 max-w-2xl mx-auto">
-            Soluciones integrales respaldadas por la experiencia y el conocimiento del mercado
+            Ofrecemos un servicio inmobiliario personalizado, con enfoque en la excelencia y la confianza.
+            Te acompañamos en cada etapa de tu operación, asegurando resultados exitosos y una experiencia ágil, transparente y segura.
           </p>
         </div>
 
