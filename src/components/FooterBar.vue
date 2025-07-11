@@ -17,7 +17,7 @@
         <v-divider class="my-6" color="grey-darken-3"></v-divider>
 
         <p class="footer-copy text-caption">
-          Matrícula Profesional Tomo I Folio 81 Nº 241 C.M.P. <br>
+          Matricula Profesional N°241 Tomo I Folio 81 C.M.P. <br>
           © 2025 Martillero Público y Corredor Inmobiliario. <br> Todos los derechos reservados.
         </p>
       </v-container>
