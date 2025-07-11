@@ -39,7 +39,7 @@
               </div>
               <div>
                 <h3 class="font-semibold text-slate-900 mb-1">Email</h3>
-                <p class="text-slate-600"></p>
+                <p class="text-slate-600">espinosainmob@gmail.com</p>
               </div>
             </div>
 
