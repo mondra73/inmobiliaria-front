@@ -92,14 +92,24 @@
             <div class="flex justify-center mt-8">
                 <div class="flex space-x-2">
                     <button
-                        class="rounded-xl bg-transparent border border-gray-300 px-4 py-2 hover:bg-gray-100">Anterior</button>
-                    <button class="bg-slate-900 text-white rounded-xl px-4 py-2">1</button>
+                        class="all-[unset] text-slate-900 rounded-xl border border-gray-300 px-4 py-2 hover:bg-gray-100 cursor-pointer">
+                        Anterior
+                    </button>
+                    <button class="all-[unset] bg-slate-900 text-white rounded-xl px-4 py-2 cursor-pointer">
+                        1
+                    </button>
                     <button
-                        class="rounded-xl bg-transparent border border-gray-300 px-4 py-2 hover:bg-gray-100">2</button>
+                        class="all-[unset] text-slate-900 rounded-xl border border-gray-300 px-4 py-2 hover:bg-gray-100 cursor-pointer">
+                        2
+                    </button>
                     <button
-                        class="rounded-xl bg-transparent border border-gray-300 px-4 py-2 hover:bg-gray-100">3</button>
+                        class="all-[unset] text-slate-900 rounded-xl border border-gray-300 px-4 py-2 hover:bg-gray-100 cursor-pointer">
+                        3
+                    </button>
                     <button
-                        class="rounded-xl bg-transparent border border-gray-300 px-4 py-2 hover:bg-gray-100">Siguiente</button>
+                        class="all-[unset] text-slate-900 rounded-xl border border-gray-300 px-4 py-2 hover:bg-gray-100 cursor-pointer">
+                        Siguiente
+                    </button>
                 </div>
             </div>
         </main>

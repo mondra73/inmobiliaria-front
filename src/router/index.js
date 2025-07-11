@@ -8,6 +8,7 @@ import PropiedadesPublicas from "../components/PropiedadesPublicasView.vue";
 import PropiedadDetalle from "../components/PropiedadDetalleView.vue";
 import Dashboard from "../components/DashboardView.vue";
 import NuevaPropiedad from "../components/NuevaPropiedadView.vue";
+import NotFoundView from "../components/NotFoundView.vue";
 
 const routes = [
   { path: "/", component: Home },
@@ -18,7 +19,8 @@ const routes = [
   { path: "/nueva-propiedad", component: NuevaPropiedad, meta: { requiresAuth: true } },
   { path: "/propiedades", component: Propiedades },
   { path: "/propiedades-publicas", component: PropiedadesPublicas },
-  { path: "/propiedad/:id", component: PropiedadDetalle }
+  { path: "/propiedad/:id", component: PropiedadDetalle },
+  { path: '/:pathMatch(.*)*', component: NotFoundView }
 ];
 
 const router = createRouter({
