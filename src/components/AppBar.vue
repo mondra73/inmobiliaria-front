@@ -153,9 +153,11 @@ body {
   padding-top: 110px !important;
 }
 
-.custom-btn {
-  font-size: 16px !important;
-  letter-spacing: 1px;
+.custom-btn,
+.v-list-item-title {
+  font-family: 'Ubuntu', sans-serif !important;
+  font-size: 1rem;
 }
+
 
 </style>
