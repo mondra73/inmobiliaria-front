@@ -23,12 +23,12 @@
         <div class="text-center mb-16 space-y-4">
 
           <p class="text-xl text-slate-600 max-w-2xl mx-auto">
-            Ofrecemos un servicio inmobiliario personalizado en Colón, Buenos Aires, con enfoque en la excelencia y la
+            Ofrecemos un servicio inmobiliario personalizado en Colón, Buenos Aires, y alrededores con enfoque en la excelencia y la
             confianza. Te acompañamos en cada etapa de tu operación, asegurando resultados exitosos y una experiencia
             ágil, transparente y segura. <br><br>
           </p>
 
-          <h2 class="text-4xl font-light text-slate-900">Nuestros Servicios</h2>
+          <h2 class="text-4xl font-medium text-slate-900">Nuestros Servicios</h2>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
