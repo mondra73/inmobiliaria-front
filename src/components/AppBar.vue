@@ -15,10 +15,8 @@
         </template>
         <template v-else>
           <v-btn variant="text" class="text-white" @click="goToDashboard">Dashboard</v-btn>
+          <v-btn variant="text" class="text-white" @click="handleLogout">Cerrar Sesión</v-btn>
         </template>
-        <v-btn variant="text" class="text-white" @click="isAuthenticated ? handleLogout() : goToLogin()">
-          {{ isAuthenticated ? 'Cerrar Sesión' : 'Login' }}
-        </v-btn>
       </div>
 
       <!-- Mobile - Menú con activator directo -->
@@ -40,11 +38,9 @@
               <v-list-item-title class="text-white">Dashboard</v-list-item-title>
             </v-list-item>
           </template>
-          <v-divider class="my-1" />
-          <v-list-item @click="isAuthenticated ? handleLogout() : goToLogin()" class="px-4">
-            <v-list-item-title class="text-white">
-              {{ isAuthenticated ? 'Cerrar Sesión' : 'Login' }}
-            </v-list-item-title>
+          <v-divider v-if="isAuthenticated" class="my-1" />
+          <v-list-item v-if="isAuthenticated" @click="handleLogout" class="px-4">
+            <v-list-item-title class="text-white">Cerrar Sesión</v-list-item-title>
           </v-list-item>
         </v-list>
       </v-menu>
@@ -100,10 +96,6 @@ const navAction = (id) => {
   } else {
     scrollTo(id)
   }
-}
-
-const goToLogin = () => {
-  router.push('/login')
 }
 
 const goToContacto = () => {
