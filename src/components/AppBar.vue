@@ -9,13 +9,13 @@
       <!-- Desktop -->
       <div class="d-none d-md-flex">
         <template v-if="!isAuthenticated">
-          <v-btn variant="text" class="text-white" @click="goToNosotros">Nosotros</v-btn>
-          <v-btn variant="text" class="text-white" @click="router.push('/propiedades-publicas')">Propiedades</v-btn>
-          <v-btn variant="text" class="text-white" @click="goToContacto">Contacto</v-btn>
+          <!-- <v-btn variant="text" class="text-white custom-btn" @click="goToNosotros">Nosotros</v-btn> -->
+          <v-btn variant="text" class="text-white custom-btn" @click="router.push('/propiedades-publicas')">Propiedades</v-btn>
+          <v-btn variant="text" class="text-white custom-btn" @click="goToContacto">Contacto</v-btn>
         </template>
         <template v-else>
-          <v-btn variant="text" class="text-white" @click="goToDashboard">Dashboard</v-btn>
-          <v-btn variant="text" class="text-white" @click="handleLogout">Cerrar Sesión</v-btn>
+          <v-btn variant="text" class="text-white custom-btn" @click="goToDashboard">Dashboard</v-btn>
+          <v-btn variant="text" class="text-white custom-btn" @click="handleLogout">Cerrar Sesión</v-btn>
         </template>
       </div>
 
@@ -78,7 +78,7 @@ const goToHome = () => {
 }
 
 const menuItems = [
-  { id: 'nosotros', title: 'Nosotros' },
+  // { id: 'nosotros', title: 'Nosotros' },
   { id: 'propiedades', title: 'Propiedades' },
   { id: 'consultar', title: 'Consultar' }
 ]
@@ -151,6 +151,11 @@ const handleLogout = () => {
 /* Asegura que el contenido de la página no se oculte tras la barra */
 body {
   padding-top: 110px !important;
+}
+
+.custom-btn {
+  font-size: 16px !important;
+  letter-spacing: 1px;
 }
 
 </style>

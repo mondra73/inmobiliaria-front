@@ -1,33 +1,40 @@
 <template>
+  <div>
     <!-- Nuevo Footer con mismo estilo que App Bar -->
     <v-footer class="glass-footer" padless>
-        <v-container class="py-16 text-center">
-            <div class="d-flex justify-center align-center mb-4">
-                <div class="footer-logo-box">
-                    <span class="footer-logo-text">M</span>
-                </div>
-                <span class="text-h6 font-weight-medium ml-2 text-white">Manuel Espinosa</span>
-            </div>
+      <v-container class="py-16 text-center">
+        <div class="d-flex justify-center align-center mb-4">
+          <div class="footer-logo-box">
+            <span class="footer-logo-text">M</span>
+          </div>
+          <span class="text-h6 font-weight-medium ml-2 text-white">Manuel Espinosa</span>
+        </div>
 
-            <p class="footer-subtitle mx-auto mb-6">
-                Profesionalismo, experiencia y confianza en cada operación inmobiliaria.
-            </p>
+        <p class="footer-subtitle mx-auto mb-6">
+          Profesionalismo, experiencia y confianza en cada operación inmobiliaria.
+        </p>
 
-            <v-divider class="my-6" color="grey-darken-3"></v-divider>
+        <v-divider class="my-6" color="grey-darken-3"></v-divider>
 
-            <p class="footer-copy text-caption">
-                Matrícula Profesional Tomo I Folio 81 Nº 241 C.M.P. <br>
-                © 2025 Martillero Público. Todos los derechos reservados.
-            </p>
-        </v-container>
+        <p class="footer-copy text-caption">
+          Matrícula Profesional Tomo I Folio 81 Nº 241 C.M.P. <br>
+          © 2025 Martillero Público y Corredor Inmobiliario. <br> Todos los derechos reservados.
+        </p>
+      </v-container>
     </v-footer>
 
     <!-- Ícono flotante de WhatsApp (NO TOCAR) -->
-    <a href="https://wa.me/5492473466501?text=Hola%2C%20quisiera%20hacer%20una%20consulta%20sobre%20una%20propiedad"
-        target="_blank" rel="noopener noreferrer" class="whatsapp-float">
-        <v-icon size="36" color="white">mdi-whatsapp</v-icon>
+    <a
+      href="https://wa.me/5492473466501?text=Hola%2C%20quisiera%20hacer%20una%20consulta%20sobre%20una%20propiedad"
+      target="_blank"
+      rel="noopener noreferrer"
+      class="whatsapp-float"
+    >
+      <v-icon size="36" color="white">mdi-whatsapp</v-icon>
     </a>
+  </div>
 </template>
+
 
 <script setup>
 // sin lógica JS
