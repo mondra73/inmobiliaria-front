@@ -1,8 +1,8 @@
 <template>
   <div>
-    <v-app-bar app flat elevate-on-scroll color="surface" class="glass-app-bar">
+    <v-app-bar app flat elevate-on-scroll color="surface" class="glass-app-bar" height="110">
       <!-- Logo en lugar del texto -->
-      <v-img :src="logo" max-height="50" max-width="120" contain @click="goToHome" class="cursor-pointer"></v-img>
+      <v-img :src="logo" max-height="100" max-width="150" contain @click="goToHome" class="cursor-pointer"></v-img>
 
       <v-spacer></v-spacer>
 
@@ -51,7 +51,7 @@
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
-import logo from '../assets/simbolo.png'
+import logo from '../assets/simbolo-completo.png'
 
 const router = useRouter()
 const isAuthenticated = ref(false)
@@ -83,10 +83,6 @@ const menuItems = [
   { id: 'consultar', title: 'Consultar' }
 ]
 
-const scrollTo = (id) => {
-  const el = document.getElementById(id)
-  if (el) el.scrollIntoView({ behavior: 'smooth' })
-}
 
 const navAction = (id) => {
   if (id === 'consultar') {
@@ -94,7 +90,7 @@ const navAction = (id) => {
   } else if (id === 'propiedades') {
     router.push('/propiedades-publicas')
   } else if (id === 'nosotros') {
-    goToNosotros()  
+    goToNosotros()
   }
 }
 
@@ -118,7 +114,43 @@ const handleLogout = () => {
 </script>
 
 <style scoped>
+
 .cursor-pointer {
   cursor: pointer;
 }
+
+.custom-app-bar {
+  display: grid;
+  grid-template-rows: 30% 70%; /* 30% superior, 70% inferior */
+  height: 110px; /* Altura total (ajusta según necesites) */
+  width: 100%;
+  position: fixed;
+  top: 0;
+  z-index: 1000;
+}
+
+.top-bar {
+  background-color: var(--v-surface-base); /* Color de Vuetify "surface" */
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+}
+
+.bottom-bar {
+  background-color: white; /* Fondo blanco */
+  display: flex;
+  align-items: center;
+  justify-content: center; /* Centra el logo horizontalmente */
+  padding: 8px;
+}
+
+.logo-img {
+  max-width: 150px; /* Ajusta según necesites */
+}
+
+/* Asegura que el contenido de la página no se oculte tras la barra */
+body {
+  padding-top: 110px !important;
+}
+
 </style>
