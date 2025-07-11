@@ -11,7 +11,7 @@
       <!-- Capa oscura y contenido -->
       <div class="absolute inset-0 bg-black/60 flex items-center justify-center text-center text-white z-10">
         <div>
-          <h1 class="text-4xl md:text-6xl font-bold mb-4">Inmobiliaria Espinosa</h1>
+          <h1 class="text-4xl md:text-6xl font-bold mb-4">Espinosa Inmobiliaria</h1>
           <p class="text-lg md:text-xl"><br> Sitio en construccion <br> Muy pronto encontrarás tu hogar ideal aquí.</p>
         </div>
       </div>
