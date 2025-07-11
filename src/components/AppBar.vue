@@ -9,7 +9,7 @@
       <!-- Desktop -->
       <div class="d-none d-md-flex">
         <template v-if="!isAuthenticated">
-          <v-btn variant="text" class="text-white" @click="scrollTo('nosotros')">Nosotros</v-btn>
+          <v-btn variant="text" class="text-white" @click="goToNosotros">Nosotros</v-btn>
           <v-btn variant="text" class="text-white" @click="router.push('/propiedades-publicas')">Propiedades</v-btn>
           <v-btn variant="text" class="text-white" @click="goToContacto">Contacto</v-btn>
         </template>
@@ -93,8 +93,8 @@ const navAction = (id) => {
     goToContacto()
   } else if (id === 'propiedades') {
     router.push('/propiedades-publicas')
-  } else {
-    scrollTo(id)
+  } else if (id === 'nosotros') {
+    goToNosotros()  
   }
 }
 
@@ -104,6 +104,10 @@ const goToContacto = () => {
 
 const goToDashboard = () => {
   router.push('/dashboard')
+}
+
+const goToNosotros = () => {
+  router.push('/nosotros')
 }
 
 const handleLogout = () => {

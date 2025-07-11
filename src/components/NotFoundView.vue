@@ -1,63 +1,120 @@
 <template>
-  <v-container class="fill-height" fluid>
-    <v-row align="center" justify="center">
-      <v-col cols="12" class="text-center">
-        <!-- Imagen vectorial más grande -->
-        <v-img
-          :src="vectorImage"
-          contain
-          max-height="70vh"
-          class="mb-4 mx-auto"
-        ></v-img>
+  <div class="min-h-screen bg-slate-50 flex items-center justify-center px-6">
+    <div class="max-w-4xl mx-auto text-center">
+      <!-- Imagen 404 -->
+      <div class="mb-12">
+        <img 
+          :src="notFoundImage" 
+          alt="Página no encontrada" 
+          class="w-full max-w-lg mx-auto h-auto"
+        />
+      </div>
+      
+      <!-- Contenido principal -->
+      <div class="space-y-6">
+        <div class="space-y-4">
+          <h1 class="text-4xl md:text-5xl font-light text-slate-900">
+            Página <span class="font-semibold">no encontrada</span>
+          </h1>
+          <p class="text-xl text-slate-600 max-w-2xl mx-auto leading-relaxed">
+            Lo sentimos, la página que buscas no existe o ha sido movida. 
+            Pero no te preocupes, podemos ayudarte a encontrar lo que necesitas.
+          </p>
+        </div>
         
-        <h1 class="text-h3 font-weight-bold mb-4">Página no encontrada</h1>
-        <p class="text-h6 mb-6">Lo sentimos, la página que buscas no existe o ha sido movida.</p>
+        <!-- Botones de acción -->
+        <div class="flex flex-col sm:flex-row gap-4 justify-center mt-8">
+          <button 
+            @click="goToHome"
+            class="bg-slate-900 text-white px-8 py-3 rounded-xl hover:bg-slate-800 transition-all duration-200 font-medium transform hover:scale-105"
+          >
+            Volver al inicio
+          </button>
+          <button 
+            @click="goToProperties"
+            class="border-2 border-slate-300 text-slate-700 px-8 py-3 rounded-xl hover:border-slate-400 hover:bg-slate-100 transition-all duration-200 font-medium"
+          >
+            Ver propiedades
+          </button>
+        </div>
         
-        <!-- Botón con estilo similar a tu AppBar -->
-        <v-btn
-          variant="text"
-          class="text-white bg-grey-darken-3"
-          size="large"
-          @click="goToHome"
-        >
-          Volver al inicio
-        </v-btn>
-      </v-col>
-    </v-row>
-  </v-container>
+        <!-- Enlaces útiles -->
+        <div class="mt-12 pt-8 border-t border-slate-200">
+          <p class="text-slate-500 mb-4">¿Buscas algo específico?</p>
+          <div class="flex flex-wrap justify-center gap-6 text-sm">
+            <button 
+              @click="goToHome" 
+              class="text-slate-600 hover:text-slate-900 transition-colors duration-200 hover:underline"
+            >
+              Inicio
+            </button>
+            <button 
+              @click="goToProperties" 
+              class="text-slate-600 hover:text-slate-900 transition-colors duration-200 hover:underline"
+            >
+              Propiedades
+            </button>
+            <button 
+              @click="goToAbout" 
+              class="text-slate-600 hover:text-slate-900 transition-colors duration-200 hover:underline"
+            >
+              Nosotros
+            </button>
+            <button 
+              @click="goToContact" 
+              class="text-slate-600 hover:text-slate-900 transition-colors duration-200 hover:underline"
+            >
+              Contacto
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script setup>
 import { useRouter } from 'vue-router'
-import vectorImage from '../assets/404.png'
+
+// Imagen importada
+const notFoundImage = 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/404-ytjgIcPbZT5I62OdlUYq8c1tgPbpQS.png'
 
 const router = useRouter()
 
 const goToHome = () => {
   router.push('/')
 }
+
+const goToProperties = () => {
+  router.push('/propiedades-publicas')
+}
+
+const goToAbout = () => {
+  router.push('/nosotros')
+}
+
+const goToContact = () => {
+  router.push('/contacto')
+}
 </script>
 
 <style scoped>
-.fill-height {
-  min-height: calc(100vh - 128px);
-  background-color: #1e1e1e; /* Fondo oscuro como tu AppBar */
+/* Animación sutil para la imagen */
+img {
+  animation: float 3s ease-in-out infinite;
 }
 
-/* Estilos para el texto */
-.text-h3, .text-h6 {
-  color: white; /* Texto blanco para contraste */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
 }
 
-/* Estilo del botón similar a tu AppBar */
-.v-btn {
-  padding: 12px 24px;
-  letter-spacing: 0.5px;
-  transition: all 0.3s ease;
-}
-
-.v-btn:hover {
-  background-color: rgba(255, 255, 255, 0.1) !important;
-  transform: translateY(-2px);
+/* Efecto hover para los botones */
+button:hover {
+  transform: translateY(-1px);
 }
 </style>
