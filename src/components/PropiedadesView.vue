@@ -127,7 +127,7 @@
                         <div class="text-slate-600 text-sm mb-1 flex items-center">
                             <Home class="w-4 h-4 mr-1" />
                             <span>{{ casa.ubicacion.calle }} {{ casa.ubicacion.altura }}, {{ casa.ubicacion.localidad
-                            }}</span>
+                                }}</span>
                         </div>
                         <div class="text-slate-600 text-sm mb-3 flex items-center">
                             <span>Publicado: {{ formatDate(casa.fechaPublicada) }}</span>
@@ -140,7 +140,7 @@
                                 dorm.</span>
                             <span v-if="casa.caracteristicas.baños">{{ casa.caracteristicas.baños }} baños</span>
                             <span v-if="casa.caracteristicas.superficieTotal">{{ casa.caracteristicas.superficieTotal
-                            }}m²</span>
+                                }}m²</span>
                         </div>
                     </div>
                 </div>
@@ -152,27 +152,25 @@
             <!-- Paginación -->
             <div class="flex justify-center mt-8">
                 <div class="flex space-x-2">
-                    <button
-                        class="all-[unset] text-slate-900 rounded-xl border border-gray-300 px-4 py-2 hover:bg-gray-100 cursor-pointer">
+                    <button @click="paginaActual--" :disabled="paginaActual === 1"
+                        class="text-slate-900 rounded-xl border border-gray-300 px-4 py-2 hover:bg-gray-100 cursor-pointer">
                         Anterior
                     </button>
-                    <button class="all-[unset] bg-slate-900 text-white rounded-xl px-4 py-2 cursor-pointer">
-                        1
+
+                    <button v-for="pagina in totalPaginas" :key="pagina" @click="paginaActual = pagina" :class="[
+                        'rounded-xl px-4 py-2 cursor-pointer',
+                        paginaActual === pagina ? 'bg-slate-900 text-white' : 'text-slate-900 border border-gray-300 hover:bg-gray-100'
+                    ]">
+                        {{ pagina }}
                     </button>
-                    <button
-                        class="all-[unset] text-slate-900 rounded-xl border border-gray-300 px-4 py-2 hover:bg-gray-100 cursor-pointer">
-                        2
-                    </button>
-                    <button
-                        class="all-[unset] text-slate-900 rounded-xl border border-gray-300 px-4 py-2 hover:bg-gray-100 cursor-pointer">
-                        3
-                    </button>
-                    <button
-                        class="all-[unset] text-slate-900 rounded-xl border border-gray-300 px-4 py-2 hover:bg-gray-100 cursor-pointer">
+
+                    <button @click="paginaActual++" :disabled="paginaActual === totalPaginas"
+                        class="text-slate-900 rounded-xl border border-gray-300 px-4 py-2 hover:bg-gray-100 cursor-pointer">
                         Siguiente
                     </button>
                 </div>
             </div>
+
         </main>
     </div>
 </template>
@@ -186,6 +184,8 @@ import api from '../api'
 const router = useRouter()
 const casas = ref([])
 const userData = ref({ nombre: '' })
+const paginaActual = ref(1)
+const propiedadesPorPagina = 9
 
 // Función para decodificar el token JWT (copiada del primer componente)
 function parseJwt(token) {
@@ -210,7 +210,7 @@ const filtroEstado = ref('')
 
 // Propiedad computada para casas filtradas (AÑADIDO)
 const casasFiltradas = computed(() => {
-    return casas.value.filter((casa) => {
+    const filtradas = casas.value.filter((casa) => {
         const coincideTitulo = casa.titulo.toLowerCase().includes(filtroTitulo.value.toLowerCase())
         const coincideTipo = filtroTipo.value ? casa.tipo === filtroTipo.value : true
         const coincideOperacion = filtroOperacion.value
@@ -222,6 +222,28 @@ const casasFiltradas = computed(() => {
 
         return coincideTitulo && coincideTipo && coincideOperacion && coincideEstado
     })
+
+    const inicio = (paginaActual.value - 1) * propiedadesPorPagina
+    const fin = inicio + propiedadesPorPagina
+    return filtradas.slice(inicio, fin)
+})
+
+const totalPaginas = computed(() => {
+    const cantidad = casas.value.filter((casa) => {
+        // Mismo filtro que en casasFiltradas sin paginar
+        const coincideTitulo = casa.titulo.toLowerCase().includes(filtroTitulo.value.toLowerCase())
+        const coincideTipo = filtroTipo.value ? casa.tipo === filtroTipo.value : true
+        const coincideOperacion = filtroOperacion.value
+            ? casa.operacion.toLowerCase().includes(filtroOperacion.value.toLowerCase())
+            : true
+        const coincideEstado = filtroEstado.value
+            ? (filtroEstado.value === 'Visible' ? casa.visible : !casa.visible)
+            : true
+
+        return coincideTitulo && coincideTipo && coincideOperacion && coincideEstado
+    }).length
+
+    return Math.ceil(cantidad / propiedadesPorPagina)
 })
 
 function irANuevaPropiedad() {
