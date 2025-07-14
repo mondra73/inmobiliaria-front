@@ -108,7 +108,7 @@
                       imagenSeleccionada === index ? 'ring-2 ring-blue-500' : '']" />
 
                     <!-- Botón de eliminar (cruz) -->
-                    <button @click.stop="eliminarImagen(index)" class="absolute top-1 right-1 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center 
+                    <button @click.stop="eliminarImagen(index)" class="absolute top-1 right-1 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center
                opacity-80 hover:opacity-100 transition-opacity delete-image-btn" title="Eliminar imagen">
                       ×
                     </button>
@@ -695,9 +695,9 @@
 <script setup>
 import { onMounted, onUnmounted, ref, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import api from '../api'
+import api from '../../api'
 import { Home, Users, Building, Wrench, DollarSign, Calendar } from 'lucide-vue-next'
-import { uploadImageToCloudinary } from '../../utils/uploadToCloudinary'
+import { uploadImageToCloudinary } from '../../../utils/uploadToCloudinary'
 import { jwtDecode } from 'jwt-decode';
 
 // Estados reactivos
@@ -907,7 +907,7 @@ const handleImageUpload = async (event) => {
     }
 
     mostrarMensajeTemporal('exito', 'Imágenes subidas correctamente')
-    
+
   } catch (error) {
     console.error('Error al subir imágenes:', error)
     mostrarMensajeTemporal('error', 'Error al subir imágenes: ' + error.message)

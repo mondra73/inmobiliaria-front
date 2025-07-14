@@ -5,9 +5,9 @@ import Contacto from "../components/ContactoView.vue";
 import Login from "../components/LoginView.vue";
 import Propiedades from "../components/PropiedadesView.vue";
 import PropiedadesPublicas from "../components/PropiedadesPublicasView.vue";
-import PropiedadDetalle from "../components/PropiedadDetalleView.vue";
+import PropiedadDetalle from "../components/PropiedadDetalle/PropiedadDetalleView.vue";
 import Dashboard from "../components/DashboardView.vue";
-import NuevaPropiedad from "../components/NuevaPropiedadView.vue";
+import NuevaPropiedad from "../components/NuevaPropiedad/NuevaPropiedadView.vue";
 import NotFoundView from "../components/NotFoundView.vue";
 import NosotrosView from "../components/NosotrosView.vue";
 
