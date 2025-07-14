@@ -691,25 +691,22 @@ const submitForm = async () => {
     if (!formData.value.operacion) throw new Error('Por favor seleccione un tipo de operación');
     if (!formData.value.precio.monto || formData.value.precio.monto <= 0) throw new Error('Por favor ingrese un precio válido');
     
-    // Validación de imágenes modificada
-    if (files.value.length === 0) {
-      // Si estamos editando y ya hay imágenes, permitir continuar
-      if (!formData.value.imagenes || formData.value.imagenes.length === 0) {
-        throw new Error('Debe subir al menos una imagen');
-      }
+    if (files.value.length === 0 && (!formData.value.imagenes || formData.value.imagenes.length === 0)) {
+      throw new Error('Debe subir al menos una imagen');
     }
 
     // 1. Subir imágenes a Cloudinary solo si hay archivos nuevos
     let uploadedImages = [];
     if (files.value.length > 0) {
       uploadedImages = await Promise.all(
-        files.value.map(async (file) => {
-          const url = await uploadImageToCloudinary(file.file);
+        files.value.map(async (file, index) => {
+          const imageData = await uploadImageToCloudinary(file.file);
           return {
-            url,
+            url: imageData.url,
+            public_id: imageData.public_id,
             descripcion: file.descripcion || '',
-            orden: uploadedImages.length,
-            esPortada: uploadedImages.length === 0
+            orden: index,
+            esPortada: index === 0 // La primera imagen es portada
           };
         })
       );
@@ -718,8 +715,11 @@ const submitForm = async () => {
     // 2. Preparar el payload
     const payload = {
       ...preparePayload(formData.value),
-      // Mantener imágenes existentes si no hay nuevas
-      imagenes: uploadedImages.length > 0 ? uploadedImages : formData.value.imagenes
+      // Combinar imágenes existentes con nuevas
+      imagenes: [
+        ...(formData.value.imagenes || []), // Mantener imágenes existentes
+        ...uploadedImages // Agregar nuevas imágenes
+      ]
     };
 
     console.log('Payload final:', JSON.stringify(payload, null, 2));
@@ -762,9 +762,35 @@ const goToDashboard = () => {
 }
 
 const removeFile = (index) => {
-  files.value.splice(index, 1)
-  formData.value.imagenes.splice(index, 1)
-}
+  // Si es una imagen recién cargada (en files.value)
+  if (index < files.value.length) {
+    files.value.splice(index, 1);
+  } 
+  // Si es una imagen existente (en formData.value.imagenes)
+  else {
+    const adjustedIndex = index - files.value.length;
+    formData.value.imagenes.splice(adjustedIndex, 1);
+  }
+  
+  // Actualizar el orden y la imagen portada si es necesario
+  updateImageOrder();
+};
+
+const updateImageOrder = () => {
+  const allImages = [
+    ...files.value.map(file => ({
+      ...file,
+      esPortada: false // Las nuevas no son portada hasta que se confirme
+    })),
+    ...formData.value.imagenes
+  ];
+  
+  // Reasignar orden y portada
+  allImages.forEach((img, idx) => {
+    img.orden = idx;
+    img.esPortada = idx === 0;
+  });
+};
 </script>
 
 <style>
