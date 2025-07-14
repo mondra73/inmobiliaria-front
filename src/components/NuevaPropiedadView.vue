@@ -689,7 +689,6 @@ const submitForm = async () => {
     if (!formData.value.ubicacion.localidad) throw new Error('Por favor ingrese la localidad');
     if (!formData.value.categoria) throw new Error('Por favor seleccione un tipo de propiedad');
     if (!formData.value.operacion) throw new Error('Por favor seleccione un tipo de operación');
-    if (!formData.value.precio.monto || formData.value.precio.monto <= 0) throw new Error('Por favor ingrese un precio válido');
     
     if (files.value.length === 0 && (!formData.value.imagenes || formData.value.imagenes.length === 0)) {
       throw new Error('Debe subir al menos una imagen');
