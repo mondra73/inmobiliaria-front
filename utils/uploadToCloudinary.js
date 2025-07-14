@@ -17,5 +17,9 @@ export async function uploadImageToCloudinary(file) {
   if (!response.ok) throw new Error('Error al subir imagen a Cloudinary');
 
   const data = await response.json();
-  return data.secure_url;
+
+  return {
+    url: data.secure_url,
+    public_id: data.public_id
+  };
 }
