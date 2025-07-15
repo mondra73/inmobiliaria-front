@@ -1,27 +1,27 @@
-/* Ubuntu */
 @font-face {
   font-family: 'Ubuntu';
-  src: url('./fonts/ubuntu/Ubuntu-Regular.ttf') format('truetype');
+  src: url('./ubuntu/Ubuntu-Regular.ttf') format('truetype');
   font-weight: 400;
   font-style: normal;
 }
+
 @font-face {
   font-family: 'Ubuntu';
-  src: url('./fonts/ubuntu/Ubuntu-Bold.ttf') format('truetype');
+  src: url('./ubuntu/Ubuntu-Bold.ttf') format('truetype');
   font-weight: 700;
   font-style: normal;
 }
 
-/* Merriweather Sans */
 @font-face {
   font-family: 'Merriweather Sans';
-  src: url('./fonts/merriweather-sans/MerriweatherSans-Regular.ttf') format('truetype');
+  src: url('./merriweather-sans/MerriweatherSans-Regular.ttf') format('truetype');
   font-weight: 400;
   font-style: normal;
 }
+
 @font-face {
   font-family: 'Merriweather Sans';
-  src: url('./fonts/merriweather-sans/MerriweatherSans-Bold.ttf') format('truetype');
+  src: url('./merriweather-sans/MerriweatherSans-Bold.ttf') format('truetype');
   font-weight: 700;
   font-style: normal;
 }
