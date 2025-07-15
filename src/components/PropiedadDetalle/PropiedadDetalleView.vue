@@ -733,42 +733,13 @@ const eliminando = ref(false)
 const mostrarModalConfirmacionImagen = ref(false)
 const imagenAEliminar = ref(null)
 
-// Campos según tipo de propiedad
-const showBedroomsField = computed(() => ['Casa', 'Departamento'].includes(propiedad.value?.tipo))
-const showBathroomsField = computed(() => ['Casa', 'Departamento', 'Local comercial'].includes(propiedad.value?.tipo))
-const showCoveredSurfaceField = computed(() => ['Casa', 'Departamento', 'Local comercial'].includes(propiedad.value?.tipo))
-const showAgeField = computed(() => ['Casa', 'Departamento', 'Local comercial'].includes(propiedad.value?.tipo))
-const showRoomsField = computed(() => ['Casa', 'Departamento'].includes(propiedad.value?.tipo))
-const showBasicServicesSection = computed(() =>
-  ['Casa', 'Departamento', 'Local comercial', 'Fondo de Comercio', 'Terreno'].includes(propiedad.value?.tipo)
-)
-
-// Amenities
-const showGarageField = computed(() => ['Casa', 'Departamento'].includes(propiedad.value?.tipo))
-const showGardenField = computed(() => ['Casa'].includes(propiedad.value?.tipo))
-const showPoolField = computed(() => ['Casa'].includes(propiedad.value?.tipo))
-const showBalconyField = computed(() => ['Casa', 'Departamento'].includes(propiedad.value?.tipo))
-const showTerraceField = computed(() => ['Casa', 'Departamento'].includes(propiedad.value?.tipo))
-const showGrillField = computed(() => ['Casa'].includes(propiedad.value?.tipo))
-const showAmenitiesSection = computed(() => {
-  if (!propiedad.value) return false;
-
-  const amenitiesDepartamento = [
-    'garage', 'balcon', 'terraza', 'tieneAscensor',
-    'seguridad24hs', 'gimnasio', 'salonDeUsosMultiples'
-  ];
-
-  // Verifica si es departamento y tiene al menos un amenity definido
-  return propiedad.value.tipo === 'Departamento' &&
-    amenitiesDepartamento.some(a => propiedad.value[a] !== undefined);
-});
 
 //caracteristicas
 const showHabitaciones = computed(() => ['Casa', 'Departamento', 'Local comercial'].includes(propiedad.value?.tipo))
 const showBanos = computed(() => ['Casa', 'Departamento', 'Local comercial'].includes(propiedad.value?.tipo))
 const showAmbientes = computed(() => ['Casa', 'Departamento'].includes(propiedad.value?.tipo))
 const showAntiguedad = computed(() => ['Casa', 'Departamento', 'Local comercial'].includes(propiedad.value?.tipo))
-const showSuperficieTotal = computed(() => true) // Siempre visible
+
 const showSuperficieCubierta = computed(() => ['Casa', 'Departamento', 'Local comercial'].includes(propiedad.value?.tipo))
 const showLargoAncho = computed(() => ['Terreno', 'Campo'].includes(propiedad.value?.tipo))
 
@@ -788,7 +759,7 @@ const handleVolver = () => {
         localStorage.removeItem('auth-token');
         router.push('/propiedades-publicas');
       }
-    } catch (error) {
+    } catch  {
       // Token inválido
       localStorage.removeItem('auth-token');
       router.push('/propiedades-publicas');
@@ -887,13 +858,13 @@ const handleImageUpload = async (event) => {
     for (const file of uploadedFiles) {
       if (!file.type.match('image.*')) continue
 
-      // Subir a Cloudinary
+      // Subir a Cloudinary (asegúrate de que esta función devuelva public_id)
       const { url, public_id } = await uploadImageToCloudinary(file)
 
       if (url && public_id) {
         form.value.imagenes.push({
           url,
-          public_id,
+          public_id, // Asegurarse de incluir el nuevo public_id
           descripcion: '',
           orden: form.value.imagenes.length,
           esPortada: false
@@ -901,13 +872,11 @@ const handleImageUpload = async (event) => {
       }
     }
 
-    // LIMPIAR EL INPUT AQUÍ (justo después de procesar todos los archivos)
     if (fileInput.value) {
-      fileInput.value.value = '' // Esta es la línea importante
+      fileInput.value.value = ''
     }
 
     mostrarMensajeTemporal('exito', 'Imágenes subidas correctamente')
-
   } catch (error) {
     console.error('Error al subir imágenes:', error)
     mostrarMensajeTemporal('error', 'Error al subir imágenes: ' + error.message)
@@ -947,7 +916,7 @@ const eliminarPropiedad = async () => {
   try {
     const id = route.params.id
     const response = await api.delete(`/admin/eliminar-propiedad/${id}`)
-
+    console.log(response);
     mostrarMensajeTemporal('exito', 'Propiedad eliminada correctamente')
 
     // Redirigir a la lista de propiedades después de 1 segundo
@@ -974,7 +943,8 @@ const activarEdicion = () => {
     ...propiedad.value,
     visible: propiedad.value.visible,
     imagenes: propiedad.value.imagenes?.map(img => ({
-      ...img,
+      url: img.url,
+      public_id: img.public_id, // Asegurarse de incluir el public_id existente
       descripcion: img.descripcion || '',
       orden: img.orden || 0,
       esPortada: img.esPortada || false
@@ -985,7 +955,7 @@ const activarEdicion = () => {
       cloacas: false,
       gas: false
     },
-    amenities: propiedad.value.amenities || {
+amenities: propiedad.value.amenities || {
       // Para casas
       piscina: false,
       parrilla: false,
@@ -998,7 +968,9 @@ const activarEdicion = () => {
       seguridad24hs: false,
       gimnasio: false
     }
-  }));
+  }))
+
+
 
   // Para Departamentos específicamente
   if (propiedad.value.tipo === 'Departamento') {
@@ -1082,11 +1054,18 @@ const guardarCambios = async () => {
       throw new Error('Tipo de propiedad no válido')
     }
 
+    // Validar que todas las imágenes tengan public_id
+    const imagenesInvalidas = form.value.imagenes.some(img => !img.public_id)
+    if (imagenesInvalidas) {
+      throw new Error('Todas las imágenes deben tener un public_id válido')
+    }
+
     // 3. Preparar datos para enviar
     let datosAEnviar = {
       ...JSON.parse(JSON.stringify(form.value)),
-      imagenes: form.value.imagenes.filter(img => img?.url).map(img => ({
+      imagenes: form.value.imagenes.map(img => ({
         url: img.url,
+        public_id: img.public_id, // Asegurar que se envía
         descripcion: img.descripcion || '',
         orden: img.orden || 0,
         esPortada: img.esPortada || false
@@ -1170,25 +1149,6 @@ const transformarTerreno = (datos) => {
   }
 }
 
-// Función para verificar si un amenity debe mostrarse
-const hasAmenity = (amenity) => {
-  return propiedad.value[amenity] === true;
-};
-
-// Computed property para determinar si mostrar la sección
-const shouldShowAmenities = computed(() => {
-  if (!propiedad.value?.amenities) return false;
-
-  if (propiedad.value.tipo === 'Casa') {
-    return Object.values(propiedad.value.amenities).some(val => val === true);
-  }
-
-  if (propiedad.value.tipo === 'Departamento') {
-    return Object.values(propiedad.value.amenities).some(val => val === true);
-  }
-
-  return false;
-});
 
 // Carga inicial
 onMounted(async () => {
