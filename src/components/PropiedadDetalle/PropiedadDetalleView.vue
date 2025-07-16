@@ -565,8 +565,8 @@
                   <div>
                     <p class="font-medium text-slate-900">Fecha de publicación</p>
                     <p v-if="!editando" class="text-slate-600">{{ new
-                      Date(propiedad.fechaPublicada).toLocaleDateString('es-AR') }}</p>
-                    <input v-else v-model="form.fechaPublicada" type="date" class="w-full border rounded p-1" />
+                      Date(propiedad.fechaPublicacion).toLocaleDateString('es-AR') }}</p>
+                    <input v-else v-model="form.fechaPublicacion" type="date" class="w-full border rounded p-1" />
                   </div>
                 </div>
 
