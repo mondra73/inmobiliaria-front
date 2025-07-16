@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "vite build && node generate-sitemap.js",
     "preview": "vite preview",
     "lint": "eslint . --fix"
   },
@@ -31,6 +31,7 @@
     "postcss": "^8.5.6",
     "tailwindcss": "^3.4.1",
     "vite": "^5.0.0",
+    "vite-plugin-pages-sitemap": "^1.7.1",
     "vite-plugin-vue-devtools": "^7.7.7"
   }
 }
