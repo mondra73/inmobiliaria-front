@@ -259,10 +259,13 @@ function formatDate(fecha) {
 }
 
 function formatPrice(precio) {
-    const symbol = precio.moneda === 'USD' ? '$' : '$'
-    const currency = precio.moneda === 'USD' ? 'USD' : 'ARS'
-    return `${symbol}${precio.monto?.toLocaleString()} ${currency}`
+  if (!precio || typeof precio.monto !== 'number') return ''
+  
+  const symbol = precio.moneda === 'USD' ? '$' : '$'
+  const currency = precio.moneda === 'USD' ? 'USD' : 'ARS'
+  return `${symbol}${precio.monto.toLocaleString()} ${currency}`
 }
+
 
 onMounted(async () => {
     // Cargar datos del usuario desde el token

@@ -915,8 +915,8 @@ const eliminarPropiedad = async () => {
 
   try {
     const id = route.params.id
-    const response = await api.delete(`/admin/eliminar-propiedad/${id}`)
-    console.log(response);
+    await api.delete(`/admin/eliminar-propiedad/${id}`)
+   
     mostrarMensajeTemporal('exito', 'Propiedad eliminada correctamente')
 
     // Redirigir a la lista de propiedades después de 1 segundo
@@ -1085,9 +1085,9 @@ const guardarCambios = async () => {
     }
 
     // 5. Validación mínima
-    if (!datosAEnviar.imagenes?.length) {
-      throw new Error('Debe agregar al menos una imagen válida')
-    }
+    // if (!datosAEnviar.imagenes?.length) {
+    //   throw new Error('Debe agregar al menos una imagen válida')
+    // }
 
     // 6. Enviar datos
     const response = await api.put(`/admin/editar-propiedad/${id}`, {
