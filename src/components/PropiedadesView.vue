@@ -58,8 +58,7 @@
                 </div>
                 <button @click="irANuevaPropiedad"
                     class="bg-slate-900 hover:bg-slate-800 text-white px-6 py-3 rounded-xl font-medium transition-colors duration-200 shadow-md">
-                    <Plus class="w-4 h-4 mr-2 inline" />
-                    Nueva Propiedad
+                    + Nueva Propiedad
                 </button>
             </header>
 
@@ -127,7 +126,7 @@
                         <div class="text-slate-600 text-sm mb-1 flex items-center">
                             <Home class="w-4 h-4 mr-1" />
                             <span>{{ casa.ubicacion.calle }} {{ casa.ubicacion.altura }}, {{ casa.ubicacion.localidad
-                                }}</span>
+                            }}</span>
                         </div>
                         <div class="text-slate-600 text-sm mb-3 flex items-center">
                             <span>Publicado: {{ formatDate(casa.fechaPublicada) }}</span>
@@ -140,7 +139,7 @@
                                 dorm.</span>
                             <span v-if="casa.caracteristicas.baños">{{ casa.caracteristicas.baños }} baños</span>
                             <span v-if="casa.caracteristicas.superficieTotal">{{ casa.caracteristicas.superficieTotal
-                                }}m²</span>
+                            }}m²</span>
                         </div>
                     </div>
                 </div>
@@ -259,11 +258,11 @@ function formatDate(fecha) {
 }
 
 function formatPrice(precio) {
-  if (!precio || typeof precio.monto !== 'number') return ''
-  
-  const symbol = precio.moneda === 'USD' ? '$' : '$'
-  const currency = precio.moneda === 'USD' ? 'USD' : 'ARS'
-  return `${symbol}${precio.monto.toLocaleString()} ${currency}`
+    if (!precio || typeof precio.monto !== 'number') return ''
+
+    const symbol = precio.moneda === 'USD' ? '$' : '$'
+    const currency = precio.moneda === 'USD' ? 'USD' : 'ARS'
+    return `${symbol}${precio.monto.toLocaleString()} ${currency}`
 }
 
 

@@ -529,7 +529,7 @@ const submitForm = async () => {
       imagenes: imagenesFinales
     };
 
-console.log('Payload enviado al backend:', payload)
+    console.log('Payload enviado al backend:', payload)
 
     const endpoint = getEndpoint(formData.value.categoria)
     const response = await api.post(endpoint, payload)
