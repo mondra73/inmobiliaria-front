@@ -1,29 +1,43 @@
 <template>
   <div>
     <!-- Sección hero con imagen responsiva -->
-    <section class="relative h-[80vh] overflow-hidden">
-      <!-- Imagen para mobile -->
-      <div class="md:hidden absolute inset-0" :style="mobileStyle"></div>
+    <section class="relative bg-white py-8 px-6 md:px-24">
+      <div class="relative w-full h-[80vh] rounded-xl overflow-hidden">
+        <!-- Imagen mobile -->
+        <div class="md:hidden w-full h-full relative overflow-hidden">
+          <div v-for="(img, index) in mobileImages" :key="'mobile-' + index"
+            class="absolute inset-0 transition-opacity duration-1000" :style="getMobileStyle(img)"
+            :class="{ 'opacity-100': currentIndex === index, 'opacity-0': currentIndex !== index }"></div>
+        </div>
 
-      <!-- Imagen para desktop -->
-      <div class="hidden md:block absolute inset-0" :style="desktopStyle"></div>
+        <!-- Imagen desktop -->
+        <div class="hidden md:block w-full h-full relative overflow-hidden">
+          <div v-for="(img, index) in desktopImages" :key="'desktop-' + index"
+            class="absolute inset-0 transition-opacity duration-1000" :style="getDesktopStyle(img)"
+            :class="{ 'opacity-100': currentIndex === index, 'opacity-0': currentIndex !== index }"></div>
+        </div>
 
-      <!-- Capa oscura y contenido -->
-      <div class="absolute inset-0 bg-black/60 flex items-center justify-center text-center text-white z-10">
-        <div>
-          <h1 class="text-4xl md:text-6xl font-bold mb-4">Espinosa Inmobiliaria</h1>
-          <p class="text-lg md:text-xl"><br> Sitio en construccion <br> Muy pronto encontrarás tu hogar ideal aquí.</p>
+        <!-- Capa oscura y contenido -->
+        <div class="absolute inset-0 bg-black/60 flex items-center justify-center text-center text-white z-10 px-6">
+          <div>
+            <h1 class="text-4xl md:text-6xl font-bold mb-4">Espinosa Inmobiliaria</h1>
+            <p class="text-lg md:text-xl">
+              <br />Sitio en construcción<br />
+              Muy pronto encontrarás tu hogar ideal aquí.
+            </p>
+          </div>
         </div>
       </div>
     </section>
 
     <!-- Sección de Servicios Profesionales -->
-    <section class="py-20 bg-white">
+    <section class="py-12 bg-white">
       <div class="max-w-7xl mx-auto px-6 lg:px-8">
         <div class="text-center mb-16 space-y-4">
 
           <p class="text-xl text-slate-600 max-w-2xl mx-auto">
-            Ofrecemos un servicio inmobiliario personalizado en Colón, Buenos Aires, y alrededores con enfoque en la excelencia y la
+            Ofrecemos un servicio inmobiliario personalizado en Colón, Buenos Aires, y alrededores con enfoque en la
+            excelencia y la
             confianza. Te acompañamos en cada etapa de tu operación, asegurando resultados exitosos y una experiencia
             ágil, transparente y segura. <br><br>
           </p>
@@ -101,55 +115,89 @@
   </div>
 </template>
 
-
 <script setup>
-import { ref, onMounted } from 'vue';
-import imagenDesktop from '../assets/casa2.jpg';
-import imagenMobile from '../assets/imagen-casa.png';
+import { ref, onMounted, onBeforeUnmount } from 'vue';
 
-// Estilos para cada imagen
-const desktopStyle = ref({
-  backgroundImage: `url(${imagenDesktop})`,
+import horizontal1 from '../assets/horizontal1.jpg';
+import horizontal2 from '../assets/horizontal2.jpg';
+import horizontal3 from '../assets/horizontal3.jpg';
+import vertical1 from '../assets/vertical1.jpg';
+import vertical2 from '../assets/vertical2.jpg';
+import vertical3 from '../assets/vertical3.jpg';
+
+
+// Arrays con las imágenes disponibles
+const desktopImages = [horizontal1, horizontal2, horizontal3];
+const mobileImages = [vertical1, vertical2, vertical3];
+
+// Índice actual (0 o 1)
+const currentIndex = ref(0);
+
+// Funciones que devuelven los estilos según la imagen
+const getDesktopStyle = (img) => ({
+  backgroundImage: `url(${img})`,
+  backgroundSize: 'cover',
+  backgroundPosition: 'center',
+  backgroundRepeat: 'no-repeat'
+});
+
+const getMobileStyle = (img) => ({
+  backgroundImage: `url(${img})`,
   backgroundSize: 'cover',
   backgroundPosition: 'center',
   backgroundRepeat: 'no-repeat',
-  transform: 'scale(1.1)',
   width: '100%',
   height: '100%'
 });
 
-const mobileStyle = ref({
-  backgroundImage: `url(${imagenMobile})`,
-  backgroundSize: 'cover',
-  backgroundPosition: 'center',
-  backgroundRepeat: 'no-repeat',
-  width: '100%',
-  height: '100%'
-});
+let intervalId;
 
-// Verificación de carga de imagen (opcional)
 onMounted(() => {
-  console.log('Imagen mobile:', imagenMobile);
-  console.log('Imagen desktop:', imagenDesktop);
+  // Precargar imágenes "dibujándolas" en un canvas (fuerza a renderizar en GPU)
+  desktopImages.concat(mobileImages).forEach(src => {
+    const img = new Image();
+    img.src = src;
+  });
 
-  // Verificar carga de imagen mobile
-  const imgMobile = new Image();
-  imgMobile.src = imagenMobile;
-  imgMobile.onload = () => console.log('Mobile image loaded');
-  imgMobile.onerror = () => console.error('Error loading mobile image');
+  // Activar intervalo como antes
+  intervalId = setInterval(() => {
+    currentIndex.value = (currentIndex.value + 1) % desktopImages.length;
+  }, 5000);
 
-  // Verificar carga de imagen desktop
-  const imgDesktop = new Image();
-  imgDesktop.src = imagenDesktop;
-  imgDesktop.onload = () => console.log('Desktop image loaded');
-  imgDesktop.onerror = () => console.error('Error loading desktop image');
 });
 
+
+onBeforeUnmount(() => {
+  clearInterval(intervalId);
+});
 </script>
+
 
 <style>
 /* Estilos para asegurar la correcta visualización */
 section {
   background-repeat: no-repeat;
 }
+
+/* transición suave */
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 1s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+
+.opacity-0 {
+  opacity: 0;
+}
+.opacity-100 {
+  opacity: 1;
+}
+.transition-opacity {
+  transition: opacity 1s ease-in-out;
+}
+
 </style>
