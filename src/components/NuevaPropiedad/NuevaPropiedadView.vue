@@ -525,9 +525,11 @@ const submitForm = async () => {
 
     const payload = {
       ...formData.value,
+      localidad: formData.value.ubicacion.localidad,
       imagenes: imagenesFinales
     };
 
+console.log('Payload enviado al backend:', payload)
 
     const endpoint = getEndpoint(formData.value.categoria)
     const response = await api.post(endpoint, payload)
@@ -543,7 +545,6 @@ const submitForm = async () => {
     isLoading.value = false
   }
 }
-
 
 // 8.
 const goToDashboard = () => {

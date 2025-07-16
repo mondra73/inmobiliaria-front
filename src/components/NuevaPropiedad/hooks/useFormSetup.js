@@ -100,7 +100,8 @@ export function useFormSetup() {
     'Campo': '/admin/nuevo-campo',
     'Fondo de Comercio': '/admin/nuevo-fondo',
     'Local comercial': '/admin/nuevo-local',
-    'Terreno': '/admin/nuevo-terreno'
+    'Terreno': '/admin/nuevo-terreno',
+    'Galpón': '/admin/nuevo-galpon',
   }
 
   const getEndpoint = (categoria) => {
