@@ -292,5 +292,5 @@ onMounted(async () => {
 </script>
 
 <style scoped>
-/* Si necesitas clases personalizadas, podés agregarlas acá */
+
 </style>
