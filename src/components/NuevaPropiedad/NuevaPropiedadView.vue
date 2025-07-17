@@ -161,7 +161,7 @@
             <div v-if="!isCampo">
               <label class="block mb-2 text-sm font-medium text-slate-700" for="superficie-total">Sup. Total
                 (m²)</label>
-              <input id="superficie-total" type="number" v-model.number="formData.superficie" placeholder="0"
+              <input id="superficie-total" type="number" v-model.number="formData.superficieTotal" placeholder="0"
                 min="0"
                 class="w-full p-4 border-2 border-gray-300 rounded-xl hover:border-gray-400 focus:outline-none focus:border-slate-600 focus:ring-2 focus:ring-slate-200 transition-all duration-200 shadow-sm" />
             </div>
@@ -482,7 +482,7 @@ const mensajeExito = ref('')
 const mensajeError = ref('')
 const mostrarMensaje = ref(false)
 
-// 7. Función submitForm 
+// 7. Función submitForm
 const submitForm = async () => {
   try {
     isLoading.value = true
@@ -530,6 +530,8 @@ const submitForm = async () => {
     };
 
     console.log('Payload enviado al backend:', payload)
+    console.log('Valor de habitaciones antes de enviar:', formData.value.habitaciones)
+  console.log('Tipo de dato de habitaciones:', typeof formData.value.habitaciones)
 
     const endpoint = getEndpoint(formData.value.categoria)
     const response = await api.post(endpoint, payload)

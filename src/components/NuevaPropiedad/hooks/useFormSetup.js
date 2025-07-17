@@ -1,8 +1,8 @@
-import { ref, computed } from 'vue'
+import { ref, computed, reactive  } from 'vue'
 
 export function useFormSetup() {
   // Estado inicial IDÉNTICO al que tienes actualmente
-  const initialFormData = {
+  const initialFormData = reactive({
     tituloPublicacion: '',
     operacion: '',
     visible: false,
@@ -50,9 +50,9 @@ export function useFormSetup() {
     seguridad24hs: false,
     gimnasio: false,
     imagenes: []
-  }
+  })
 
-  const formData = ref(JSON.parse(JSON.stringify(initialFormData)))
+  const formData = ref({...initialFormData})
 
   // Todas las computed properties como en tu código original
   const showLocationSection = computed(() => !!formData.value.categoria)
@@ -81,7 +81,8 @@ export function useFormSetup() {
     const categoria = formData.value.categoria
     const moneda = formData.value.precio.moneda
 
-    formData.value = JSON.parse(JSON.stringify(initialFormData))
+    // Limpia el formulario manteniendo la reactividad
+    Object.assign(formData.value, JSON.parse(JSON.stringify(initialFormData)))
 
     formData.value.categoria = categoria
     formData.value.precio.moneda = moneda
