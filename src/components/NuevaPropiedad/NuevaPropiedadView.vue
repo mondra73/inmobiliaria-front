@@ -335,7 +335,7 @@
         <!-- Botones de acción -->
         <div v-if="showActionButtons" class="flex justify-end space-x-4">
           <button type="button" @click="resetForm" :disabled="isLoading"
-            class="px-8 py-4 border-2 border-gray-300 text-slate-700 rounded-xl font-medium hover:bg-gray-50 transition-colors duration-200 disabled:opacity-70 disabled:cursor-not-allowed">
+            class="px-8 py-4 border-2 border-gray-300 !text-slate-700 rounded-xl font-medium hover:bg-gray-50 transition-colors duration-200 disabled:opacity-70 disabled:cursor-not-allowed">
             Cancelar
           </button>
           <button type="submit" :disabled="isLoading"
