@@ -33,7 +33,7 @@
     <!-- Sección de Servicios Profesionales -->
     <section class="py-12 bg-white">
   <div class="max-w-7xl mx-auto px-6 lg:px-8">
-    <div class="text-center mb-16 space-y-4">
+    <div class="text-center mb-8 space-y-4">
       <h4 class="text-4xl font-medium text-slate-900">Tu inmobiliaria de confianza en Colón y alrededores</h4>
       <br>
       <p class="text-xl text-slate-600 max-w-2xl mx-auto">
