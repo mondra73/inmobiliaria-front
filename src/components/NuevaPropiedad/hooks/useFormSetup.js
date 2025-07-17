@@ -1,7 +1,7 @@
 import { ref, computed, reactive  } from 'vue'
 
 export function useFormSetup() {
-  // Estado inicial IDÉNTICO al que tienes actualmente
+
   const initialFormData = reactive({
     tituloPublicacion: '',
     operacion: '',
@@ -9,6 +9,7 @@ export function useFormSetup() {
     ubicacion: {
       calle: '',
       altura: null,
+      piso: null,
       entreCalles: {
         calle1: '',
         calle2: ''
@@ -17,6 +18,7 @@ export function useFormSetup() {
       coordenadas: null,
       mapaUrl: ''
     },
+    expensas: null,
     descripcion: '',
     antiguedad: null,
     categoria: '',

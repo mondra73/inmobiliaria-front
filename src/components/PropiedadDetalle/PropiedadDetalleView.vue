@@ -577,7 +577,7 @@
                     <div>
                       <p class="font-medium text-slate-900">Piso</p>
                       <p v-if="!editando" class="text-slate-600">
-                        {{ propiedad.piso === 0 ? 'PB' : (propiedad.piso || '-') }}
+                        {{ mostrarPiso }}
                       </p>
                       <input v-else v-model.number="form.piso" type="number" class="w-full border rounded p-1" />
                     </div>
@@ -770,6 +770,14 @@ const handleVolver = () => {
   }
 };
 
+const mostrarPiso = computed(() => {
+  const piso = propiedad.value?.ubicacion?.piso; // Accedemos a ubicacion.piso
+
+  if (piso === 0) return 'PB';
+  if (piso !== null && piso !== undefined) return piso;
+  return '-';
+});
+
 const puedeEditarEliminar = computed(() => {
   try {
     const token = localStorage.getItem('auth-token');
@@ -916,7 +924,7 @@ const eliminarPropiedad = async () => {
   try {
     const id = route.params.id
     await api.delete(`/admin/eliminar-propiedad/${id}`)
-   
+
     mostrarMensajeTemporal('exito', 'Propiedad eliminada correctamente')
 
     // Redirigir a la lista de propiedades después de 1 segundo

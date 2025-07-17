@@ -137,6 +137,11 @@
                 placeholder="https://maps.app.goo.gl/..."
                 class="w-full p-4 border-2 border-gray-300 rounded-xl hover:border-gray-400 focus:outline-none focus:border-slate-600 focus:ring-2 focus:ring-slate-200 transition-all duration-200 shadow-sm" />
             </div>
+            <div v-if="formData.categoria === 'Departamento'">
+              <label class="block mb-2 text-sm font-medium text-slate-700" for="piso">Piso</label>
+              <input id="piso" type="number" v-model.number="formData.ubicacion.piso" placeholder="0 (PB)" min="0"
+                class="w-full p-4 border-2 border-gray-300 rounded-xl hover:border-gray-400 focus:outline-none focus:border-slate-600 focus:ring-2 focus:ring-slate-200 transition-all duration-200 shadow-sm" />
+            </div>
           </div>
         </div>
 
@@ -189,6 +194,12 @@
             <div v-if="showRoomsField">
               <label class="block mb-2 text-sm font-medium text-slate-700" for="ambientes">Ambientes</label>
               <input id="ambientes" type="number" v-model.number="formData.ambientes" placeholder="0" min="0"
+                class="w-full p-4 border-2 border-gray-300 rounded-xl hover:border-gray-400 focus:outline-none focus:border-slate-600 focus:ring-2 focus:ring-slate-200 transition-all duration-200 shadow-sm" />
+            </div>
+
+            <div v-if="formData.categoria === 'Departamento'">
+              <label class="block mb-2 text-sm font-medium text-slate-700" for="expensas">Expensas ($)</label>
+              <input id="expensas" type="number" v-model.number="formData.expensas" placeholder="0" min="0"
                 class="w-full p-4 border-2 border-gray-300 rounded-xl hover:border-gray-400 focus:outline-none focus:border-slate-600 focus:ring-2 focus:ring-slate-200 transition-all duration-200 shadow-sm" />
             </div>
 
@@ -256,7 +267,7 @@
               <label v-if="showPoolField"
                 class="flex items-start space-x-3 p-3 bg-white rounded-lg shadow-sm hover:bg-slate-100 transition-colors">
                 <input type="checkbox" v-model="formData.amenities.piscina"
-                class="mt-1 h-5 w-5 rounded border-gray-300 text-slate-600 focus:ring-slate-500">
+                  class="mt-1 h-5 w-5 rounded border-gray-300 text-slate-600 focus:ring-slate-500">
                 <span class="text-sm font-medium text-slate-700">Piscina</span>
               </label>
               <label v-if="showBalconyField"
@@ -530,8 +541,6 @@ const submitForm = async () => {
     };
 
     console.log('Payload enviado al backend:', payload)
-    console.log('Valor de habitaciones antes de enviar:', formData.value.habitaciones)
-  console.log('Tipo de dato de habitaciones:', typeof formData.value.habitaciones)
 
     const endpoint = getEndpoint(formData.value.categoria)
     const response = await api.post(endpoint, payload)
