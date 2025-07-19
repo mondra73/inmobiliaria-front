@@ -540,6 +540,17 @@ const submitForm = async () => {
       imagenes: imagenesFinales
     };
 
+    // Ajuste ESPECÍFICO para Campo
+    if (formData.value.categoria === 'Campo') {
+      payload.ubicacion = {
+        localidad: formData.value.ubicacion.localidad,
+        coordenadas: formData.value.ubicacion.coordenadas,
+        mapaUrl: formData.value.ubicacion.mapaUrl
+      };
+    } else {
+      // Para las demás propiedades, mantener la estructura actual
+      payload.localidad = formData.value.ubicacion.localidad;
+    }
     console.log('Payload enviado al backend:', payload)
 
     const endpoint = getEndpoint(formData.value.categoria)

@@ -181,7 +181,7 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
-import { Plus, Home, Search } from 'lucide-vue-next'
+import { Home, Search } from 'lucide-vue-next'
 import { useRouter } from 'vue-router'
 import api from '../api'
 
