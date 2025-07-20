@@ -191,6 +191,14 @@
                 class="w-full p-4 border-2 border-gray-300 rounded-xl hover:border-gray-400 focus:outline-none focus:border-slate-600 focus:ring-2 focus:ring-slate-200 transition-all duration-200 shadow-sm" />
             </div>
 
+            <div v-if="showFreeHeightField">
+              <label class="block mb-2 text-sm font-medium text-slate-700" for="altura-libre">Altura libre
+                (metros)</label>
+              <input id="altura-libre" type="number" v-model.number="formData.alturaLibre" placeholder="0" min="0"
+                step="0.01"
+                class="w-full p-4 border-2 border-gray-300 rounded-xl hover:border-gray-400 focus:outline-none focus:border-slate-600 focus:ring-2 focus:ring-slate-200 transition-all duration-200 shadow-sm" />
+            </div>
+
             <div v-if="showRoomsField">
               <label class="block mb-2 text-sm font-medium text-slate-700" for="ambientes">Ambientes</label>
               <input id="ambientes" type="number" v-model.number="formData.ambientes" placeholder="0" min="0"
@@ -468,7 +476,8 @@ const {
   showBalconyField,
   showTerraceField,
   showGrillField,
-  showAmenitiesSection
+  showAmenitiesSection,
+  showFreeHeightField
 } = computedProps
 
 // 4. Mapeo de componentes por tipo

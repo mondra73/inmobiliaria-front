@@ -63,8 +63,8 @@ export function useFormSetup() {
   const showActionButtons = computed(() => !!formData.value.categoria)
   const isCampo = computed(() => formData.value.categoria === 'Campo')
   const showBedroomsField = computed(() => ['Casa', 'Departamento'].includes(formData.value.categoria))
-  const showBathroomsField = computed(() => ['Casa', 'Departamento', 'Local comercial'].includes(formData.value.categoria))
-  const showCoveredSurfaceField = computed(() => ['Casa', 'Departamento', 'Local comercial'].includes(formData.value.categoria))
+  const showBathroomsField = computed(() => ['Casa', 'Departamento', 'Local comercial', 'Galpón'].includes(formData.value.categoria))
+  const showCoveredSurfaceField = computed(() => ['Casa', 'Departamento', 'Local comercial', 'Galpón'].includes(formData.value.categoria))
   const showAgeField = computed(() => ['Casa', 'Departamento', 'Local comercial', 'Fondo de Comercio', 'Galpón'].includes(formData.value.categoria))
   const showRoomsField = computed(() => ['Casa', 'Departamento'].includes(formData.value.categoria))
   const showBasicServicesSection = computed(() =>
@@ -77,6 +77,7 @@ export function useFormSetup() {
   const showTerraceField = computed(() => ['Casa', 'Departamento'].includes(formData.value.categoria))
   const showGrillField = computed(() => ['Casa'].includes(formData.value.categoria))
   const showAmenitiesSection = computed(() => ['Casa', 'Departamento'].includes(formData.value.categoria))
+  const showFreeHeightField = computed(() => formData.value.categoria === 'Galpón')
 
   // Función resetForm idéntica a la actual
   const resetForm = () => {
@@ -133,6 +134,7 @@ export function useFormSetup() {
     showBalconyField,
     showTerraceField,
     showGrillField,
-    showAmenitiesSection
+    showAmenitiesSection,
+    showFreeHeightField
   }
 }

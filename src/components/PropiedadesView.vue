@@ -76,6 +76,7 @@
             <option>Local comercial</option>
             <option>Campo</option>
             <option>Fondo de Comercio</option>
+            <option>Galpón</option>
           </select>
           <select v-model="filtroOperacion"
             class="border-2 border-gray-300 rounded-xl hover:border-gray-400 focus:border-slate-600 w-full">
