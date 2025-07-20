@@ -75,7 +75,7 @@
             <option>Terreno</option>
             <option>Local comercial</option>
             <option>Campo</option>
-            <option>Fondo de comercio</option>
+            <option>Fondo de Comercio</option>
           </select>
           <select v-model="filtroOperacion"
             class="border-2 border-gray-300 rounded-xl hover:border-gray-400 focus:border-slate-600 w-full">
@@ -216,7 +216,9 @@ const filtroEstado = ref('')
 const casasFiltradas = computed(() => {
   const filtradas = casas.value.filter((casa) => {
     const coincideTitulo = casa.titulo.toLowerCase().includes(filtroTitulo.value.toLowerCase())
-    const coincideTipo = filtroTipo.value ? casa.tipo === filtroTipo.value : true
+    const coincideTipo = filtroTipo.value
+  ? (casa.categoria === filtroTipo.value || casa.tipo === filtroTipo.value) // Busca en AMBOS campos
+  : true
     const coincideOperacion = filtroOperacion.value
       ? casa.operacion.toLowerCase().includes(filtroOperacion.value.toLowerCase())
       : true

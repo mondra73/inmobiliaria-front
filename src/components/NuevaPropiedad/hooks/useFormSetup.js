@@ -65,7 +65,7 @@ export function useFormSetup() {
   const showBedroomsField = computed(() => ['Casa', 'Departamento'].includes(formData.value.categoria))
   const showBathroomsField = computed(() => ['Casa', 'Departamento', 'Local comercial'].includes(formData.value.categoria))
   const showCoveredSurfaceField = computed(() => ['Casa', 'Departamento', 'Local comercial'].includes(formData.value.categoria))
-  const showAgeField = computed(() => ['Casa', 'Departamento', 'Local comercial'].includes(formData.value.categoria))
+  const showAgeField = computed(() => ['Casa', 'Departamento', 'Local comercial', 'Fondo de Comercio', 'Galpón'].includes(formData.value.categoria))
   const showRoomsField = computed(() => ['Casa', 'Departamento'].includes(formData.value.categoria))
   const showBasicServicesSection = computed(() =>
     ['Casa', 'Departamento', 'Local comercial', 'Fondo de Comercio', 'Terreno'].includes(formData.value.categoria)
