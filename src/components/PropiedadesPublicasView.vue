@@ -175,7 +175,8 @@ function formatDate(fecha) {
 }
 
 function formatPrice(precio) {
-  if (!precio || typeof precio.monto !== 'number') return ''
+  if (!precio || typeof precio.monto !== 'number') return 'Consultar'
+  if (precio.visible === false) return 'Consultar'
 
   const symbol = precio.moneda === 'USD' ? '$' : '$'
   const currency = precio.moneda === 'USD' ? 'USD' : 'ARS'
