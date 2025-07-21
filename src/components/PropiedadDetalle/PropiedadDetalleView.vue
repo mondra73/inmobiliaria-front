@@ -2,7 +2,6 @@
   <div>
     <div v-if="propiedad" class="bg-slate-50 min-h-screen">
       <div class="max-w-6xl mx-auto px-6 py-8">
-        <!-- Header - MODIFICADO EL BOTÓN VOLVER -->
         <div class="flex items-center space-x-4 mb-8">
           <button @click="handleVolver"
             class="rounded-xl bg-white hover:bg-slate-50 px-3 py-2 text-sm flex items-center border border-slate-200">
@@ -130,328 +129,6 @@
               </div>
             </div>
 
-            <!-- Características editables -->
-            <div class="bg-white rounded-3xl border border-gray-100 p-6">
-              <h2 class="text-xl font-light mb-4 text-slate-900 font-semibold">Características</h2>
-              <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
-                <!-- Dormitorios (solo para Casa/Departamento/Local) -->
-                <div v-if="showHabitaciones" class="flex items-center space-x-2">
-                  <div class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
-                    <Home class="w-4 h-4 text-blue-600" />
-                  </div>
-                  <div>
-                    <p class="text-sm text-slate-600">Dormitorios</p>
-                    <p v-if="!editando" class="font-medium text-slate-900">{{ propiedad.habitaciones || '-' }}</p>
-                    <input v-else v-model.number="form.habitaciones" type="number" class="w-16 border rounded p-1" />
-                  </div>
-                </div>
-
-                <!-- Baños -->
-                <div v-if="showBanos" class="flex items-center space-x-2">
-                  <div class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
-                    <Users class="w-4 h-4 text-blue-600" />
-                  </div>
-                  <div>
-                    <p class="text-sm text-slate-600">Baños</p>
-                    <p v-if="!editando" class="font-medium text-slate-900">{{ propiedad.baños || '-' }}</p>
-                    <input v-else v-model.number="form.baños" type="number" class="w-16 border rounded p-1" />
-                  </div>
-                </div>
-
-                <!-- Ambientes -->
-                <div v-if="showAmbientes" class="flex items-center space-x-2">
-                  <div class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
-                    <Building class="w-4 h-4 text-blue-600" />
-                  </div>
-                  <div>
-                    <p class="text-sm text-slate-600">Ambientes</p>
-                    <p v-if="!editando" class="font-medium text-slate-900">{{ propiedad.ambientes || '-' }}</p>
-                    <input v-else v-model.number="form.ambientes" type="number" class="w-16 border rounded p-1" />
-                  </div>
-                </div>
-
-                <!-- Superficie Total -->
-                <div class="flex items-center space-x-2">
-                  <div class="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
-                    <Wrench class="w-4 h-4 text-green-600" />
-                  </div>
-                  <div>
-                    <p class="text-sm text-slate-600">Sup. Total (m²)</p>
-                    <p v-if="!editando" class="font-medium text-slate-900">{{ propiedad.superficieTotal || '-' }}</p>
-                    <input v-else v-model.number="form.superficieTotal" type="number" class="w-16 border rounded p-1" />
-                  </div>
-                </div>
-
-                <!-- Superficie Cubierta -->
-                <div v-if="showSuperficieCubierta" class="flex items-center space-x-2">
-                  <div class="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
-                    <Home class="w-4 h-4 text-green-600" />
-                  </div>
-                  <div>
-                    <p class="text-sm text-slate-600">Sup. Cubierta (m²)</p>
-                    <p v-if="!editando" class="font-medium text-slate-900">{{ propiedad.superficieCubierta || '-' }}</p>
-                    <input v-else v-model.number="form.superficieCubierta" type="number"
-                      class="w-16 border rounded p-1" />
-                  </div>
-                </div>
-
-                <!-- Largo y Ancho (solo para Terreno/Campo) -->
-                <div v-if="showLargoAncho" class="flex items-center space-x-2">
-                  <div class="w-8 h-8 bg-yellow-100 rounded-lg flex items-center justify-center">
-                    <Calendar class="w-4 h-4 text-yellow-600" />
-                  </div>
-                  <div>
-                    <p class="text-sm text-slate-600">Largo (m)</p>
-                    <p v-if="!editando" class="font-medium text-slate-900">{{ propiedad.largo || '-' }}</p>
-                    <input v-else v-model.number="form.largo" type="number" class="w-16 border rounded p-1" />
-                  </div>
-                </div>
-
-                <div v-if="showLargoAncho" class="flex items-center space-x-2">
-                  <div class="w-8 h-8 bg-yellow-100 rounded-lg flex items-center justify-center">
-                    <Calendar class="w-4 h-4 text-yellow-600" />
-                  </div>
-                  <div>
-                    <p class="text-sm text-slate-600">Ancho (m)</p>
-                    <p v-if="!editando" class="font-medium text-slate-900">{{ propiedad.ancho || '-' }}</p>
-                    <input v-else v-model.number="form.ancho" type="number" class="w-16 border rounded p-1" />
-                  </div>
-                </div>
-
-                <!-- Antigüedad -->
-                <div v-if="showAntiguedad" class="flex items-center space-x-2">
-                  <div class="w-8 h-8 bg-yellow-100 rounded-lg flex items-center justify-center">
-                    <Calendar class="w-4 h-4 text-yellow-600" />
-                  </div>
-                  <div>
-                    <p class="text-sm text-slate-600">Antigüedad (años)</p>
-                    <p v-if="!editando" class="font-medium text-slate-900">{{ propiedad.antiguedad || '-' }}</p>
-                    <input v-else v-model.number="form.antiguedad" type="number" class="w-16 border rounded p-1" />
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Servicios Básicos -->
-            <div class="bg-white rounded-3xl border border-gray-100 p-6" v-if="propiedad.servicios">
-              <h2 class="text-xl font-light mb-4 text-slate-900 font-semibold">Servicios Básicos</h2>
-              <div class="grid grid-cols-2 md:grid-cols-4 gap-4 p-4 bg-slate-50 rounded-xl">
-                <template v-if="!editando">
-                  <!-- Modo visualización - solo mostrar los activos -->
-                  <div v-if="propiedad.servicios.agua !== undefined && propiedad.servicios.agua"
-                    class="flex items-center space-x-2 p-3 bg-white rounded-lg shadow-sm">
-                    <input type="checkbox" checked disabled class="mt-1 h-5 w-5 rounded border-gray-300 text-slate-600">
-                    <span class="text-sm font-medium text-slate-700">Agua corriente</span>
-                  </div>
-                  <div v-if="propiedad.servicios.luz !== undefined && propiedad.servicios.luz"
-                    class="flex items-center space-x-2 p-3 bg-white rounded-lg shadow-sm">
-                    <input type="checkbox" checked disabled class="mt-1 h-5 w-5 rounded border-gray-300 text-slate-600">
-                    <span class="text-sm font-medium text-slate-700">Luz eléctrica</span>
-                  </div>
-                  <div v-if="propiedad.servicios.cloacas !== undefined && propiedad.servicios.cloacas"
-                    class="flex items-center space-x-2 p-3 bg-white rounded-lg shadow-sm">
-                    <input type="checkbox" checked disabled class="mt-1 h-5 w-5 rounded border-gray-300 text-slate-600">
-                    <span class="text-sm font-medium text-slate-700">Cloacas</span>
-                  </div>
-                  <div v-if="propiedad.servicios.gas !== undefined && propiedad.servicios.gas"
-                    class="flex items-center space-x-2 p-3 bg-white rounded-lg shadow-sm">
-                    <input type="checkbox" checked disabled class="mt-1 h-5 w-5 rounded border-gray-300 text-slate-600">
-                    <span class="text-sm font-medium text-slate-700">Gas natural</span>
-                  </div>
-                </template>
-                <template v-else>
-                  <!-- Modo edición - mostrar todos los checkboxes -->
-                  <div class="flex items-center space-x-2 p-3 bg-white rounded-lg shadow-sm">
-                    <input type="checkbox" v-model="form.servicios.agua"
-                      class="mt-1 h-5 w-5 rounded border-gray-300 text-slate-600">
-                    <span class="text-sm font-medium text-slate-700">Agua corriente</span>
-                  </div>
-                  <div class="flex items-center space-x-2 p-3 bg-white rounded-lg shadow-sm">
-                    <input type="checkbox" v-model="form.servicios.luz"
-                      class="mt-1 h-5 w-5 rounded border-gray-300 text-slate-600">
-                    <span class="text-sm font-medium text-slate-700">Luz eléctrica</span>
-                  </div>
-                  <div class="flex items-center space-x-2 p-3 bg-white rounded-lg shadow-sm">
-                    <input type="checkbox" v-model="form.servicios.cloacas"
-                      class="mt-1 h-5 w-5 rounded border-gray-300 text-slate-600">
-                    <span class="text-sm font-medium text-slate-700">Cloacas</span>
-                  </div>
-                  <div class="flex items-center space-x-2 p-3 bg-white rounded-lg shadow-sm">
-                    <input type="checkbox" v-model="form.servicios.gas"
-                      class="mt-1 h-5 w-5 rounded border-gray-300 text-slate-600">
-                    <span class="text-sm font-medium text-slate-700">Gas natural</span>
-                  </div>
-                </template>
-              </div>
-            </div>
-
-            <!-- Amenities -->
-            <div class="bg-white rounded-3xl border border-gray-100 p-6"
-              v-if="propiedad.tipo === 'Casa' || propiedad.tipo === 'Departamento'">
-              <h2 class="text-xl font-light mb-4 text-slate-900 font-semibold">Amenities</h2>
-              <div class="grid grid-cols-2 md:grid-cols-3 gap-4 p-4 bg-slate-50 rounded-xl">
-                <template v-if="!editando">
-                  <!-- Modo visualización - solo mostrar los activos -->
-                  <template v-if="propiedad.tipo === 'Casa'">
-                    <div v-if="propiedad.amenities?.piscina"
-                      class="flex items-center space-x-2 p-3 bg-white rounded-lg shadow-sm">
-                      <input type="checkbox" checked disabled
-                        class="mt-1 h-5 w-5 rounded border-gray-300 text-slate-600">
-                      <span class="text-sm font-medium text-slate-700">Piscina</span>
-                    </div>
-                    <div v-if="propiedad.amenities?.parrilla"
-                      class="flex items-center space-x-2 p-3 bg-white rounded-lg shadow-sm">
-                      <input type="checkbox" checked disabled
-                        class="mt-1 h-5 w-5 rounded border-gray-300 text-slate-600">
-                      <span class="text-sm font-medium text-slate-700">Parrilla</span>
-                    </div>
-                    <div v-if="propiedad.amenities?.jardin"
-                      class="flex items-center space-x-2 p-3 bg-white rounded-lg shadow-sm">
-                      <input type="checkbox" checked disabled
-                        class="mt-1 h-5 w-5 rounded border-gray-300 text-slate-600">
-                      <span class="text-sm font-medium text-slate-700">Jardín</span>
-                    </div>
-                    <div v-if="propiedad.amenities?.terraza"
-                      class="flex items-center space-x-2 p-3 bg-white rounded-lg shadow-sm">
-                      <input type="checkbox" checked disabled
-                        class="mt-1 h-5 w-5 rounded border-gray-300 text-slate-600">
-                      <span class="text-sm font-medium text-slate-700">Terraza</span>
-                    </div>
-                    <div v-if="propiedad.amenities?.garage"
-                      class="flex items-center space-x-2 p-3 bg-white rounded-lg shadow-sm">
-                      <input type="checkbox" checked disabled
-                        class="mt-1 h-5 w-5 rounded border-gray-300 text-slate-600">
-                      <span class="text-sm font-medium text-slate-700">Garage</span>
-                    </div>
-                    <div v-if="propiedad.amenities?.balcon"
-                      class="flex items-center space-x-2 p-3 bg-white rounded-lg shadow-sm">
-                      <input type="checkbox" checked disabled
-                        class="mt-1 h-5 w-5 rounded border-gray-300 text-slate-600">
-                      <span class="text-sm font-medium text-slate-700">Balcón</span>
-                    </div>
-                  </template>
-
-                  <template v-if="propiedad.tipo === 'Departamento'">
-                    <div v-if="propiedad.amenities?.terraza"
-                      class="flex items-center space-x-2 p-3 bg-white rounded-lg shadow-sm">
-                      <input type="checkbox" checked disabled
-                        class="mt-1 h-5 w-5 rounded border-gray-300 text-slate-600">
-                      <span class="text-sm font-medium text-slate-700">Terraza</span>
-                    </div>
-                    <div v-if="propiedad.amenities?.garage"
-                      class="flex items-center space-x-2 p-3 bg-white rounded-lg shadow-sm">
-                      <input type="checkbox" checked disabled
-                        class="mt-1 h-5 w-5 rounded border-gray-300 text-slate-600">
-                      <span class="text-sm font-medium text-slate-700">Garage</span>
-                    </div>
-                    <div v-if="propiedad.amenities?.balcon"
-                      class="flex items-center space-x-2 p-3 bg-white rounded-lg shadow-sm">
-                      <input type="checkbox" checked disabled
-                        class="mt-1 h-5 w-5 rounded border-gray-300 text-slate-600">
-                      <span class="text-sm font-medium text-slate-700">Balcón</span>
-                    </div>
-                    <div v-if="propiedad.amenities?.tieneAscensor"
-                      class="flex items-center space-x-2 p-3 bg-white rounded-lg shadow-sm">
-                      <input type="checkbox" checked disabled
-                        class="mt-1 h-5 w-5 rounded border-gray-300 text-slate-600">
-                      <span class="text-sm font-medium text-slate-700">Ascensor</span>
-                    </div>
-                    <div v-if="propiedad.amenities?.seguridad24hs"
-                      class="flex items-center space-x-2 p-3 bg-white rounded-lg shadow-sm">
-                      <input type="checkbox" checked disabled
-                        class="mt-1 h-5 w-5 rounded border-gray-300 text-slate-600">
-                      <span class="text-sm font-medium text-slate-700">Seguridad 24hs</span>
-                    </div>
-                    <div v-if="propiedad.amenities?.piscina"
-                      class="flex items-center space-x-2 p-3 bg-white rounded-lg shadow-sm">
-                      <input type="checkbox" checked disabled
-                        class="mt-1 h-5 w-5 rounded border-gray-300 text-slate-600">
-                      <span class="text-sm font-medium text-slate-700">Piscina</span>
-                    </div>
-                    <div v-if="propiedad.amenities?.gimnasio"
-                      class="flex items-center space-x-2 p-3 bg-white rounded-lg shadow-sm">
-                      <input type="checkbox" checked disabled
-                        class="mt-1 h-5 w-5 rounded border-gray-300 text-slate-600">
-                      <span class="text-sm font-medium text-slate-700">Gimnasio</span>
-                    </div>
-                  </template>
-                </template>
-                <template v-else>
-                  <!-- Modo edición - mostrar todos los checkboxes disponibles para el tipo -->
-                  <template v-if="propiedad.tipo === 'Casa'">
-                    <div class="flex items-center space-x-2 p-3 bg-white rounded-lg shadow-sm">
-                      <input type="checkbox" v-model="form.amenities.piscina"
-                        class="mt-1 h-5 w-5 rounded border-gray-300 text-slate-600">
-                      <span class="text-sm font-medium text-slate-700">Piscina</span>
-                    </div>
-                    <div class="flex items-center space-x-2 p-3 bg-white rounded-lg shadow-sm">
-                      <input type="checkbox" v-model="form.amenities.parrilla"
-                        class="mt-1 h-5 w-5 rounded border-gray-300 text-slate-600">
-                      <span class="text-sm font-medium text-slate-700">Parrilla</span>
-                    </div>
-                    <div class="flex items-center space-x-2 p-3 bg-white rounded-lg shadow-sm">
-                      <input type="checkbox" v-model="form.amenities.jardin"
-                        class="mt-1 h-5 w-5 rounded border-gray-300 text-slate-600">
-                      <span class="text-sm font-medium text-slate-700">Jardín</span>
-                    </div>
-                    <div class="flex items-center space-x-2 p-3 bg-white rounded-lg shadow-sm">
-                      <input type="checkbox" v-model="form.amenities.terraza"
-                        class="mt-1 h-5 w-5 rounded border-gray-300 text-slate-600">
-                      <span class="text-sm font-medium text-slate-700">Terraza</span>
-                    </div>
-                    <div class="flex items-center space-x-2 p-3 bg-white rounded-lg shadow-sm">
-                      <input type="checkbox" v-model="form.amenities.garage"
-                        class="mt-1 h-5 w-5 rounded border-gray-300 text-slate-600">
-                      <span class="text-sm font-medium text-slate-700">Garage</span>
-                    </div>
-                    <div class="flex items-center space-x-2 p-3 bg-white rounded-lg shadow-sm">
-                      <input type="checkbox" v-model="form.amenities.balcon"
-                        class="mt-1 h-5 w-5 rounded border-gray-300 text-slate-600">
-                      <span class="text-sm font-medium text-slate-700">Balcón</span>
-                    </div>
-                  </template>
-
-                  <template v-if="propiedad.tipo === 'Departamento'">
-                    <div class="flex items-center space-x-2 p-3 bg-white rounded-lg shadow-sm">
-                      <input type="checkbox" v-model="form.amenities.terraza"
-                        class="mt-1 h-5 w-5 rounded border-gray-300 text-slate-600">
-                      <span class="text-sm font-medium text-slate-700">Terraza</span>
-                    </div>
-                    <div class="flex items-center space-x-2 p-3 bg-white rounded-lg shadow-sm">
-                      <input type="checkbox" v-model="form.amenities.garage"
-                        class="mt-1 h-5 w-5 rounded border-gray-300 text-slate-600">
-                      <span class="text-sm font-medium text-slate-700">Garage</span>
-                    </div>
-                    <div class="flex items-center space-x-2 p-3 bg-white rounded-lg shadow-sm">
-                      <input type="checkbox" v-model="form.amenities.balcon"
-                        class="mt-1 h-5 w-5 rounded border-gray-300 text-slate-600">
-                      <span class="text-sm font-medium text-slate-700">Balcón</span>
-                    </div>
-                    <div class="flex items-center space-x-2 p-3 bg-white rounded-lg shadow-sm">
-                      <input type="checkbox" v-model="form.amenities.tieneAscensor"
-                        class="mt-1 h-5 w-5 rounded border-gray-300 text-slate-600">
-                      <span class="text-sm font-medium text-slate-700">Ascensor</span>
-                    </div>
-                    <div class="flex items-center space-x-2 p-3 bg-white rounded-lg shadow-sm">
-                      <input type="checkbox" v-model="form.amenities.seguridad24hs"
-                        class="mt-1 h-5 w-5 rounded border-gray-300 text-slate-600">
-                      <span class="text-sm font-medium text-slate-700">Seguridad 24hs</span>
-                    </div>
-                    <div class="flex items-center space-x-2 p-3 bg-white rounded-lg shadow-sm">
-                      <input type="checkbox" v-model="form.amenities.piscina"
-                        class="mt-1 h-5 w-5 rounded border-gray-300 text-slate-600">
-                      <span class="text-sm font-medium text-slate-700">Piscina</span>
-                    </div>
-                    <div class="flex items-center space-x-2 p-3 bg-white rounded-lg shadow-sm">
-                      <input type="checkbox" v-model="form.amenities.gimnasio"
-                        class="mt-1 h-5 w-5 rounded border-gray-300 text-slate-600">
-                      <span class="text-sm font-medium text-slate-700">Gimnasio</span>
-                    </div>
-                  </template>
-                </template>
-              </div>
-            </div>
-
             <!-- Descripción editable -->
             <div class="bg-white rounded-3xl border border-gray-100 p-6">
               <h2 class="text-xl font-light mb-4 text-slate-900 font-semibold">Descripción</h2>
@@ -461,32 +138,108 @@
                 class="text-slate-700 leading-relaxed border border-gray-300 rounded p-2 w-full h-32"></textarea>
             </div>
 
+            <!-- Caracteristicas -->
+            <div class="bg-white rounded-3xl border border-gray-100 p-6" v-if="propiedad">
+              <h2 class="text-xl font-light mb-4 text-slate-900 font-semibold">Características</h2>
+              <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                <div v-for="item in featureItems" :key="item.id" class="flex items-center space-x-2">
+                  <div class="w-8 h-8 rounded-lg flex items-center justify-center" :class="item.iconBg">
+                    <component :is="item.icon" class="w-4 h-4" :class="item.iconColor" />
+                  </div>
+                  <div>
+                    <p class="text-sm text-slate-600">{{ item.label }}</p>
+                    <p v-if="!editando" class="font-medium text-slate-900">{{ propiedad[item.id] || '-' }}</p>
+                    <input v-else v-model.number="form[item.id]" type="number" class="w-16 border rounded p-1" />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Servicios Basicos -->
+            <div class="bg-white rounded-3xl border border-gray-100 p-6" v-if="propiedad?.servicios">
+              <h2 class="text-xl font-light mb-4 text-slate-900 font-semibold">Servicios Básicos</h2>
+              <div class="grid grid-cols-2 md:grid-cols-4 gap-4 p-4 bg-slate-50 rounded-xl">
+                <div v-for="(label, key) in serviciosConfig" :key="key"
+                  class="flex items-center space-x-2 p-3 bg-white rounded-lg shadow-sm">
+                  <input type="checkbox" :checked="editando ? form.servicios[key] : propiedad.servicios[key]"
+                    :disabled="!editando" @change="editando && (form.servicios[key] = $event.target.checked)"
+                    class="mt-1 h-5 w-5 rounded border-gray-300 text-slate-600">
+                  <span class="text-sm font-medium text-slate-700">{{ label }}</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Amenities -->
+            <div class="bg-white rounded-3xl border border-gray-100 p-6" v-if="amenitiesConfig[propiedad.tipo]">
+              <h2 class="text-xl font-light mb-4 text-slate-900 font-semibold">Amenities</h2>
+              <div class="grid grid-cols-2 md:grid-cols-3 gap-4 p-4 bg-slate-50 rounded-xl">
+                <div v-for="(label, key) in amenitiesConfig[propiedad.tipo]" :key="key"
+                  class="flex items-center space-x-2 p-3 bg-white rounded-lg shadow-sm">
+                  <input type="checkbox" :checked="editando ? form.amenities[key] : propiedad.amenities?.[key]"
+                    :disabled="!editando" @change="editando && (form.amenities[key] = $event.target.checked)"
+                    class="mt-1 h-5 w-5 rounded border-gray-300 text-slate-600">
+                  <span class="text-sm font-medium text-slate-700">{{ label }}</span>
+                </div>
+              </div>
+            </div>
+
             <!-- Ubicación editable -->
             <div class="bg-white rounded-3xl border border-gray-100 p-6">
               <h2 class="text-xl font-light mb-4 text-slate-900 font-semibold">Ubicación</h2>
 
+              <!-- Modo visualización -->
               <div v-if="!editando" class="space-y-2">
-                <p class="text-slate-700">{{ propiedad.tipo === 'Terreno' ? propiedad.calle : propiedad.ubicacion?.calle
-                }}
-                  {{ propiedad.tipo === 'Terreno' ? propiedad.altura : propiedad.ubicacion?.altura }}</p>
-                <p class="text-slate-700">{{ propiedad.tipo === 'Terreno' ? propiedad.localidad :
-                  propiedad.ubicacion?.localidad }}</p>
+                <!-- Calle y altura -->
+                <p class="text-slate-700">
+                  {{ propiedad.tipo === 'Terreno' ? propiedad.calle : propiedad.ubicacion?.calle }}
+                  {{ propiedad.tipo === 'Terreno' ? propiedad.altura : propiedad.ubicacion?.altura }}
+                </p>
+
+                <!-- Localidad -->
+                <p class="text-slate-700">
+                  {{ propiedad.tipo === 'Terreno' ? propiedad.localidad : propiedad.ubicacion?.localidad }}
+                </p>
+
+                <!-- Piso (solo para Departamentos) -->
+                <p v-if="propiedad.tipo === 'Departamento' && propiedad.ubicacion?.piso !== undefined"
+                  class="text-slate-700">
+                  Piso: {{ propiedad.ubicacion.piso === 0 ? 'PB' : propiedad.ubicacion.piso }}
+                </p>
+
+                <!-- Entre calles -->
                 <p v-if="propiedad.tipo !== 'Terreno' && propiedad.ubicacion?.entreCalles"
                   class="text-slate-500 text-sm">
                   Entre {{ propiedad.ubicacion.entreCalles.calle1 }} y {{ propiedad.ubicacion.entreCalles.calle2 }}
                 </p>
+
+                <!-- Coordenadas -->
+                <p v-if="propiedad.ubicacion?.coordenadas" class="text-slate-500 text-sm">
+                  Coordenadas: {{ typeof propiedad.ubicacion.coordenadas === 'string'
+                    ? propiedad.ubicacion.coordenadas
+                    : `${propiedad.ubicacion.coordenadas.lat}, ${propiedad.ubicacion.coordenadas.lng}` }}
+                </p>
+
+                <!-- Mapa URL -->
+                <a v-if="propiedad.ubicacion?.mapaUrl" :href="propiedad.ubicacion.mapaUrl" target="_blank"
+                  class="text-blue-600 text-sm hover:underline">
+                  Ver en mapa
+                </a>
               </div>
 
+              <!-- Modo edición -->
               <div v-else class="space-y-4">
+                <!-- Calle -->
                 <div>
                   <label class="block text-sm font-medium text-slate-700 mb-1">Calle</label>
                   <input v-model="form.ubicacion.calle" class="w-full border rounded p-2" />
                 </div>
 
+                <!-- Altura y Localidad -->
                 <div class="grid grid-cols-2 gap-4">
                   <div>
                     <label class="block text-sm font-medium text-slate-700 mb-1">Altura</label>
-                    <input v-model.number="form.ubicacion.altura" type="number" class="w-full border rounded p-2" />
+                    <input v-model.number="form.ubicacion.piso" type="number" min="0" class="w-full border rounded p-1"
+                      @change="console.log('Valor actual del piso:', form.ubicacion.piso)" />
                   </div>
                   <div>
                     <label class="block text-sm font-medium text-slate-700 mb-1">Localidad</label>
@@ -494,6 +247,15 @@
                   </div>
                 </div>
 
+                <!-- Piso (solo para Departamentos) -->
+                <div v-if="propiedad.tipo === 'Departamento'" class="grid grid-cols-2 gap-4">
+                  <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-1">Piso</label>
+                    <input v-model.number="form.ubicacion.piso" type="number" class="w-full border rounded p-2" />
+                  </div>
+                </div>
+
+                <!-- Entre calles -->
                 <div v-if="propiedad.tipo !== 'Terreno'" class="grid grid-cols-2 gap-4">
                   <div>
                     <label class="block text-sm font-medium text-slate-700 mb-1">Entre calle 1</label>
@@ -505,45 +267,96 @@
                   </div>
                 </div>
 
+                <!-- Coordenadas -->
+
                 <div class="grid grid-cols-2 gap-4">
                   <div>
-                    <label class="block text-sm font-medium text-slate-700 mb-1">Latitud</label>
-                    <input v-model.number="form.ubicacion.coordenadas.lat" type="number" step="0.000001"
-                      class="w-full border rounded p-2" />
+                    <label class="block text-sm font-medium text-slate-700 mb-1">Coordenadas (Latitud)</label>
+                    <input :value="typeof form.ubicacion.coordenadas === 'string'
+                      ? form.ubicacion.coordenadas.split(',')[0]?.trim()
+                      : form.ubicacion.coordenadas?.lat" @input="e => {
+                        const lat = e.target.value;
+                        if (typeof form.ubicacion.coordenadas === 'string') {
+                          const parts = form.ubicacion.coordenadas.split(',');
+                          form.ubicacion.coordenadas = `${lat},${parts[1] || ''}`;
+                        } else {
+                          form.ubicacion.coordenadas = {
+                            ...form.ubicacion.coordenadas,
+                            lat: parseFloat(lat) || 0
+                          };
+                        }
+                      }" type="number" step="0.000001" class="w-full border rounded p-2" />
                   </div>
                   <div>
-                    <label class="block text-sm font-medium text-slate-700 mb-1">Longitud</label>
-                    <input v-model.number="form.ubicacion.coordenadas.lng" type="number" step="0.000001"
-                      class="w-full border rounded p-2" />
+                    <label class="block text-sm font-medium text-slate-700 mb-1">Coordenadas (Longitud)</label>
+                    <input :value="typeof form.ubicacion.coordenadas === 'string'
+                      ? form.ubicacion.coordenadas.split(',')[1]?.trim()
+                      : form.ubicacion.coordenadas?.lng" @input="e => {
+                        const lng = e.target.value;
+                        if (typeof form.ubicacion.coordenadas === 'string') {
+                          const parts = form.ubicacion.coordenadas.split(',');
+                          form.ubicacion.coordenadas = `${parts[0] || ''},${lng}`;
+                        } else {
+                          form.ubicacion.coordenadas = {
+                            ...form.ubicacion.coordenadas,
+                            lng: parseFloat(lng) || 0
+                          };
+                        }
+                      }" type="number" step="0.000001" class="w-full border rounded p-2" />
                   </div>
+                </div>
+
+                <!-- Mapa URL -->
+                <div>
+                  <label class="block text-sm font-medium text-slate-700 mb-1">URL del Mapa</label>
+                  <input v-model="form.ubicacion.mapaUrl" class="w-full border rounded p-2" />
                 </div>
               </div>
             </div>
+
           </div>
 
           <!-- Sidebar -->
           <div class="space-y-6">
-            <!-- Precio y datos principales -->
             <div class="bg-white rounded-3xl border border-gray-100 p-6">
+              <!-- Precio y visibilidad -->
               <div class="text-center mb-6">
-                <!-- Precio -->
-                <div v-if="!editando" class="flex items-center justify-center mb-2">
-                  <DollarSign class="w-6 h-6 text-green-600 mr-1" />
-                  <span class="text-3xl font-light text-slate-900">{{ propiedad.precio?.monto?.toLocaleString() }} {{
-                    propiedad.precio?.moneda }}</span>
+                <!-- Botón de visibilidad del precio (ahora arriba) -->
+                <div class="flex justify-center mb-2">
+                  <button v-if="puedeEditarEliminar" @click="toggleVisibilidadPrecio" :class="[
+                    'text-xs font-medium px-2 py-1 rounded mb-2',
+                    editando ? form.precio.visible ? 'bg-gray-100 text-gray-800' : 'bg-slate-200 text-slate-600'
+                      : propiedad.precio.visible ? 'bg-gray-100 text-gray-800' : 'bg-slate-200 text-slate-600',
+                    !editando && 'opacity-50 cursor-not-allowed'
+                  ]" :disabled="!editando">
+                    {{ editando ? form.precio.visible ? 'Precio Visible' : 'Precio Oculto' : propiedad.precio.visible ?
+                      'Precio Visible' : 'Precio Oculto' }}
+                  </button>
                 </div>
-                <div v-else class="flex items-center justify-center mb-2 space-x-2">
-                  <DollarSign class="w-6 h-6 text-green-600" />
-                  <input v-model.number="form.precio.monto" type="number"
-                    class="text-3xl font-light text-slate-900 border border-gray-300 rounded p-2 w-32" />
-                  <select v-model="form.precio.moneda"
-                    class="text-3xl font-light text-slate-900 border border-gray-300 rounded p-2">
-                    <option value="ARS">ARS</option>
-                    <option value="USD">USD</option>
-                    <option value="EUR">EUR</option>
-                  </select>
+
+                <!-- Contenedor del precio -->
+                <div class="flex flex-col items-center">
+                  <!-- Icono y monto del precio -->
+                  <div class="flex items-center justify-center">
+                    <DollarSign class="w-6 h-6 text-green-600 mr-1" />
+                    <span v-if="!editando" class="text-3xl font-light text-slate-900">
+                      {{ propiedad.precio?.visible ? propiedad.precio.monto?.toLocaleString() : 'Consultar' }}
+                      {{ propiedad.precio?.visible ? propiedad.precio?.moneda : '' }}
+                    </span>
+                    <div v-else class="flex items-center space-x-2">
+                      <input v-model.number="form.precio.monto" type="number"
+                        class="text-3xl font-light text-slate-900 border border-gray-300 rounded p-2 w-32" />
+                      <select v-model="form.precio.moneda"
+                        class="text-3xl font-light text-slate-900 border border-gray-300 rounded p-2">
+                        <option value="ARS">ARS</option>
+                        <option value="USD">USD</option>
+                        <option value="EUR">EUR</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <p class="text-slate-600 mt-1">Precio de {{ propiedad.operacion }}</p>
                 </div>
-                <p class="text-slate-600">Precio de {{ propiedad.operacion }}</p>
               </div>
 
               <hr class="my-4" />
@@ -733,15 +546,104 @@ const eliminando = ref(false)
 const mostrarModalConfirmacionImagen = ref(false)
 const imagenAEliminar = ref(null)
 
+// Configuración reutilizable
+const serviciosConfig = {
+  agua: 'Agua corriente',
+  luz: 'Luz eléctrica',
+  cloacas: 'Cloacas',
+  gas: 'Gas natural'
+}
 
-//caracteristicas
-const showHabitaciones = computed(() => ['Casa', 'Departamento', 'Local comercial'].includes(propiedad.value?.tipo))
-const showBanos = computed(() => ['Casa', 'Departamento', 'Local comercial'].includes(propiedad.value?.tipo))
-const showAmbientes = computed(() => ['Casa', 'Departamento'].includes(propiedad.value?.tipo))
-const showAntiguedad = computed(() => ['Casa', 'Departamento', 'Local comercial'].includes(propiedad.value?.tipo))
+const amenitiesConfig = {
+  Casa: {
+    piscina: 'Piscina',
+    parrilla: 'Parrilla',
+    jardin: 'Jardín',
+    terraza: 'Terraza',
+    garage: 'Garage',
+    balcon: 'Balcón'
+  },
+  Departamento: {
+    terraza: 'Terraza',
+    garage: 'Garage',
+    balcon: 'Balcón',
+    tieneAscensor: 'Ascensor',
+    seguridad24hs: 'Seguridad 24hs',
+    piscina: 'Piscina',
+    gimnasio: 'Gimnasio'
+  }
+}
 
-const showSuperficieCubierta = computed(() => ['Casa', 'Departamento', 'Local comercial'].includes(propiedad.value?.tipo))
-const showLargoAncho = computed(() => ['Terreno', 'Campo'].includes(propiedad.value?.tipo))
+const featureItems = computed(() => {
+  if (!propiedad.value) return []
+
+  return [
+    {
+      id: 'habitaciones',
+      label: 'Dormitorios',
+      icon: Home,
+      iconBg: 'bg-blue-100',
+      iconColor: 'text-blue-600',
+      show: ['Casa', 'Departamento', 'Local comercial'].includes(propiedad.value.tipo)
+    },
+    {
+      id: 'baños',
+      label: 'Baños',
+      icon: Users,
+      iconBg: 'bg-blue-100',
+      iconColor: 'text-blue-600',
+      show: ['Casa', 'Departamento', 'Local comercial'].includes(propiedad.value.tipo)
+    },
+    {
+      id: 'ambientes',
+      label: 'Ambientes',
+      icon: Building,
+      iconBg: 'bg-blue-100',
+      iconColor: 'text-blue-600',
+      show: ['Casa', 'Departamento'].includes(propiedad.value.tipo)
+    },
+    {
+      id: 'superficieTotal',
+      label: 'Sup. Total (m²)',
+      icon: Wrench,
+      iconBg: 'bg-green-100',
+      iconColor: 'text-green-600',
+      show: true
+    },
+    {
+      id: 'superficieCubierta',
+      label: 'Sup. Cubierta (m²)',
+      icon: Home,
+      iconBg: 'bg-green-100',
+      iconColor: 'text-green-600',
+      show: ['Casa', 'Departamento', 'Local comercial'].includes(propiedad.value.tipo)
+    },
+    {
+      id: 'largo',
+      label: 'Largo (m)',
+      icon: Calendar,
+      iconBg: 'bg-yellow-100',
+      iconColor: 'text-yellow-600',
+      show: ['Terreno', 'Campo'].includes(propiedad.value.tipo)
+    },
+    {
+      id: 'ancho',
+      label: 'Ancho (m)',
+      icon: Calendar,
+      iconBg: 'bg-yellow-100',
+      iconColor: 'text-yellow-600',
+      show: ['Terreno', 'Campo'].includes(propiedad.value.tipo)
+    },
+    {
+      id: 'antiguedad',
+      label: 'Antigüedad (años)',
+      icon: Calendar,
+      iconBg: 'bg-yellow-100',
+      iconColor: 'text-yellow-600',
+      show: ['Casa', 'Departamento', 'Local comercial'].includes(propiedad.value.tipo)
+    }
+  ].filter(item => item.show)
+})
 
 const handleVolver = () => {
   const token = localStorage.getItem('auth-token');
@@ -759,7 +661,7 @@ const handleVolver = () => {
         localStorage.removeItem('auth-token');
         router.push('/propiedades-publicas');
       }
-    } catch  {
+    } catch {
       // Token inválido
       localStorage.removeItem('auth-token');
       router.push('/propiedades-publicas');
@@ -771,7 +673,7 @@ const handleVolver = () => {
 };
 
 const mostrarPiso = computed(() => {
-  const piso = propiedad.value?.ubicacion?.piso; // Accedemos a ubicacion.piso
+  const piso = propiedad.value?.ubicacion?.piso;
 
   if (piso === 0) return 'PB';
   if (piso !== null && piso !== undefined) return piso;
@@ -791,13 +693,10 @@ const puedeEditarEliminar = computed(() => {
     return decoded.rol === 'admin' && decoded.exp > currentTime;
 
   } catch (error) {
-    // Si hay un error decodificando (el token es inválido, corrupto, etc.),
-    // o si falta alguna propiedad, asumimos que no está autorizado.
     console.error('Error al decodificar el token o token inválido:', error);
     return false;
   }
 });
-
 
 // Función para mostrar mensajes temporales
 const mostrarMensajeTemporal = (tipo, texto, duracion = 3000) => {
@@ -811,7 +710,6 @@ const mostrarMensajeTemporal = (tipo, texto, duracion = 3000) => {
 
   mostrarMensaje.value = true
 
-  // Ocultar después de la duración especificada
   setTimeout(() => {
     mostrarMensaje.value = false
   }, duracion)
@@ -866,13 +764,12 @@ const handleImageUpload = async (event) => {
     for (const file of uploadedFiles) {
       if (!file.type.match('image.*')) continue
 
-      // Subir a Cloudinary (asegúrate de que esta función devuelva public_id)
       const { url, public_id } = await uploadImageToCloudinary(file)
 
       if (url && public_id) {
         form.value.imagenes.push({
           url,
-          public_id, // Asegurarse de incluir el nuevo public_id
+          public_id,
           descripcion: '',
           orden: form.value.imagenes.length,
           esPortada: false
@@ -946,13 +843,12 @@ const confirmarEliminacion = () => {
 // Manejo de edición
 const activarEdicion = () => {
   editando.value = true
-  // Hacer una copia profunda incluyendo las imágenes
   form.value = JSON.parse(JSON.stringify({
     ...propiedad.value,
     visible: propiedad.value.visible,
     imagenes: propiedad.value.imagenes?.map(img => ({
       url: img.url,
-      public_id: img.public_id, // Asegurarse de incluir el public_id existente
+      public_id: img.public_id,
       descripcion: img.descripcion || '',
       orden: img.orden || 0,
       esPortada: img.esPortada || false
@@ -963,7 +859,7 @@ const activarEdicion = () => {
       cloacas: false,
       gas: false
     },
-amenities: propiedad.value.amenities || {
+    amenities: propiedad.value.amenities || {
       // Para casas
       piscina: false,
       parrilla: false,
@@ -977,8 +873,6 @@ amenities: propiedad.value.amenities || {
       gimnasio: false
     }
   }))
-
-
 
   // Para Departamentos específicamente
   if (propiedad.value.tipo === 'Departamento') {
@@ -1033,7 +927,6 @@ amenities: propiedad.value.amenities || {
   if (!form.value.ubicacion.coordenadas) form.value.ubicacion.coordenadas = { lat: 0, lng: 0 }
   if (!form.value.ubicacion.entreCalles) form.value.ubicacion.entreCalles = { calle1: '', calle2: '' }
   if (!form.value.imagenes) form.value.imagenes = []
-
 }
 
 const cancelarEdicion = () => {
@@ -1047,66 +940,91 @@ const toggleVisibilidad = () => {
   }
 }
 
+const toggleVisibilidadPrecio = () => {
+  if (editando.value) {
+    form.value.precio.visible = !form.value.precio.visible
+  }
+}
+
 const guardarCambios = async () => {
   try {
-    const id = route.params.id
+    const id = route.params.id;
 
-    // 1. Validar que tenemos un tipo de propiedad válido
+    // 1. Validación básica
     if (!propiedad.value?.tipo) {
-      throw new Error('Tipo de propiedad no definido')
+      throw new Error('Tipo de propiedad no definido');
     }
 
-    // 2. Normalizar el tipo de propiedad de manera segura
-    const tipoPropiedad = normalizarTipoPropiedad(propiedad.value.tipo)
+    // 2. Normalizar tipo
+    const tipoPropiedad = normalizarTipoPropiedad(propiedad.value.tipo);
     if (!tipoPropiedad) {
-      throw new Error('Tipo de propiedad no válido')
+      throw new Error('Tipo de propiedad no válido');
     }
 
-    // Validar que todas las imágenes tengan public_id
-    const imagenesInvalidas = form.value.imagenes.some(img => !img.public_id)
+    // 3. Validar imágenes
+    const imagenesInvalidas = form.value.imagenes.some(img => !img.public_id);
     if (imagenesInvalidas) {
-      throw new Error('Todas las imágenes deben tener un public_id válido')
+      throw new Error('Todas las imágenes deben tener un public_id válido');
     }
 
-    // 3. Preparar datos para enviar
+    // 4. Preparar datos para enviar (con corrección para piso)
     let datosAEnviar = {
       ...JSON.parse(JSON.stringify(form.value)),
+      // Eliminar campo piso en raíz si existe (solo debe estar en ubicacion)
+      ...(form.value.piso && { piso: undefined }),
       imagenes: form.value.imagenes.map(img => ({
         url: img.url,
-        public_id: img.public_id, // Asegurar que se envía
+        public_id: img.public_id,
         descripcion: img.descripcion || '',
         orden: img.orden || 0,
         esPortada: img.esPortada || false
       })),
       servicios: form.value.servicios,
-      amenities: form.value.amenities
-    }
+      amenities: form.value.amenities,
+      // Asegurar estructura correcta de ubicacion
+      ubicacion: {
+        ...form.value.ubicacion,
+        // Convertir piso a número
+        piso: form.value.ubicacion?.piso !== undefined
+          ? parseInt(form.value.ubicacion.piso) || 0
+          : undefined
+      }
+    };
 
-    // 4. Transformaciones específicas por tipo
-    if (tipoPropiedad === 'Departamento' && datosAEnviar.dormitorios !== undefined) {
-      datosAEnviar.habitaciones = datosAEnviar.dormitorios
-      delete datosAEnviar.dormitorios
+    // 5. Transformaciones específicas por tipo
+    if (tipoPropiedad === 'Departamento') {
+      // Manejo especial para piso
+      if (datosAEnviar.ubicacion.piso === undefined && form.value.piso !== undefined) {
+        datosAEnviar.ubicacion.piso = parseInt(form.value.piso) || 0;
+      }
+
+      // Mantener compatibilidad con habitaciones/dormitorios
+      if (datosAEnviar.dormitorios !== undefined) {
+        datosAEnviar.habitaciones = datosAEnviar.dormitorios;
+        delete datosAEnviar.dormitorios;
+      }
     }
 
     if (tipoPropiedad === 'Terreno') {
-      datosAEnviar = transformarTerreno(datosAEnviar)
+      datosAEnviar = transformarTerreno(datosAEnviar);
     }
 
-    // 5. Validación mínima
-    // if (!datosAEnviar.imagenes?.length) {
-    //   throw new Error('Debe agregar al menos una imagen válida')
-    // }
+    // 6. Depuración: Mostrar datos que se enviarán
+    console.log('Datos a enviar:', JSON.stringify({
+      tipo: tipoPropiedad,
+      propiedad: datosAEnviar
+    }, null, 2));
 
-    // 6. Enviar datos
+    // 7. Enviar datos
     const response = await api.put(`/admin/editar-propiedad/${id}`, {
       tipo: tipoPropiedad,
       propiedad: datosAEnviar
-    })
+    });
 
-    // 7. Actualizar estado
-    propiedad.value = response.data.propiedad
-    editando.value = false
-    mostrarMensajeTemporal('exito', 'Propiedad actualizada correctamente')
+    // 8. Actualizar estado
+    propiedad.value = response.data.propiedad;
+    editando.value = false;
+    mostrarMensajeTemporal('exito', 'Propiedad actualizada correctamente');
 
   } catch (error) {
     console.error('Error en guardarCambios:', {
@@ -1114,10 +1032,10 @@ const guardarCambios = async () => {
       stack: error.stack,
       tipo: propiedad.value?.tipo,
       formData: form.value
-    })
-    mostrarMensajeTemporal('error', error.message || 'Error al actualizar la propiedad')
+    });
+    mostrarMensajeTemporal('error', error.message || 'Error al actualizar la propiedad');
   }
-}
+};
 
 // Funciones auxiliares
 const normalizarTipoPropiedad = (tipo) => {
@@ -1134,7 +1052,6 @@ const normalizarTipoPropiedad = (tipo) => {
     'fondo comercio': 'FondoComercio',
     'fondocomercio': 'FondoComercio'
   }
-
   return tiposValidos[tipo.toString().toLowerCase().trim()] || tipo
 }
 
@@ -1157,10 +1074,8 @@ const transformarTerreno = (datos) => {
   }
 }
 
-
 // Carga inicial
 onMounted(async () => {
-  // 1. Agregar el event listener del teclado
   window.addEventListener('keydown', manejarTeclado)
 
   // 2. Cargar los datos de la propiedad
