@@ -123,6 +123,7 @@
 
 <script setup>
 import { ref, onMounted, onBeforeUnmount } from 'vue';
+import axios from 'axios'
 
 import horizontal1 from '../assets/horizontal1.jpg';
 import horizontal2 from '../assets/horizontal2.jpg';
@@ -158,7 +159,29 @@ const getMobileStyle = (img) => ({
 
 let intervalId;
 
+// Función para despertar el backend
+const despertarBackendUnaVezPorSesion = () => {
+  const yaLlamado = sessionStorage.getItem("backendDespertado");
+
+  if (!yaLlamado) {
+    const baseURL = import.meta.env.VITE_API_URL;
+    axios.get(`${baseURL}/api/ping`)
+      .then(() => {
+        console.log("Backend activado.");
+        sessionStorage.setItem("backendDespertado", "true");
+      })
+      .catch((error) => {
+        console.warn("No se pudo despertar el backend:", error);
+      });
+  } else {
+    console.log("Backend ya fue despertado en esta sesión.");
+  }
+};
+
 onMounted(() => {
+  // Llamar a la función para despertar el backend
+  despertarBackendUnaVezPorSesion();
+
   // Precargar imágenes "dibujándolas" en un canvas (fuerza a renderizar en GPU)
   desktopImages.concat(mobileImages).forEach(src => {
     const img = new Image();
@@ -169,7 +192,6 @@ onMounted(() => {
   intervalId = setInterval(() => {
     currentIndex.value = (currentIndex.value + 1) % desktopImages.length;
   }, 5000);
-
 });
 
 
