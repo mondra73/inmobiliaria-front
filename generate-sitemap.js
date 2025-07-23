@@ -5,7 +5,6 @@ const domain = 'https://www.espinosainmob.com.ar'
 
 const rutas = [
   '/',
-  '/login',
   '/nosotros',
   '/propiedades-publicas',
   '/contacto',

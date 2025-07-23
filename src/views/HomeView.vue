@@ -37,7 +37,7 @@
       <h4 class="text-4xl font-medium text-slate-900">Tu inmobiliaria de confianza en Colón y alrededores</h4>
       <br>
       <p class="text-xl text-slate-600 max-w-2xl mx-auto">
-        Brindamos un servicio inmobiliario personalizado en Colón, Buenos Aires y zonas cercanas. Nos enfocamos en la excelencia, la transparencia y la confianza, acompañándote en cada etapa del proceso de compra, venta o alquiler.
+        Brindamos un servicio inmobiliario personalizado en Colón, Buenos Aires y zonas cercanas. <br> Nos enfocamos en la excelencia, la transparencia y la confianza, acompañándote en cada etapa del proceso de compra, venta o alquiler.
         Nuestro compromiso es ofrecerte una experiencia ágil, segura y con resultados exitosos.
       </p>
     </div>
