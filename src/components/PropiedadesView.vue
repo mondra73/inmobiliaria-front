@@ -19,7 +19,7 @@
         </RouterLink>
 
         <!-- Botones agregados correctamente dentro del mismo nav -->
-        <a href="#"
+        <RouterLink to="/operaciones"
           class="flex items-center space-x-3 p-3 rounded-xl text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-colors duration-200">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
@@ -27,7 +27,7 @@
             </path>
           </svg>
           <span>Operaciones</span>
-        </a>
+        </RouterLink>
 
         <a href="#"
           class="flex items-center space-x-3 p-3 rounded-xl text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-colors duration-200">
@@ -48,7 +48,7 @@
           </svg>
           <span>Reportes</span>
         </a>
-      </nav> 
+      </nav>
 
       <!-- Sección del usuario - Modificada para ser dinámica -->
       <div class="absolute bottom-6 left-6 right-6">

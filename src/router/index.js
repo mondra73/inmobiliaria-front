@@ -7,6 +7,8 @@ import Propiedades from "../components/PropiedadesView.vue";
 import PropiedadesPublicas from "../components/PropiedadesPublicasView.vue";
 import PropiedadDetalle from "../components/PropiedadDetalle/PropiedadDetalleView.vue";
 import Dashboard from "../components/DashboardView.vue";
+import Operaciones from "../components/OperacionesView.vue";
+import NuevoCliente from "../components/NuevoClienteView.vue";
 import NuevaPropiedad from "../components/NuevaPropiedad/NuevaPropiedadView.vue";
 import NotFoundView from "../components/NotFoundView.vue";
 import NosotrosView from "../components/NosotrosView.vue";
@@ -17,6 +19,8 @@ const routes = [
   { path: "/contacto", component: Contacto },
   { path: "/login", component: Login },
   { path: "/dashboard", component: Dashboard, meta: { requiresAuth: true } },
+  { path: "/operaciones", component: Operaciones, meta: { requiresAuth: true } },
+  { path: "/nuevo-cliente", component: NuevoCliente, meta: { requiresAuth: true } },
   { path: "/nueva-propiedad", component: NuevaPropiedad, meta: { requiresAuth: true } },
   { path: "/propiedades", component: Propiedades },
   { path: "/propiedades-publicas", component: PropiedadesPublicas },
