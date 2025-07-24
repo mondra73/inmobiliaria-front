@@ -183,48 +183,55 @@
               </div>
             </div>
 
-            <!-- Ubicación editable -->
-            <div class="bg-white rounded-3xl border border-gray-100 p-6">
-              <h2 class="text-xl font-light mb-4 text-slate-900 font-semibold">Ubicación</h2>
+           <!-- Ubicación editable -->
+<div class="bg-white rounded-3xl border border-gray-100 p-6">
+  <h2 class="text-xl font-light mb-4 text-slate-900 font-semibold">Ubicación</h2>
 
-              <!-- Modo visualización -->
-              <div v-if="!editando" class="space-y-2">
-                <!-- Calle y altura -->
-                <p class="text-slate-700">
-                  {{ propiedad.tipo === 'Terreno' ? propiedad.calle : propiedad.ubicacion?.calle }}
-                  {{ propiedad.tipo === 'Terreno' ? propiedad.altura : propiedad.ubicacion?.altura }}
-                </p>
+  <!-- Modo visualización -->
+  <template v-if="!editando">
+    <!-- Calle y altura -->
+    <p class="text-slate-700">
+      {{ propiedad.tipo === 'Terreno' ? propiedad.calle : propiedad.ubicacion?.calle }}
+      {{ propiedad.tipo === 'Terreno' ? propiedad.altura : propiedad.ubicacion?.altura }}
+    </p>
 
-                <!-- Localidad -->
-                <p class="text-slate-700">
-                  {{ propiedad.tipo === 'Terreno' ? propiedad.localidad : propiedad.ubicacion?.localidad }}
-                </p>
+    <!-- Localidad -->
+    <p class="text-slate-700">
+      {{ propiedad.tipo === 'Terreno' ? propiedad.localidad : propiedad.ubicacion?.localidad }}
+    </p>
 
-                <!-- Piso (solo para Departamentos) -->
-                <p v-if="propiedad.tipo === 'Departamento' && propiedad.ubicacion?.piso !== undefined"
-                  class="text-slate-700">
-                  Piso: {{ propiedad.ubicacion.piso === 0 ? 'PB' : propiedad.ubicacion.piso }}
-                </p>
+    <!-- Piso (solo para Departamentos) -->
+    <p v-if="propiedad.tipo === 'Departamento' && propiedad.ubicacion?.piso !== undefined" class="text-slate-700">
+      Piso: {{ propiedad.ubicacion.piso === 0 ? 'PB' : propiedad.ubicacion.piso }}
+    </p>
 
-                <!-- Entre calles -->
-                <p v-if="propiedad.tipo !== 'Terreno' && propiedad.ubicacion?.entreCalles"
-                  class="text-slate-500 text-sm">
-                  Entre {{ propiedad.ubicacion.entreCalles.calle1 }} y {{ propiedad.ubicacion.entreCalles.calle2 }}
-                </p>
+    <!-- Entre calles -->
+    <p v-if="propiedad.tipo !== 'Terreno' &&
+             propiedad.ubicacion?.entreCalles &&
+             propiedad.ubicacion.entreCalles.calle1 &&
+             propiedad.ubicacion.entreCalles.calle2"
+       class="text-slate-500 text-sm">
+      Entre {{ propiedad.ubicacion.entreCalles.calle1 }} y {{ propiedad.ubicacion.entreCalles.calle2 }}
+    </p>
 
-                <!-- Coordenadas -->
-                <p v-if="propiedad.ubicacion?.coordenadas" class="text-slate-500 text-sm">
-                  Coordenadas: {{ typeof propiedad.ubicacion.coordenadas === 'string'
-                    ? propiedad.ubicacion.coordenadas
-                    : `${propiedad.ubicacion.coordenadas.lat}, ${propiedad.ubicacion.coordenadas.lng}` }}
-                </p>
+    <!-- Coordenadas -->
+    <p v-if="mostrarCoordenadas" class="text-slate-500 text-sm">
+      Coordenadas: {{ coordenadasFormateadas }}
+    </p>
 
-                <!-- Mapa URL -->
-                <a v-if="propiedad.ubicacion?.mapaUrl" :href="propiedad.ubicacion.mapaUrl" target="_blank"
-                  class="text-blue-600 text-sm hover:underline">
-                  Ver en mapa
-                </a>
-              </div>
+    <!-- Mapa -->
+    <div v-if="mostrarMapa" class="mt-4 w-full h-64 rounded-xl overflow-hidden shadow-lg">
+      <iframe
+        width="100%"
+        height="100%"
+        style="border:0"
+        loading="lazy"
+        allowfullscreen
+        referrerpolicy="no-referrer-when-downgrade"
+        :src="urlMapa">
+      </iframe>
+    </div>
+  </template>
 
               <!-- Modo edición -->
               <div v-else class="space-y-4">
@@ -545,6 +552,108 @@ const mostrarModalConfirmacion = ref(false)
 const eliminando = ref(false)
 const mostrarModalConfirmacionImagen = ref(false)
 const imagenAEliminar = ref(null)
+
+// Computed property para determinar si mostrar el mapa
+const mostrarMapa = computed(() => {
+  const ubicacion = propiedad.value?.ubicacion;
+
+  // Verificar si tenemos coordenadas válidas
+  if (ubicacion?.coordenadas) {
+    if (typeof ubicacion.coordenadas === 'string') {
+      return ubicacion.coordenadas.trim() !== '' &&
+             ubicacion.coordenadas.includes(',');
+    }
+    return typeof ubicacion.coordenadas === 'object' &&
+           ubicacion.coordenadas !== null &&
+           (ubicacion.coordenadas.lat !== 0 || ubicacion.coordenadas.lng !== 0);
+  }
+
+  // Si no hay coordenadas, verificar si hay mapaUrl válido
+  if (ubicacion?.mapaUrl) {
+    return ubicacion.mapaUrl.includes('maps') ||
+           ubicacion.mapaUrl.includes('goo.gl');
+  }
+
+  return false;
+});
+
+// Computed property para generar la URL del mapa
+const urlMapa = computed(() => {
+  const ubicacion = propiedad.value?.ubicacion;
+
+  if (!ubicacion) return '';
+
+  // Manejar coordenadas
+  if (ubicacion.coordenadas) {
+    try {
+      // Si es string (formato "lat,lng")
+      if (typeof ubicacion.coordenadas === 'string') {
+        const [lat, lng] = ubicacion.coordenadas.split(',').map(c => c.trim());
+        if (lat && lng) {
+          return `https://maps.google.com/maps?q=${lat},${lng}&z=15&output=embed`;
+        }
+      }
+      // Si es objeto {lat, lng}
+      else if (typeof ubicacion.coordenadas === 'object') {
+        return `https://maps.google.com/maps?q=${ubicacion.coordenadas.lat},${ubicacion.coordenadas.lng}&z=15&output=embed`;
+      }
+    } catch (e) {
+      console.error("Error procesando coordenadas:", e);
+      return '';
+    }
+  }
+
+  // Manejar mapaUrl
+  if (ubicacion.mapaUrl) {
+    try {
+      // Convertir URL normal de Google Maps a embed
+      if (ubicacion.mapaUrl.includes('google.com/maps/')) {
+        return ubicacion.mapaUrl
+          .replace('google.com/maps/', 'google.com/maps/embed/')
+          .replace('?', '?pb=');
+      }
+      // Si ya es un embed URL
+      if (ubicacion.mapaUrl.includes('embed')) {
+        return ubicacion.mapaUrl;
+      }
+    } catch (e) {
+      console.error("Error procesando mapaUrl:", e);
+    }
+  }
+
+  return '';
+});
+
+const mostrarCoordenadas = computed(() => {
+  const coords = propiedad.value?.ubicacion?.coordenadas;
+  if (!coords) return false;
+
+  if (typeof coords === 'string') {
+    return coords.trim() !== '' && coords.includes(',');
+  }
+
+  if (typeof coords === 'object') {
+    return coords !== null &&
+          (coords.lat !== 0 || coords.lng !== 0);
+  }
+
+  return false;
+});
+
+const coordenadasFormateadas = computed(() => {
+  const coords = propiedad.value?.ubicacion?.coordenadas;
+  if (!coords) return '';
+
+  if (typeof coords === 'string') {
+    return coords;
+  }
+
+  if (typeof coords === 'object') {
+    return `${coords.lat}, ${coords.lng}`;
+  }
+
+  return '';
+});
 
 // Configuración reutilizable
 const serviciosConfig = {
