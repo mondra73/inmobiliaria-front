@@ -214,10 +214,10 @@
       Entre {{ propiedad.ubicacion.entreCalles.calle1 }} y {{ propiedad.ubicacion.entreCalles.calle2 }}
     </p>
 
-    <!-- Coordenadas -->
+    <!-- Coordenadas
     <p v-if="mostrarCoordenadas" class="text-slate-500 text-sm">
       Coordenadas: {{ coordenadasFormateadas }}
-    </p>
+    </p> -->
 
     <!-- Mapa -->
     <div v-if="mostrarMapa" class="mt-4 w-full h-64 rounded-xl overflow-hidden shadow-lg">
@@ -624,36 +624,6 @@ const urlMapa = computed(() => {
   return '';
 });
 
-const mostrarCoordenadas = computed(() => {
-  const coords = propiedad.value?.ubicacion?.coordenadas;
-  if (!coords) return false;
-
-  if (typeof coords === 'string') {
-    return coords.trim() !== '' && coords.includes(',');
-  }
-
-  if (typeof coords === 'object') {
-    return coords !== null &&
-          (coords.lat !== 0 || coords.lng !== 0);
-  }
-
-  return false;
-});
-
-const coordenadasFormateadas = computed(() => {
-  const coords = propiedad.value?.ubicacion?.coordenadas;
-  if (!coords) return '';
-
-  if (typeof coords === 'string') {
-    return coords;
-  }
-
-  if (typeof coords === 'object') {
-    return `${coords.lat}, ${coords.lng}`;
-  }
-
-  return '';
-});
 
 // Configuración reutilizable
 const serviciosConfig = {
