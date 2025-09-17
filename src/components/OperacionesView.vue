@@ -232,7 +232,7 @@ const obtenerClientes = async () => {
         tipo: 'Venta', // Esto deberías obtenerlo de tu backend
         propiedad: 'Propiedad asociada', // Esto deberías obtenerlo de tu backend
         estado: 'En proceso', // Esto deberías obtenerlo de tu backend
-        fecha: cliente.createdAt || new Date().toISOString()
+        fecha: cliente.fechaCreacion || new Date().toISOString()
       }))
     }
   } catch (err) {
