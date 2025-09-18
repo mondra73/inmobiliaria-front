@@ -22,8 +22,7 @@
           <div>
             <h1 class="text-4xl md:text-6xl font-bold mb-4">Espinosa Inmobiliaria</h1>
             <p class="text-lg md:text-xl">
-              <br />Sitio en construcción<br />
-              Muy pronto encontrarás tu hogar ideal aquí.
+              <br> Te acompañamos en cada paso para encontrar la propiedad que mejor se adapte a tus necesidades.
             </p>
           </div>
         </div>
