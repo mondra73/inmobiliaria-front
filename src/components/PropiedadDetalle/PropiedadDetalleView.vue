@@ -183,55 +183,44 @@
               </div>
             </div>
 
-           <!-- Ubicación editable -->
-<div class="bg-white rounded-3xl border border-gray-100 p-6">
-  <h2 class="text-xl font-light mb-4 text-slate-900 font-semibold">Ubicación</h2>
+            <!-- Ubicación editable -->
+            <div class="bg-white rounded-3xl border border-gray-100 p-6">
+              <h2 class="text-xl font-light mb-4 text-slate-900 font-semibold">Ubicación</h2>
 
-  <!-- Modo visualización -->
-  <template v-if="!editando">
-    <!-- Calle y altura -->
-    <p class="text-slate-700">
-      {{ propiedad.tipo === 'Terreno' ? propiedad.calle : propiedad.ubicacion?.calle }}
-      {{ propiedad.tipo === 'Terreno' ? propiedad.altura : propiedad.ubicacion?.altura }}
-    </p>
+              <!-- Modo visualización -->
+              <template v-if="!editando">
+                <!-- Calle y altura -->
+                <p class="text-slate-700">
+                  {{ propiedad.tipo === 'Terreno' ? propiedad.calle : propiedad.ubicacion?.calle }}
+                  {{ propiedad.tipo === 'Terreno' ? propiedad.altura : propiedad.ubicacion?.altura }}
+                </p>
 
-    <!-- Localidad -->
-    <p class="text-slate-700">
-      {{ propiedad.tipo === 'Terreno' ? propiedad.localidad : propiedad.ubicacion?.localidad }}
-    </p>
+                <!-- Localidad -->
+                <p class="text-slate-700">
+                  {{ propiedad.tipo === 'Terreno' ? propiedad.localidad : propiedad.ubicacion?.localidad }}
+                </p>
 
-    <!-- Piso (solo para Departamentos) -->
-    <p v-if="propiedad.tipo === 'Departamento' && propiedad.ubicacion?.piso !== undefined" class="text-slate-700">
-      Piso: {{ propiedad.ubicacion.piso === 0 ? 'PB' : propiedad.ubicacion.piso }}
-    </p>
+                <!-- Piso (solo para Departamentos) -->
+                <p v-if="propiedad.tipo === 'Departamento' && propiedad.ubicacion?.piso !== undefined"
+                  class="text-slate-700">
+                  Piso: {{ propiedad.ubicacion.piso === 0 ? 'PB' : propiedad.ubicacion.piso }}
+                </p>
 
-    <!-- Entre calles -->
-    <p v-if="propiedad.tipo !== 'Terreno' &&
-             propiedad.ubicacion?.entreCalles &&
-             propiedad.ubicacion.entreCalles.calle1 &&
-             propiedad.ubicacion.entreCalles.calle2"
-       class="text-slate-500 text-sm">
-      Entre {{ propiedad.ubicacion.entreCalles.calle1 }} y {{ propiedad.ubicacion.entreCalles.calle2 }}
-    </p>
+                <!-- Entre calles -->
+                <p v-if="propiedad.tipo !== 'Terreno' &&
+                  propiedad.ubicacion?.entreCalles &&
+                  propiedad.ubicacion.entreCalles.calle1 &&
+                  propiedad.ubicacion.entreCalles.calle2" class="text-slate-500 text-sm">
+                  Entre {{ propiedad.ubicacion.entreCalles.calle1 }} y {{ propiedad.ubicacion.entreCalles.calle2 }}
+                </p>
 
-    <!-- Coordenadas
-    <p v-if="mostrarCoordenadas" class="text-slate-500 text-sm">
-      Coordenadas: {{ coordenadasFormateadas }}
-    </p> -->
-
-    <!-- Mapa -->
-    <div v-if="mostrarMapa" class="mt-4 w-full h-64 rounded-xl overflow-hidden shadow-lg">
-      <iframe
-        width="100%"
-        height="100%"
-        style="border:0"
-        loading="lazy"
-        allowfullscreen
-        referrerpolicy="no-referrer-when-downgrade"
-        :src="urlMapa">
-      </iframe>
-    </div>
-  </template>
+                <!-- Mapa -->
+                <div v-if="mostrarMapa" class="mt-4 w-full h-64 rounded-xl overflow-hidden shadow-lg">
+                  <iframe width="100%" height="100%" style="border:0" loading="lazy" allowfullscreen
+                    referrerpolicy="no-referrer-when-downgrade" :src="urlMapa">
+                  </iframe>
+                </div>
+              </template>
 
               <!-- Modo edición -->
               <div v-else class="space-y-4">
@@ -275,41 +264,16 @@
                 </div>
 
                 <!-- Coordenadas -->
-
                 <div class="grid grid-cols-2 gap-4">
                   <div>
                     <label class="block text-sm font-medium text-slate-700 mb-1">Coordenadas (Latitud)</label>
-                    <input :value="typeof form.ubicacion.coordenadas === 'string'
-                      ? form.ubicacion.coordenadas.split(',')[0]?.trim()
-                      : form.ubicacion.coordenadas?.lat" @input="e => {
-                        const lat = e.target.value;
-                        if (typeof form.ubicacion.coordenadas === 'string') {
-                          const parts = form.ubicacion.coordenadas.split(',');
-                          form.ubicacion.coordenadas = `${lat},${parts[1] || ''}`;
-                        } else {
-                          form.ubicacion.coordenadas = {
-                            ...form.ubicacion.coordenadas,
-                            lat: parseFloat(lat) || 0
-                          };
-                        }
-                      }" type="number" step="0.000001" class="w-full border rounded p-2" />
+                    <input :value="getCoordenadaValue('lat')" @input="e => actualizarCoordenada('lat', e.target.value)"
+                      type="number" step="0.000001" class="w-full border rounded p-2" placeholder="Ej: -34.603722" />
                   </div>
                   <div>
                     <label class="block text-sm font-medium text-slate-700 mb-1">Coordenadas (Longitud)</label>
-                    <input :value="typeof form.ubicacion.coordenadas === 'string'
-                      ? form.ubicacion.coordenadas.split(',')[1]?.trim()
-                      : form.ubicacion.coordenadas?.lng" @input="e => {
-                        const lng = e.target.value;
-                        if (typeof form.ubicacion.coordenadas === 'string') {
-                          const parts = form.ubicacion.coordenadas.split(',');
-                          form.ubicacion.coordenadas = `${parts[0] || ''},${lng}`;
-                        } else {
-                          form.ubicacion.coordenadas = {
-                            ...form.ubicacion.coordenadas,
-                            lng: parseFloat(lng) || 0
-                          };
-                        }
-                      }" type="number" step="0.000001" class="w-full border rounded p-2" />
+                    <input :value="getCoordenadaValue('lng')" @input="e => actualizarCoordenada('lng', e.target.value)"
+                      type="number" step="0.000001" class="w-full border rounded p-2" placeholder="Ej: -58.381592" />
                   </div>
                 </div>
 
@@ -556,22 +520,16 @@ const imagenAEliminar = ref(null)
 // Computed property para determinar si mostrar el mapa
 const mostrarMapa = computed(() => {
   const ubicacion = propiedad.value?.ubicacion;
+  if (!ubicacion?.coordenadas) return false;
 
-  // Verificar si tenemos coordenadas válidas
-  if (ubicacion?.coordenadas) {
-    if (typeof ubicacion.coordenadas === 'string') {
-      return ubicacion.coordenadas.trim() !== '' &&
-             ubicacion.coordenadas.includes(',');
-    }
-    return typeof ubicacion.coordenadas === 'object' &&
-           ubicacion.coordenadas !== null &&
-           (ubicacion.coordenadas.lat !== 0 || ubicacion.coordenadas.lng !== 0);
+  // Verificar si tenemos coordenadas válidas y no (0,0)
+  if (typeof ubicacion.coordenadas === 'string') {
+    const [lat, lng] = ubicacion.coordenadas.split(',').map(coord => parseFloat(coord.trim()));
+    return !isNaN(lat) && !isNaN(lng) && lat !== 0 && lng !== 0;
   }
 
-  // Si no hay coordenadas, verificar si hay mapaUrl válido
-  if (ubicacion?.mapaUrl) {
-    return ubicacion.mapaUrl.includes('maps') ||
-           ubicacion.mapaUrl.includes('goo.gl');
+  if (typeof ubicacion.coordenadas === 'object') {
+    return ubicacion.coordenadas.lat !== 0 && ubicacion.coordenadas.lng !== 0;
   }
 
   return false;
@@ -939,19 +897,29 @@ const activarEdicion = () => {
       gas: false
     },
     amenities: propiedad.value.amenities || {
-      // Para casas
       piscina: false,
       parrilla: false,
       jardin: false,
       terraza: false,
       garage: false,
       balcon: false,
-      // Para departamentos
       tieneAscensor: false,
       seguridad24hs: false,
       gimnasio: false
     }
   }))
+
+  // Convertir coordenadas (0,0) a null
+  if (form.value.ubicacion?.coordenadas) {
+    if (typeof form.value.ubicacion.coordenadas === 'string') {
+      const [lat, lng] = form.value.ubicacion.coordenadas.split(',').map(coord => parseFloat(coord.trim()));
+      if (lat === 0 && lng === 0) {
+        form.value.ubicacion.coordenadas = null;
+      }
+    } else if (form.value.ubicacion.coordenadas.lat === 0 && form.value.ubicacion.coordenadas.lng === 0) {
+      form.value.ubicacion.coordenadas = null;
+    }
+  }
 
   // Para Departamentos específicamente
   if (propiedad.value.tipo === 'Departamento') {
@@ -1152,6 +1120,54 @@ const transformarTerreno = (datos) => {
     }
   }
 }
+
+const getCoordenadaValue = (tipo) => {
+  if (!form.value.ubicacion.coordenadas) return '';
+
+  if (typeof form.value.ubicacion.coordenadas === 'string') {
+    const parts = form.value.ubicacion.coordenadas.split(',');
+    const lat = parseFloat(parts[0]);
+    const lng = parseFloat(parts[1]);
+    return tipo === 'lat' ? (isNaN(lat) ? '' : lat) : (isNaN(lng) ? '' : lng);
+  }
+
+  // Si es objeto
+  const value = form.value.ubicacion.coordenadas[tipo === 'lat' ? 'lat' : 'lng'];
+  return value === 0 || value === null ? '' : value;
+};
+
+const actualizarCoordenada = (tipo, valor) => {
+  let numValor = valor === '' ? null : parseFloat(valor);
+
+  // Si el valor es 0, lo convertimos a null
+  if (numValor === 0) {
+    numValor = null;
+  }
+
+  if (typeof form.value.ubicacion.coordenadas === 'string') {
+    const parts = form.value.ubicacion.coordenadas.split(',');
+    if (tipo === 'lat') {
+      form.value.ubicacion.coordenadas = `${numValor || ''},${parts[1] || ''}`;
+    } else {
+      form.value.ubicacion.coordenadas = `${parts[0] || ''},${numValor || ''}`;
+    }
+  } else {
+    // Si no existe el objeto coordenadas, crearlo
+    if (!form.value.ubicacion.coordenadas) {
+      form.value.ubicacion.coordenadas = { lat: null, lng: null };
+    }
+
+    form.value.ubicacion.coordenadas = {
+      ...form.value.ubicacion.coordenadas,
+      [tipo === 'lat' ? 'lat' : 'lng']: numValor
+    };
+
+    // Si ambas coordenadas son null, poner todo el objeto como null
+    if (form.value.ubicacion.coordenadas.lat === null && form.value.ubicacion.coordenadas.lng === null) {
+      form.value.ubicacion.coordenadas = null;
+    }
+  }
+};
 
 // Carga inicial
 onMounted(async () => {
