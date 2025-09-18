@@ -1105,14 +1105,19 @@ const normalizarTipoPropiedad = (tipo) => {
 const transformarTerreno = (datos) => {
   return {
     ...datos,
-    calle: datos.ubicacion?.calle || '',
-    altura: datos.ubicacion?.altura || null,
-    entreCalle1: datos.ubicacion?.entreCalles?.calle1 || '',
-    entreCalle2: datos.ubicacion?.entreCalles?.calle2 || '',
-    localidad: datos.ubicacion?.localidad || '',
-    coordenadas: typeof datos.ubicacion?.coordenadas === 'object'
-      ? `${datos.ubicacion.coordenadas.lat}, ${datos.ubicacion.coordenadas.lng}`
-      : datos.ubicacion?.coordenadas || '',
+    ubicacion: {
+      calle: datos.ubicacion?.calle || '',
+      altura: datos.ubicacion?.altura || null,
+      entreCalles: {
+        calle1: datos.ubicacion?.entreCalles?.calle1 || '',
+        calle2: datos.ubicacion?.entreCalles?.calle2 || ''
+      },
+      localidad: datos.ubicacion?.localidad || '',  // ← LOCALIDAD aquí
+      coordenadas: typeof datos.ubicacion?.coordenadas === 'object'
+        ? `${datos.ubicacion.coordenadas.lat}, ${datos.ubicacion.coordenadas.lng}`
+        : datos.ubicacion?.coordenadas || '',
+      mapaUrl: datos.ubicacion?.mapaUrl || ''
+    },
     superficie: datos.superficieTotal || 0,
     dimensiones: {
       largo: datos.largo || 0,
