@@ -22,7 +22,7 @@ const routes = [
   { path: "/operaciones", component: Operaciones, meta: { requiresAuth: true } },
   { path: "/nuevo-cliente", component: NuevoCliente, meta: { requiresAuth: true } },
   { path: "/nueva-propiedad", component: NuevaPropiedad, meta: { requiresAuth: true } },
-  { path: "/propiedades", component: Propiedades },
+  { path: "/propiedades", component: Propiedades,  meta: { requiresAuth: true } },
   { path: "/propiedades-publicas", component: PropiedadesPublicas },
   { path: "/propiedad/:id", component: PropiedadDetalle },
   { path: "/nosotros", component: NosotrosView },
