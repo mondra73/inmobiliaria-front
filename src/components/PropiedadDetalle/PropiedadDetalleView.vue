@@ -143,15 +143,21 @@
               <h2 class="text-xl font-light mb-4 text-slate-900 font-semibold">Características</h2>
               <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
                 <div v-for="item in featureItems" :key="item.id" class="flex items-center space-x-2">
-                  <div class="w-8 h-8 rounded-lg flex items-center justify-center" :class="item.iconBg">
-                    <component :is="item.icon" class="w-4 h-4" :class="item.iconColor" />
-                  </div>
-                  <div>
-                    <p class="text-sm text-slate-600">{{ item.label }}</p>
-                    <p v-if="!editando" class="font-medium text-slate-900">{{ propiedad[item.id] || '-' }}</p>
-                    <input v-else v-model.number="form[item.id]" type="number" class="w-16 border rounded p-1" />
-                  </div>
-                </div>
+  <div class="w-8 h-8 rounded-lg flex items-center justify-center" :class="item.iconBg">
+    <component :is="item.icon" class="w-4 h-4" :class="item.iconColor" />
+  </div>
+  <div>
+    <p class="text-sm text-slate-600">{{ item.label }}</p>
+    <!-- Modifica esta línea: -->
+    <p v-if="!editando" class="font-medium text-slate-900">
+      {{ item.id === 'superficieTotal' && propiedad.tipo === 'Terreno' 
+          ? propiedad.superficie || '-' 
+          : propiedad[item.id] || '-' 
+      }}
+    </p>
+    <input v-else v-model.number="form[item.id]" type="number" class="w-16 border rounded p-1" />
+  </div>
+</div>
               </div>
             </div>
 
@@ -677,7 +683,7 @@ const featureItems = computed(() => {
       icon: Wrench,
       iconBg: 'bg-green-100',
       iconColor: 'text-green-600',
-      show: true
+      show: true,
     },
     {
       id: 'superficieCubierta',
