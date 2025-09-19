@@ -23,42 +23,46 @@ export function useFormEdit(propiedad) {
   const activarEdicion = () => {
     editando.value = true;
 
-    // Usa la misma estructura que en NuevaPropiedad
-    form.value = JSON.parse(JSON.stringify({
-      ...propiedad.value,
-      servicios: propiedad.value.servicios || {
+    // Clonar la propiedad
+    const clonedPropiedad = JSON.parse(JSON.stringify(propiedad.value));
+
+    // Para terrenos, mapear superficie a superficieTotal
+    if (clonedPropiedad.tipo === 'Terreno') {
+      clonedPropiedad.superficieTotal = clonedPropiedad.superficie;
+    }
+
+    form.value = {
+      ...clonedPropiedad,
+      servicios: clonedPropiedad.servicios || {
         agua: false,
         luz: false,
         cloacas: false,
         gas: false,
       },
-      precio: propiedad.value.precio || {
+      precio: clonedPropiedad.precio || {
         monto: 0,
         moneda: 'ARS',
         visible: true
       },
-      // Para terrenos, mantener la estructura plana que ya funciona
-      ...(propiedad.value.tipo === 'Terreno' && {
-        calle: propiedad.value.ubicacion?.calle || '',
-        altura: propiedad.value.ubicacion?.altura || null,
-        entreCalle1: propiedad.value.ubicacion?.entreCalles?.calle1 || '',
-        entreCalle2: propiedad.value.ubicacion?.entreCalles?.calle2 || '',
-        localidad: propiedad.value.ubicacion?.localidad || ''
+      // Para terrenos, mantener la estructura plana
+      ...(clonedPropiedad.tipo === 'Terreno' && {
+        calle: clonedPropiedad.ubicacion?.calle || '',
+        altura: clonedPropiedad.ubicacion?.altura || null,
+        entreCalle1: clonedPropiedad.ubicacion?.entreCalles?.calle1 || '',
+        entreCalle2: clonedPropiedad.ubicacion?.entreCalles?.calle2 || '',
+        localidad: clonedPropiedad.ubicacion?.localidad || ''
       })
-    }));
+    };
   };
 
-    const cancelarEdicion = () => {
+  const cancelarEdicion = () => {
     editando.value = false;
   };
 
   const prepararPayloadParaBackend = () => {
-    // USA LA LÓGICA QUE YA TIENES Y FUNCIONA EN TerrenoForm
     if (form.value.tipo === 'Terreno') {
       return TerrenoForm.methods.preparePayload.call({ formData: form.value });
     }
-
-    // Para otros tipos, envía el form tal cual
     return form.value;
   };
 

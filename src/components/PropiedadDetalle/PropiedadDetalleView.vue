@@ -152,7 +152,7 @@
                     <p v-if="!editando" class="font-medium text-slate-900">
                       {{ item.id === 'superficieTotal' && propiedad.tipo === 'Terreno'
                         ? propiedad.superficie || '-'
-                        : propiedad[item.id] || '-'
+                      : propiedad[item.id] || '-'
                       }}
                     </p>
                     <input v-else v-model.number="form[item.id]" type="number" class="w-16 border rounded p-1" />
