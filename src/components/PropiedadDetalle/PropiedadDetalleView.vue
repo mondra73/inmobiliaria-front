@@ -184,124 +184,125 @@
             </div>
 
             <!-- Ubicación editable -->
-<div class="bg-white rounded-3xl border border-gray-100 p-6">
-  <h2 class="text-xl font-light mb-4 text-slate-900 font-semibold">Ubicación</h2>
+            <div class="bg-white rounded-3xl border border-gray-100 p-6">
+              <h2 class="text-xl font-light mb-4 text-slate-900 font-semibold">Ubicación</h2>
 
-  <!-- Modo visualización -->
-  <template v-if="!editando">
-    <!-- Para Terrenos (estructura simple) -->
-    <template v-if="propiedad.tipo === 'Terreno'">
-      <p class="text-slate-700">
-        {{ propiedad.ubicacion?.localidad || 'Sin localidad especificada' }}
-      </p>
-    </template>
-    
-    <!-- Para otros tipos de propiedades (estructura compleja) -->
-    <template v-else>
-      <!-- Calle y altura -->
-      <p class="text-slate-700">
-        {{ propiedad.ubicacion?.calle }} {{ propiedad.ubicacion?.altura }}
-      </p>
+              <!-- Modo visualización -->
+              <template v-if="!editando">
+                <!-- Para Terrenos (estructura simple) -->
+                <template v-if="propiedad.tipo === 'Terreno'">
+                  <p class="text-slate-700">
+                    {{ propiedad.ubicacion?.localidad || 'Sin localidad especificada' }}
+                  </p>
+                </template>
 
-      <!-- Localidad -->
-      <p class="text-slate-700">
-        {{ propiedad.ubicacion?.localidad }}
-      </p>
+                <!-- Para otros tipos de propiedades (estructura compleja) -->
+                <template v-else>
+                  <!-- Calle y altura -->
+                  <p class="text-slate-700">
+                    {{ propiedad.ubicacion?.calle }} {{ propiedad.ubicacion?.altura }}
+                  </p>
 
-      <!-- Piso (solo para Departamentos) -->
-      <p v-if="propiedad.tipo === 'Departamento' && propiedad.ubicacion?.piso !== undefined" class="text-slate-700">
-        Piso: {{ propiedad.ubicacion.piso === 0 ? 'PB' : propiedad.ubicacion.piso }}
-      </p>
+                  <!-- Localidad -->
+                  <p class="text-slate-700">
+                    {{ propiedad.ubicacion?.localidad }}
+                  </p>
 
-      <!-- Entre calles -->
-      <p v-if="propiedad.tipo !== 'Terreno' &&
-        propiedad.ubicacion?.entreCalles &&
-        propiedad.ubicacion.entreCalles.calle1 &&
-        propiedad.ubicacion.entreCalles.calle2" class="text-slate-500 text-sm">
-        Entre {{ propiedad.ubicacion.entreCalles.calle1 }} y {{ propiedad.ubicacion.entreCalles.calle2 }}
-      </p>
-    </template>
+                  <!-- Piso (solo para Departamentos) -->
+                  <p v-if="propiedad.tipo === 'Departamento' && propiedad.ubicacion?.piso !== undefined"
+                    class="text-slate-700">
+                    Piso: {{ propiedad.ubicacion.piso === 0 ? 'PB' : propiedad.ubicacion.piso }}
+                  </p>
 
-    <!-- Mapa (común para todos los tipos) -->
-    <div v-if="mostrarMapa" class="mt-4 w-full h-64 rounded-xl overflow-hidden shadow-lg">
-      <iframe width="100%" height="100%" style="border:0" loading="lazy" allowfullscreen
-        referrerpolicy="no-referrer-when-downgrade" :src="urlMapa">
-      </iframe>
-    </div>
-  </template>
+                  <!-- Entre calles -->
+                  <p v-if="propiedad.tipo !== 'Terreno' &&
+                    propiedad.ubicacion?.entreCalles &&
+                    propiedad.ubicacion.entreCalles.calle1 &&
+                    propiedad.ubicacion.entreCalles.calle2" class="text-slate-500 text-sm">
+                    Entre {{ propiedad.ubicacion.entreCalles.calle1 }} y {{ propiedad.ubicacion.entreCalles.calle2 }}
+                  </p>
+                </template>
 
-  <!-- Modo edición -->
-  <div v-else class="space-y-4">
-    <!-- Para Terrenos -->
-    <template v-if="propiedad.tipo === 'Terreno'">
-      <div>
-        <label class="block text-sm font-medium text-slate-700 mb-1">Localidad</label>
-        <input v-model="form.ubicacion.localidad" class="w-full border rounded p-2" />
-      </div>
-    </template>
-    
-    <!-- Para otros tipos de propiedades -->
-    <template v-else>
-      <!-- Calle -->
-      <div>
-        <label class="block text-sm font-medium text-slate-700 mb-1">Calle</label>
-        <input v-model="form.ubicacion.calle" class="w-full border rounded p-2" />
-      </div>
+                <!-- Mapa (común para todos los tipos) -->
+                <div v-if="mostrarMapa" class="mt-4 w-full h-64 rounded-xl overflow-hidden shadow-lg">
+                  <iframe width="100%" height="100%" style="border:0" loading="lazy" allowfullscreen
+                    referrerpolicy="no-referrer-when-downgrade" :src="urlMapa">
+                  </iframe>
+                </div>
+              </template>
 
-      <!-- Altura y Localidad -->
-      <div class="grid grid-cols-2 gap-4">
-        <div>
-          <label class="block text-sm font-medium text-slate-700 mb-1">Altura</label>
-          <input v-model.number="form.ubicacion.altura" type="number" class="w-full border rounded p-2" />
-        </div>
-        <div>
-          <label class="block text-sm font-medium text-slate-700 mb-1">Localidad</label>
-          <input v-model="form.ubicacion.localidad" class="w-full border rounded p-2" />
-        </div>
-      </div>
+              <!-- Modo edición -->
+              <div v-else class="space-y-4">
+                <!-- Para Terrenos -->
+                <template v-if="propiedad.tipo === 'Terreno'">
+                  <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-1">Localidad</label>
+                    <input v-model="form.localidad" class="w-full border rounded p-2" />
+                  </div>
+                </template>
 
-      <!-- Piso (solo para Departamentos) -->
-      <div v-if="propiedad.tipo === 'Departamento'" class="grid grid-cols-2 gap-4">
-        <div>
-          <label class="block text-sm font-medium text-slate-700 mb-1">Piso</label>
-          <input v-model.number="form.ubicacion.piso" type="number" class="w-full border rounded p-2" />
-        </div>
-      </div>
+                <!-- Para otros tipos de propiedades -->
+                <template v-else>
+                  <!-- Calle -->
+                  <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-1">Calle</label>
+                    <input v-model="form.ubicacion.calle" class="w-full border rounded p-2" />
+                  </div>
 
-      <!-- Entre calles -->
-      <div v-if="propiedad.tipo !== 'Terreno'" class="grid grid-cols-2 gap-4">
-        <div>
-          <label class="block text-sm font-medium text-slate-700 mb-1">Entre calle 1</label>
-          <input v-model="form.ubicacion.entreCalles.calle1" class="w-full border rounded p-2" />
-        </div>
-        <div>
-          <label class="block text-sm font-medium text-slate-700 mb-1">Entre calle 2</label>
-          <input v-model="form.ubicacion.entreCalles.calle2" class="w-full border rounded p-2" />
-        </div>
-      </div>
-    </template>
+                  <!-- Altura y Localidad -->
+                  <div class="grid grid-cols-2 gap-4">
+                    <div>
+                      <label class="block text-sm font-medium text-slate-700 mb-1">Altura</label>
+                      <input v-model.number="form.ubicacion.altura" type="number" class="w-full border rounded p-2" />
+                    </div>
+                    <div>
+                      <label class="block text-sm font-medium text-slate-700 mb-1">Localidad</label>
+                      <input v-model="form.ubicacion.localidad" class="w-full border rounded p-2" />
+                    </div>
+                  </div>
 
-    <!-- Coordenadas (común para todos los tipos) -->
-    <div class="grid grid-cols-2 gap-4">
-      <div>
-        <label class="block text-sm font-medium text-slate-700 mb-1">Coordenadas (Latitud)</label>
-        <input :value="getCoordenadaValue('lat')" @input="e => actualizarCoordenada('lat', e.target.value)"
-          type="number" step="0.000001" class="w-full border rounded p-2" placeholder="Ej: -34.603722" />
-      </div>
-      <div>
-        <label class="block text-sm font-medium text-slate-700 mb-1">Coordenadas (Longitud)</label>
-        <input :value="getCoordenadaValue('lng')" @input="e => actualizarCoordenada('lng', e.target.value)"
-          type="number" step="0.000001" class="w-full border rounded p-2" placeholder="Ej: -58.381592" />
-      </div>
-    </div>
+                  <!-- Piso (solo para Departamentos) -->
+                  <div v-if="propiedad.tipo === 'Departamento'" class="grid grid-cols-2 gap-4">
+                    <div>
+                      <label class="block text-sm font-medium text-slate-700 mb-1">Piso</label>
+                      <input v-model.number="form.ubicacion.piso" type="number" class="w-full border rounded p-2" />
+                    </div>
+                  </div>
 
-    <!-- Mapa URL (común para todos los tipos) -->
-    <div>
-      <label class="block text-sm font-medium text-slate-700 mb-1">URL del Mapa</label>
-      <input v-model="form.ubicacion.mapaUrl" class="w-full border rounded p-2" />
-    </div>
-  </div>
-</div>
+                  <!-- Entre calles -->
+                  <div v-if="propiedad.tipo !== 'Terreno'" class="grid grid-cols-2 gap-4">
+                    <div>
+                      <label class="block text-sm font-medium text-slate-700 mb-1">Entre calle 1</label>
+                      <input v-model="form.ubicacion.entreCalles.calle1" class="w-full border rounded p-2" />
+                    </div>
+                    <div>
+                      <label class="block text-sm font-medium text-slate-700 mb-1">Entre calle 2</label>
+                      <input v-model="form.ubicacion.entreCalles.calle2" class="w-full border rounded p-2" />
+                    </div>
+                  </div>
+                </template>
+
+                <!-- Coordenadas (común para todos los tipos) -->
+                <div class="grid grid-cols-2 gap-4">
+                  <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-1">Coordenadas (Latitud)</label>
+                    <input :value="getCoordenadaValue('lat')" @input="e => actualizarCoordenada('lat', e.target.value)"
+                      type="number" step="0.000001" class="w-full border rounded p-2" placeholder="Ej: -34.603722" />
+                  </div>
+                  <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-1">Coordenadas (Longitud)</label>
+                    <input :value="getCoordenadaValue('lng')" @input="e => actualizarCoordenada('lng', e.target.value)"
+                      type="number" step="0.000001" class="w-full border rounded p-2" placeholder="Ej: -58.381592" />
+                  </div>
+                </div>
+
+                <!-- Mapa URL (común para todos los tipos) -->
+                <div>
+                  <label class="block text-sm font-medium text-slate-700 mb-1">URL del Mapa</label>
+                  <input v-model="form.ubicacion.mapaUrl" class="w-full border rounded p-2" />
+                </div>
+              </div>
+            </div>
 
           </div>
 
@@ -910,8 +911,8 @@ const confirmarEliminacion = () => {
 
 // Manejo de edición
 const activarEdicion = () => {
- editando.value = true
-  
+  editando.value = true
+
   // Copia profunda de la propiedad
   form.value = JSON.parse(JSON.stringify({
     ...propiedad.value,
@@ -942,7 +943,7 @@ const activarEdicion = () => {
     }
   }))
 
-   // Para Terrenos: asegurar que la estructura de ubicación sea correcta
+  // Para Terrenos: asegurar que la estructura de ubicación sea correcta
   if (propiedad.value.tipo === 'Terreno') {
     // Si la propiedad original tiene ubicación plana, convertir a estructura anidada
     if (propiedad.value.localidad && !form.value.ubicacion) {
@@ -952,7 +953,7 @@ const activarEdicion = () => {
         mapaUrl: propiedad.value.mapaUrl
       }
     }
-    
+
     // Asegurar que siempre tengamos un objeto ubicacion
     if (!form.value.ubicacion) {
       form.value.ubicacion = {
@@ -961,6 +962,7 @@ const activarEdicion = () => {
         mapaUrl: ''
       }
     }
+    form.value.localidad = form.value.ubicacion.localidad;
   }
 
   // Convertir coordenadas (0,0) a null
@@ -1161,7 +1163,7 @@ const transformarTerreno = (datos) => {
     ...datos,
     // Para terrenos, mantenemos la estructura simple de ubicacion
     ubicacion: {
-      localidad: datos.ubicacion?.localidad || '',
+      localidad: datos.localidad || datos.ubicacion?.localidad || '',
       coordenadas: typeof datos.ubicacion?.coordenadas === 'object'
         ? `${datos.ubicacion.coordenadas.lat}, ${datos.ubicacion.coordenadas.lng}`
         : datos.ubicacion?.coordenadas || '',
