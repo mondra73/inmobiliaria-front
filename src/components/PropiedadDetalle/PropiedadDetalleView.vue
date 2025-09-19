@@ -922,6 +922,7 @@ const activarEdicion = () => {
   // Copia profunda de la propiedad
   form.value = JSON.parse(JSON.stringify({
     ...propiedad.value,
+    tipo: propiedad.value.tipo,
     visible: propiedad.value.visible,
     imagenes: propiedad.value.imagenes?.map(img => ({
       url: img.url,
@@ -1060,12 +1061,12 @@ const guardarCambios = async () => {
     const id = route.params.id;
 
     // 1. Validación básica
-    if (!propiedad.value?.tipo) {
+    if (!form.value?.tipo) {  
       throw new Error('Tipo de propiedad no definido');
     }
 
     // 2. Normalizar tipo
-    const tipoPropiedad = normalizarTipoPropiedad(propiedad.value.tipo);
+    const tipoPropiedad = normalizarTipoPropiedad(form.value.tipo);
     if (!tipoPropiedad) {
       throw new Error('Tipo de propiedad no válido');
     }
