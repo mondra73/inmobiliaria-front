@@ -200,6 +200,16 @@
                   <p class="text-slate-700">
                     {{ propiedad.ubicacion?.localidad || 'Sin localidad especificada' }}
                   </p>
+
+                  <p v-if="propiedad.ubicacion?.calle" class="text-slate-700">
+                    {{ propiedad.ubicacion.calle }} {{ propiedad.ubicacion.altura ? propiedad.ubicacion.altura : '' }}
+                  </p>
+
+                  <!-- Mostrar entre calles si existen -->
+                  <p v-if="propiedad.ubicacion?.entreCalles?.calle1 && propiedad.ubicacion?.entreCalles?.calle2"
+                    class="text-slate-500 text-sm">
+                    Entre {{ propiedad.ubicacion.entreCalles.calle1 }} y {{ propiedad.ubicacion.entreCalles.calle2 }}
+                  </p>
                 </template>
 
                 <!-- Para otros tipos de propiedades (estructura compleja) -->
@@ -239,11 +249,36 @@
 
               <!-- Modo edición -->
               <div v-else class="space-y-4">
-                <!-- Para Terrenos -->
-                <template v-if="propiedad.tipo === 'Terreno'">
+                <!-- Para terrenos en modo edición -->
+                <template v-if="propiedad.tipo === 'Terreno' && editando">
+                  <!-- Calle -->
                   <div>
-                    <label class="block text-sm font-medium text-slate-700 mb-1">Localidad</label>
-                    <input v-model="form.localidad" class="w-full border rounded p-2" />
+                    <label class="block text-sm font-medium text-slate-700 mb-1">Calle</label>
+                    <input v-model="form.calle" class="w-full border rounded p-2" />
+                  </div>
+
+                  <!-- Altura y Localidad en grid -->
+                  <div class="grid grid-cols-2 gap-4">
+                    <div>
+                      <label class="block text-sm font-medium text-slate-700 mb-1">Altura</label>
+                      <input v-model.number="form.altura" type="number" class="w-full border rounded p-2" />
+                    </div>
+                    <div>
+                      <label class="block text-sm font-medium text-slate-700 mb-1">Localidad</label>
+                      <input v-model="form.localidad" class="w-full border rounded p-2" />
+                    </div>
+                  </div>
+
+                  <!-- Entre calles en grid -->
+                  <div class="grid grid-cols-2 gap-4">
+                    <div>
+                      <label class="block text-sm font-medium text-slate-700 mb-1">Entre calle 1</label>
+                      <input v-model="form.entreCalle1" class="w-full border rounded p-2" />
+                    </div>
+                    <div>
+                      <label class="block text-sm font-medium text-slate-700 mb-1">Entre calle 2</label>
+                      <input v-model="form.entreCalle2" class="w-full border rounded p-2" />
+                    </div>
                   </div>
                 </template>
 
@@ -508,6 +543,7 @@ import api from '../../api'
 import { Home, Users, Building, Wrench, DollarSign, Calendar } from 'lucide-vue-next'
 import { uploadImageToCloudinary } from '../../../utils/uploadToCloudinary'
 import { jwtDecode } from 'jwt-decode';
+import { useFormEdit } from './hooks/useFormEdit';
 
 // Estados reactivos
 const propiedad = ref(null)
@@ -515,24 +551,7 @@ const route = useRoute()
 const router = useRouter()
 const imagenSeleccionada = ref(0)
 const modalAbierto = ref(false)
-const editando = ref(false)
-const form = ref({
-  precio: { monto: 0, moneda: 'ARS' },
-  ubicacion: { coordenadas: { lat: 0, lng: 0 } },
-  imagenes: [],
-  servicios: {
-    agua: false,
-    luz: false,
-    cloacas: false,
-    gas: false
-  },
-  garage: false,
-  jardin: false,
-  piscina: false,
-  balcon: false,
-  terraza: false,
-  parrilla: false
-})
+
 const fileInput = ref(null)
 const mensajeExito = ref('')
 const mensajeError = ref('')
@@ -541,6 +560,8 @@ const mostrarModalConfirmacion = ref(false)
 const eliminando = ref(false)
 const mostrarModalConfirmacionImagen = ref(false)
 const imagenAEliminar = ref(null)
+
+const { editando, form, activarEdicion, cancelarEdicion, guardarCambios } = useFormEdit(propiedad);
 
 // Computed property para determinar si mostrar el mapa
 const mostrarMapa = computed(() => {
@@ -915,134 +936,6 @@ const confirmarEliminacion = () => {
   mostrarModalConfirmacion.value = true
 }
 
-// Manejo de edición
-const activarEdicion = () => {
-  editando.value = true
-
-  // Copia profunda de la propiedad
-  form.value = JSON.parse(JSON.stringify({
-    ...propiedad.value,
-    tipo: propiedad.value.tipo,
-    visible: propiedad.value.visible,
-    imagenes: propiedad.value.imagenes?.map(img => ({
-      url: img.url,
-      public_id: img.public_id,
-      descripcion: img.descripcion || '',
-      orden: img.orden || 0,
-      esPortada: img.esPortada || false
-    })) || [],
-    servicios: propiedad.value.servicios || {
-      agua: false,
-      luz: false,
-      cloacas: false,
-      gas: false
-    },
-    amenities: propiedad.value.amenities || {
-      piscina: false,
-      parrilla: false,
-      jardin: false,
-      terraza: false,
-      garage: false,
-      balcon: false,
-      tieneAscensor: false,
-      seguridad24hs: false,
-      gimnasio: false
-    }
-  }))
-
-  // Para Terrenos: asegurar que la estructura de ubicación sea correcta
-  if (propiedad.value.tipo === 'Terreno') {
-    // Si la propiedad original tiene ubicación plana, convertir a estructura anidada
-    if (propiedad.value.localidad && !form.value.ubicacion) {
-      form.value.ubicacion = {
-        localidad: propiedad.value.localidad,
-        coordenadas: propiedad.value.coordenadas,
-        mapaUrl: propiedad.value.mapaUrl
-      }
-    }
-
-    // Asegurar que siempre tengamos un objeto ubicacion
-    if (!form.value.ubicacion) {
-      form.value.ubicacion = {
-        localidad: '',
-        coordenadas: null,
-        mapaUrl: ''
-      }
-    }
-    form.value.localidad = form.value.ubicacion.localidad;
-  }
-
-  // Convertir coordenadas (0,0) a null
-  if (form.value.ubicacion?.coordenadas) {
-    if (typeof form.value.ubicacion.coordenadas === 'string') {
-      const [lat, lng] = form.value.ubicacion.coordenadas.split(',').map(coord => parseFloat(coord.trim()));
-      if (lat === 0 && lng === 0) {
-        form.value.ubicacion.coordenadas = null;
-      }
-    } else if (form.value.ubicacion.coordenadas.lat === 0 && form.value.ubicacion.coordenadas.lng === 0) {
-      form.value.ubicacion.coordenadas = null;
-    }
-  }
-
-  // Para Departamentos específicamente
-  if (propiedad.value.tipo === 'Departamento') {
-    // Mapear habitaciones a dormitorios si es necesario
-    if (form.value.habitaciones !== undefined && form.value.dormitorios === undefined) {
-      form.value.dormitorios = form.value.habitaciones
-    }
-  }
-
-  // Transformación específica para cada tipo
-  switch (propiedad.value.tipo) {
-    case 'Terreno':
-      // Convertir estructura plana a estructura anidada
-      form.value.ubicacion = {
-        calle: propiedad.value.calle || '',
-        altura: propiedad.value.altura || null,
-        entreCalles: {
-          calle1: propiedad.value.entreCalle1 || '',
-          calle2: propiedad.value.entreCalle2 || ''
-        },
-        localidad: propiedad.value.localidad || '',
-        coordenadas: typeof propiedad.value.coordenadas === 'string'
-          ? propiedad.value.coordenadas.split(',').reduce((obj, val, i) => {
-            obj[i === 0 ? 'lat' : 'lng'] = parseFloat(val.trim()) || 0
-            return obj
-          }, {})
-          : propiedad.value.coordenadas || { lat: 0, lng: 0 },
-        mapaUrl: propiedad.value.mapaUrl || ''
-      }
-      form.value.superficieTotal = propiedad.value.superficie
-      form.value.largo = propiedad.value.dimensiones?.largo
-      form.value.ancho = propiedad.value.dimensiones?.ancho
-      break;
-
-    case 'Departamento':
-    case 'Casa':
-    default:
-      // Convertir string de coordenadas a objeto si es necesario
-      if (form.value.ubicacion?.coordenadas && typeof form.value.ubicacion.coordenadas === 'string') {
-        const [lat, lng] = form.value.ubicacion.coordenadas.split(',').map(Number)
-        form.value.ubicacion.coordenadas = {
-          lat: isNaN(lat) ? 0 : lat,
-          lng: isNaN(lng) ? 0 : lng
-        }
-      }
-      break;
-  }
-
-  // Inicializar objetos anidados si no existen
-  if (!form.value.precio) form.value.precio = { monto: 0, moneda: 'ARS' }
-  if (!form.value.ubicacion) form.value.ubicacion = {}
-  if (!form.value.ubicacion.coordenadas) form.value.ubicacion.coordenadas = { lat: 0, lng: 0 }
-  if (!form.value.ubicacion.entreCalles) form.value.ubicacion.entreCalles = { calle1: '', calle2: '' }
-  if (!form.value.imagenes) form.value.imagenes = []
-}
-
-const cancelarEdicion = () => {
-  editando.value = false
-}
-
 const toggleVisibilidad = () => {
   if (editando.value) {
     form.value.visible = !form.value.visible
@@ -1053,134 +946,6 @@ const toggleVisibilidad = () => {
 const toggleVisibilidadPrecio = () => {
   if (editando.value) {
     form.value.precio.visible = !form.value.precio.visible
-  }
-}
-
-const guardarCambios = async () => {
-  try {
-    const id = route.params.id;
-
-    // 1. Validación básica
-    if (!form.value?.tipo) {
-      throw new Error('Tipo de propiedad no definido');
-    }
-
-    // 2. Normalizar tipo
-    const tipoPropiedad = normalizarTipoPropiedad(form.value.tipo);
-    if (!tipoPropiedad) {
-      throw new Error('Tipo de propiedad no válido');
-    }
-
-    // 3. Validar imágenes
-    const imagenesInvalidas = form.value.imagenes.some(img => !img.public_id);
-    if (imagenesInvalidas) {
-      throw new Error('Todas las imágenes deben tener un public_id válido');
-    }
-
-    // 4. Preparar datos para enviar (con corrección para piso)
-    let datosAEnviar = {
-      ...JSON.parse(JSON.stringify(form.value)),
-      // Eliminar campo piso en raíz si existe (solo debe estar en ubicacion)
-      ...(form.value.piso && { piso: undefined }),
-      imagenes: form.value.imagenes.map(img => ({
-        url: img.url,
-        public_id: img.public_id,
-        descripcion: img.descripcion || '',
-        orden: img.orden || 0,
-        esPortada: img.esPortada || false
-      })),
-      servicios: form.value.servicios,
-      amenities: form.value.amenities,
-      // Asegurar estructura correcta de ubicacion
-      ubicacion: {
-        ...form.value.ubicacion,
-        // Convertir piso a número
-        piso: form.value.ubicacion?.piso !== undefined
-          ? parseInt(form.value.ubicacion.piso) || 0
-          : undefined
-      }
-    };
-
-    // 5. Transformaciones específicas por tipo
-    if (tipoPropiedad === 'Departamento') {
-      // Manejo especial para piso
-      if (datosAEnviar.ubicacion.piso === undefined && form.value.piso !== undefined) {
-        datosAEnviar.ubicacion.piso = parseInt(form.value.piso) || 0;
-      }
-
-      // Mantener compatibilidad con habitaciones/dormitorios
-      if (datosAEnviar.dormitorios !== undefined) {
-        datosAEnviar.habitaciones = datosAEnviar.dormitorios;
-        delete datosAEnviar.dormitorios;
-      }
-    }
-
-    if (tipoPropiedad === 'Terreno') {
-      datosAEnviar = transformarTerreno(datosAEnviar);
-    }
-
-    // 6. Depuración: Mostrar datos que se enviarán
-    console.log('Datos a enviar:', JSON.stringify({
-      tipo: tipoPropiedad,
-      propiedad: datosAEnviar
-    }, null, 2));
-
-    // 7. Enviar datos
-    const response = await api.put(`/admin/editar-propiedad/${id}`, {
-      tipo: tipoPropiedad,
-      propiedad: datosAEnviar
-    });
-
-    // 8. Actualizar estado
-    propiedad.value = response.data.propiedad;
-    editando.value = false;
-    mostrarMensajeTemporal('exito', 'Propiedad actualizada correctamente');
-
-  } catch (error) {
-    console.error('Error en guardarCambios:', {
-      error: error.message,
-      stack: error.stack,
-      tipo: propiedad.value?.tipo,
-      formData: form.value
-    });
-    mostrarMensajeTemporal('error', error.message || 'Error al actualizar la propiedad');
-  }
-};
-
-// Funciones auxiliares
-const normalizarTipoPropiedad = (tipo) => {
-  if (!tipo) return null
-
-  const tiposValidos = {
-    'departamento': 'Departamento',
-    'depto': 'Departamento',
-    'casa': 'Casa',
-    'terreno': 'Terreno',
-    'campo': 'Campo',
-    'galpon': 'Galpon',
-    'local': 'Local',
-    'fondo comercio': 'FondoComercio',
-    'fondocomercio': 'FondoComercio'
-  }
-  return tiposValidos[tipo.toString().toLowerCase().trim()] || tipo
-}
-
-const transformarTerreno = (datos) => {
-  return {
-    ...datos,
-    // Para terrenos, mantenemos la estructura simple de ubicacion
-    ubicacion: {
-      localidad: datos.localidad || datos.ubicacion?.localidad || '',
-      coordenadas: typeof datos.ubicacion?.coordenadas === 'object'
-        ? `${datos.ubicacion.coordenadas.lat}, ${datos.ubicacion.coordenadas.lng}`
-        : datos.ubicacion?.coordenadas || '',
-      mapaUrl: datos.ubicacion?.mapaUrl || ''
-    },
-    superficie: datos.superficieTotal || 0,
-    dimensiones: {
-      largo: datos.largo || 0,
-      ancho: datos.ancho || 0
-    }
   }
 }
 
@@ -1231,6 +996,7 @@ const actualizarCoordenada = (tipo, valor) => {
     }
   }
 };
+
 
 // Carga inicial
 onMounted(async () => {

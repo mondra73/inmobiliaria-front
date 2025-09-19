@@ -13,6 +13,13 @@ export const TerrenoForm = {
     preparePayload() {
       return {
         ...this.formData,
+        // Campos de ubicación que el backend espera en nivel raíz
+        calle: this.formData.calle || '',
+        altura: this.formData.altura || null,
+        entreCalle1: this.formData.entreCalle1 || '',
+        entreCalle2: this.formData.entreCalle2 || '',
+        localidad: this.formData.localidad || '',
+
         superficie: this.formData.superficieTotal,
         dimensiones: {
           largo: this.formData.largo,
