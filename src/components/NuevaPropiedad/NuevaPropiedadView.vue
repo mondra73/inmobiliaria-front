@@ -321,35 +321,70 @@
 
         <!-- Imágenes -->
         <div v-if="showImagesSection" class="bg-white rounded-3xl shadow-sm border border-gray-100 p-8">
-          <h2 class="text-xl font-light text-slate-900 mb-6">Imágenes</h2>
+  <h2 class="text-xl font-light text-slate-900 mb-6">Imágenes</h2>
 
-          <input type="file" id="file-upload" ref="fileInput" class="hidden" multiple accept="image/png, image/jpeg"
-            @change="handleFileUpload">
+  <input type="file" id="file-upload" ref="fileInput" class="hidden" multiple accept="image/png, image/jpeg"
+    @change="handleFileUpload">
 
-          <label for="file-upload"
-            class="border-2 border-dashed border-gray-300 rounded-xl p-8 text-center hover:border-slate-400 transition-colors duration-200 cursor-pointer block">
-            <svg class="w-12 h-12 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z">
-              </path>
-            </svg>
-            <p class="text-slate-600 mb-2">Arrastra las imágenes aquí o</p>
-            <span class="text-slate-900 font-medium hover:text-slate-700 transition-colors duration-200">
-              selecciona archivos
-            </span>
-            <p class="text-xs text-slate-500 mt-2">PNG, JPG hasta 10MB cada una</p>
-          </label>
+  <label for="file-upload"
+    class="border-2 border-dashed border-gray-300 rounded-xl p-8 text-center hover:border-slate-400 transition-colors duration-200 cursor-pointer block">
+    <svg class="w-12 h-12 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+        d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z">
+      </path>
+    </svg>
+    <p class="text-slate-600 mb-2">Arrastra las imágenes aquí o</p>
+    <span class="text-slate-900 font-medium hover:text-slate-700 transition-colors duration-200">
+      selecciona archivos
+    </span>
+    <p class="text-xs text-slate-500 mt-2">PNG, JPG hasta 10MB cada una</p>
+  </label>
 
-          <div v-if="files.length > 0" class="mt-4 grid grid-cols-3 gap-4">
-            <div v-for="(file, index) in files" :key="index" class="relative">
-              <img :src="file.preview" class="w-full h-32 object-cover rounded-lg">
-              <button @click="removeFile(index)"
-                class="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center">
-                ×
-              </button>
-            </div>
-          </div>
-        </div>
+  <div v-if="files.length > 0" class="mt-4 grid grid-cols-3 gap-4">
+    <div v-for="(file, index) in files" :key="index" class="relative group">
+      <div class="relative overflow-hidden rounded-lg border-2 border-gray-200">
+        <img
+          :src="file.preview"
+          class="w-full h-32 object-cover"
+          :style="getFileImageStyle(file)"
+        />
+
+        <!-- Botón para ajustar encuadre - SIEMPRE VISIBLE -->
+        <button
+          @click.prevent="openCropEditor(index)"
+          class="absolute top-2 left-2 bg-blue-600 text-white rounded-lg px-2 py-1 text-xs flex items-center justify-center opacity-90 hover:opacity-100 transition-opacity shadow-md z-10"
+          title="Ajustar encuadre"
+          type="button"
+        >
+          <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+          </svg>
+          Ajustar
+        </button>
+
+        <!-- Botón eliminar -->
+        <button
+          @click.prevent="removeFile(index)"
+          class="absolute top-2 right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center opacity-90 hover:opacity-100 transition-opacity z-10"
+          type="button"
+        >
+          ×
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ImageCropEditor
+  v-if="showCropEditor"
+  :imageUrl="currentEditingImage?.preview"
+  :initialOffsetX="currentEditingImage?.offsetX || 0.5"
+  :initialOffsetY="currentEditingImage?.offsetY || 0.5"
+  :initialZoom="currentEditingImage?.zoom || 1.0"
+  @save="saveCropSettings"
+  @cancel="showCropEditor = false"
+/>
 
         <!-- Botones de acción -->
         <div v-if="showActionButtons" class="flex justify-end space-x-4">
@@ -450,12 +485,58 @@ import { FondoComercioForm } from './propertyTypes/FondoComercioForm';
 import { GalponForm } from './propertyTypes/GalponForm';
 import { LocalForm } from './propertyTypes/LocalForm';
 import { TerrenoForm } from './propertyTypes/TerrenoForm';
-
+import ImageCropEditor from './ImageCropEditor.vue'
 
 // 2. Inicializar hooks y router
 const router = useRouter()
 const { formData, resetForm, handlePropertyTypeChange, getEndpoint, ...computedProps } = useFormSetup()
 const { files, handleFileUpload, removeFile } = useImageHandling()
+
+// Estado para el editor de encuadre
+const showCropEditor = ref(false)
+const currentEditingImageIndex = ref(null)
+const currentEditingImage = ref(null)
+
+// En la función openCropEditor, cambia getImageStyle por getFileImageStyle
+// Función para abrir el editor de encuadre
+const openCropEditor = (index) => {
+  console.log('Abriendo editor para imagen:', index); // Para debug
+  currentEditingImageIndex.value = index;
+  currentEditingImage.value = files.value[index];
+  showCropEditor.value = true;
+
+  // Prevenir cualquier comportamiento por defecto
+  event?.preventDefault();
+  event?.stopPropagation();
+}
+
+// Función para guardar los ajustes de encuadre
+const saveCropSettings = (cropData) => {
+  if (currentEditingImageIndex.value !== null) {
+    files.value[currentEditingImageIndex.value] = {
+      ...files.value[currentEditingImageIndex.value],
+      ...cropData
+    }
+  }
+  showCropEditor.value = false
+  currentEditingImageIndex.value = null
+  currentEditingImage.value = null
+}
+
+// Función para obtener el estilo de la imagen (para archivos nuevos)
+const getFileImageStyle = (file) => {
+  if (!file) return {};
+
+  const offsetX = file.offsetX !== undefined ? file.offsetX : 0.5;
+  const offsetY = file.offsetY !== undefined ? file.offsetY : 0.5;
+  const zoom = file.zoom !== undefined ? file.zoom : 1.0;
+
+  return {
+    objectPosition: `${offsetX * 100}% ${offsetY * 100}%`,
+    transform: `scale(${zoom})`,
+    transformOrigin: `${offsetX * 100}% ${offsetY * 100}%`
+  };
+}
 
 // 3. Destructuring COMPLETO de computed properties
 const {
@@ -524,7 +605,11 @@ const submitForm = async () => {
           public_id: imageData.public_id,
           descripcion: file.descripcion || '',
           orden: index,
-          esPortada: index === 0
+          esPortada: index === 0,
+          // Aquí guardamos los ajustes de encuadre
+          offsetX: file.offsetX !== undefined ? file.offsetX : 0.5,
+          offsetY: file.offsetY !== undefined ? file.offsetY : 0.5,
+          zoom: file.zoom !== undefined ? file.zoom : 1.0
         }
       })
     )

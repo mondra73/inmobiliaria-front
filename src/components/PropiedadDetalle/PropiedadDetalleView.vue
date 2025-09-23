@@ -81,9 +81,13 @@
           <div class="lg:col-span-2 space-y-8">
             <!-- Galería de imágenes -->
             <div class="relative bg-white rounded-3xl border border-gray-100 overflow-hidden">
-              <img :src="propiedad.imagenes?.[imagenSeleccionada]?.url || '/placeholder.svg'"
-                :alt="propiedad.imagenes?.[imagenSeleccionada]?.descripcion"
-                class="w-full h-96 object-cover cursor-pointer" @click="abrirModal" />
+              <img
+  :src="propiedad.imagenes?.[imagenSeleccionada]?.url || '/placeholder.svg'"
+  :alt="propiedad.imagenes?.[imagenSeleccionada]?.descripcion"
+  class="w-full h-96 object-cover cursor-pointer"
+  :style="getImageStyle(propiedad.imagenes?.[imagenSeleccionada])"
+  @click="abrirModal"
+/>
 
               <!-- Navegación de imágenes -->
               <button v-if="imagenSeleccionada > 0" @click="anteriorImagen"
@@ -122,8 +126,12 @@
                 <div class="grid grid-cols-4 gap-2">
                   <div v-for="(imagen, index) in propiedad.imagenes" :key="index" class="relative cursor-pointer"
                     @click="seleccionarImagen(index)">
-                    <img :src="imagen.url" :alt="imagen.descripcion"
-                      :class="['w-full h-20 object-cover rounded-lg hover:opacity-80', imagenSeleccionada === index ? 'ring-2 ring-blue-500' : '']" />
+                    <img
+  :src="imagen.url"
+  :alt="imagen.descripcion"
+  :class="['w-full h-20 object-cover rounded-lg hover:opacity-80', imagenSeleccionada === index ? 'ring-2 ring-blue-500' : '']"
+  :style="getThumbnailStyle(imagen)"
+/>
                   </div>
                 </div>
               </div>
@@ -461,9 +469,12 @@
     <div v-if="modalAbierto" class="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-[9999]"
       @click.self="cerrarModal">
       <div class="relative max-w-5xl w-full px-4">
-        <img :src="propiedad.imagenes?.[imagenSeleccionada]?.url"
-          :alt="propiedad.imagenes?.[imagenSeleccionada]?.descripcion"
-          class="w-full max-h-[90vh] object-contain rounded-lg shadow-lg" />
+        <img
+  :src="propiedad.imagenes?.[imagenSeleccionada]?.url"
+  :alt="propiedad.imagenes?.[imagenSeleccionada]?.descripcion"
+  class="w-full max-h-[90vh] object-contain rounded-lg shadow-lg"
+  :style="getImageStyle(propiedad.imagenes?.[imagenSeleccionada], true)"
+/>
         <button @click="cerrarModal" class="absolute top-4 right-4 text-white text-3xl font-light z-[10000]">
           &times;
         </button>
@@ -640,6 +651,38 @@ const urlMapa = computed(() => {
 
   return '';
 });
+
+// Función para obtener el estilo de la imagen con encuadre
+const getImageStyle = (imagen, isModal = false) => {
+  if (!imagen) return {};
+
+  // Valores por defecto para backward compatibility
+  const offsetX = imagen.offsetX !== undefined ? imagen.offsetX : 0.5;
+  const offsetY = imagen.offsetY !== undefined ? imagen.offsetY : 0.5;
+  const zoom = imagen.zoom !== undefined ? imagen.zoom : 1.0;
+
+  // Para modal usamos 'contain', para galería 'cover'
+  const objectFit = isModal ? 'contain' : 'cover';
+
+  return {
+    objectFit: objectFit,
+    objectPosition: `${offsetX * 100}% ${offsetY * 100}%`,
+    transform: `scale(${zoom})`,
+    transformOrigin: `${offsetX * 100}% ${offsetY * 100}%`
+  };
+};
+
+// En las miniaturas también aplicamos el encuadre
+const getThumbnailStyle = (imagen) => {
+  if (!imagen) return {};
+
+  const offsetX = imagen.offsetX !== undefined ? imagen.offsetX : 0.5;
+  const offsetY = imagen.offsetY !== undefined ? imagen.offsetY : 0.5;
+
+  return {
+    objectPosition: `${offsetX * 100}% ${offsetY * 100}%`
+  };
+};
 
 
 // Configuración reutilizable
