@@ -81,13 +81,10 @@
           <div class="lg:col-span-2 space-y-8">
             <!-- Galería de imágenes -->
             <div class="relative bg-white rounded-3xl border border-gray-100 overflow-hidden">
-              <img
-  :src="propiedad.imagenes?.[imagenSeleccionada]?.url || '/placeholder.svg'"
-  :alt="propiedad.imagenes?.[imagenSeleccionada]?.descripcion"
-  class="w-full h-96 object-cover cursor-pointer"
-  :style="getImageStyle(propiedad.imagenes?.[imagenSeleccionada])"
-  @click="abrirModal"
-/>
+              <img :src="propiedad.imagenes?.[imagenSeleccionada]?.url || '/placeholder.svg'"
+                :alt="propiedad.imagenes?.[imagenSeleccionada]?.descripcion"
+                class="w-full h-96 object-cover cursor-pointer"
+                :style="getImageStyle(propiedad.imagenes?.[imagenSeleccionada])" @click="abrirModal" />
 
               <!-- Navegación de imágenes -->
               <button v-if="imagenSeleccionada > 0" @click="anteriorImagen"
@@ -107,31 +104,46 @@
 
                 <div class="grid grid-cols-4 gap-2">
                   <div v-for="(imagen, index) in form.imagenes" :key="index" class="relative group">
-                    <img :src="imagen.url" :class="['w-full h-20 object-cover rounded-lg',
-                      imagenSeleccionada === index ? 'ring-2 ring-blue-500' : '']" />
+                    <div class="relative overflow-hidden rounded-lg border border-gray-200">
+                      <img :src="imagen.url"
+                        :class="['w-full h-20 object-cover', imagenSeleccionada === index ? 'ring-2 ring-blue-500' : '']"
+                        :style="getThumbnailStyle(imagen)" />
 
-                    <!-- Botón de eliminar (cruz) -->
-                    <button @click.stop="eliminarImagen(index)" class="absolute top-1 right-1 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center
-               opacity-80 hover:opacity-100 transition-opacity delete-image-btn" title="Eliminar imagen">
-                      ×
-                    </button>
+                      <!-- Botón para ajustar encuadre -->
+                      <button @click.stop="openCropEditor(index)"
+                        class="absolute top-1 left-1 bg-blue-600 text-white rounded-lg px-2 py-1 text-xs flex items-center justify-center opacity-90 hover:opacity-100 transition-opacity shadow-md z-10"
+                        title="Ajustar encuadre" type="button">
+                        <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
+                        Ajustar
+                      </button>
+
+                      <!-- Botón de eliminar -->
+                      <button @click.stop="eliminarImagen(index)"
+                        class="absolute top-1 right-1 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center opacity-90 hover:opacity-100 transition-opacity z-10"
+                        title="Eliminar imagen">
+                        ×
+                      </button>
+                    </div>
 
                     <input v-model="imagen.descripcion" placeholder="Descripción"
                       class="text-xs w-full mt-1 p-1 border rounded" />
                   </div>
                 </div>
               </div>
+
               <!-- Miniaturas en modo visualización -->
               <div v-else-if="propiedad.imagenes?.length > 1" class="p-4">
                 <div class="grid grid-cols-4 gap-2">
                   <div v-for="(imagen, index) in propiedad.imagenes" :key="index" class="relative cursor-pointer"
                     @click="seleccionarImagen(index)">
-                    <img
-  :src="imagen.url"
-  :alt="imagen.descripcion"
-  :class="['w-full h-20 object-cover rounded-lg hover:opacity-80', imagenSeleccionada === index ? 'ring-2 ring-blue-500' : '']"
-  :style="getThumbnailStyle(imagen)"
-/>
+                    <img :src="imagen.url" :alt="imagen.descripcion"
+                      :class="['w-full h-20 object-cover rounded-lg hover:opacity-80', imagenSeleccionada === index ? 'ring-2 ring-blue-500' : '']"
+                      :style="getThumbnailStyle(imagen)" />
                   </div>
                 </div>
               </div>
@@ -160,7 +172,7 @@
                     <p v-if="!editando" class="font-medium text-slate-900">
                       {{ item.id === 'superficieTotal' && propiedad.tipo === 'Terreno'
                         ? propiedad.superficie || '-'
-                      : propiedad[item.id] || '-'
+                        : propiedad[item.id] || '-'
                       }}
                     </p>
                     <input v-else v-model.number="form[item.id]" type="number" class="w-16 border rounded p-1" />
@@ -469,12 +481,10 @@
     <div v-if="modalAbierto" class="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-[9999]"
       @click.self="cerrarModal">
       <div class="relative max-w-5xl w-full px-4">
-        <img
-  :src="propiedad.imagenes?.[imagenSeleccionada]?.url"
-  :alt="propiedad.imagenes?.[imagenSeleccionada]?.descripcion"
-  class="w-full max-h-[90vh] object-contain rounded-lg shadow-lg"
-  :style="getImageStyle(propiedad.imagenes?.[imagenSeleccionada], true)"
-/>
+        <img :src="propiedad.imagenes?.[imagenSeleccionada]?.url"
+          :alt="propiedad.imagenes?.[imagenSeleccionada]?.descripcion"
+          class="w-full max-h-[90vh] object-contain rounded-lg shadow-lg"
+          :style="getImageStyle(propiedad.imagenes?.[imagenSeleccionada], true)" />
         <button @click="cerrarModal" class="absolute top-4 right-4 text-white text-3xl font-light z-[10000]">
           &times;
         </button>
@@ -543,6 +553,12 @@
         </div>
       </transition>
     </div>
+
+    <!-- Modal Editor de Encuadre -->
+    <ImageCropEditor v-if="showCropEditor" :imageUrl="currentEditingImage?.url || currentEditingImage?.preview"
+      :initialOffsetX="currentEditingImage?.offsetX || 0.5" :initialOffsetY="currentEditingImage?.offsetY || 0.5"
+      :initialZoom="currentEditingImage?.zoom || 1.0" @save="saveCropSettings" @cancel="showCropEditor = false" />
+
   </div>
 
 </template>
@@ -555,6 +571,7 @@ import { Home, Users, Building, Wrench, DollarSign, Calendar } from 'lucide-vue-
 import { uploadImageToCloudinary } from '../../../utils/uploadToCloudinary'
 import { jwtDecode } from 'jwt-decode';
 import { useFormEdit } from './hooks/useFormEdit';
+import ImageCropEditor from '../NuevaPropiedad/ImageCropEditor.vue';
 
 // Estados reactivos
 const propiedad = ref(null)
@@ -571,6 +588,9 @@ const mostrarModalConfirmacion = ref(false)
 const eliminando = ref(false)
 const mostrarModalConfirmacionImagen = ref(false)
 const imagenAEliminar = ref(null)
+const showCropEditor = ref(false);
+const currentEditingImageIndex = ref(null);
+const currentEditingImage = ref(null);
 
 const { editando, form, activarEdicion, cancelarEdicion, guardarCambios } = useFormEdit(propiedad);
 
@@ -684,6 +704,27 @@ const getThumbnailStyle = (imagen) => {
   };
 };
 
+const openCropEditor = (index) => {
+  currentEditingImageIndex.value = index;
+  currentEditingImage.value = form.value.imagenes[index];
+  showCropEditor.value = true;
+};
+
+// Función para guardar los ajustes de encuadre
+const saveCropSettings = (cropData) => {
+  if (currentEditingImageIndex.value !== null) {
+    form.value.imagenes[currentEditingImageIndex.value] = {
+      ...form.value.imagenes[currentEditingImageIndex.value],
+      ...cropData
+    };
+
+    mostrarMensajeTemporal('exito', 'Encuadre ajustado correctamente');
+  }
+
+  showCropEditor.value = false;
+  currentEditingImageIndex.value = null;
+  currentEditingImage.value = null;
+};
 
 // Configuración reutilizable
 const serviciosConfig = {
@@ -896,14 +937,14 @@ const cerrarModal = () => {
 
 // Manejo de imágenes
 const handleImageUpload = async (event) => {
-  const uploadedFiles = Array.from(event.target.files)
-  if (!uploadedFiles.length) return
+  const uploadedFiles = Array.from(event.target.files);
+  if (!uploadedFiles.length) return;
 
   try {
     for (const file of uploadedFiles) {
-      if (!file.type.match('image.*')) continue
+      if (!file.type.match('image.*')) continue;
 
-      const { url, public_id } = await uploadImageToCloudinary(file)
+      const { url, public_id } = await uploadImageToCloudinary(file);
 
       if (url && public_id) {
         form.value.imagenes.push({
@@ -911,21 +952,25 @@ const handleImageUpload = async (event) => {
           public_id,
           descripcion: '',
           orden: form.value.imagenes.length,
-          esPortada: false
-        })
+          esPortada: false,
+          // Incluir campos de encuadre por defecto
+          offsetX: 0.5,
+          offsetY: 0.5,
+          zoom: 1.0
+        });
       }
     }
 
     if (fileInput.value) {
-      fileInput.value.value = ''
+      fileInput.value.value = '';
     }
 
-    mostrarMensajeTemporal('exito', 'Imágenes subidas correctamente')
+    mostrarMensajeTemporal('exito', 'Imágenes subidas correctamente');
   } catch (error) {
-    console.error('Error al subir imágenes:', error)
-    mostrarMensajeTemporal('error', 'Error al subir imágenes: ' + error.message)
+    console.error('Error al subir imágenes:', error);
+    mostrarMensajeTemporal('error', 'Error al subir imágenes: ' + error.message);
   }
-}
+};
 
 const eliminarImagen = (index) => {
   imagenAEliminar.value = index
