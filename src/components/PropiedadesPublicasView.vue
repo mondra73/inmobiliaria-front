@@ -231,7 +231,6 @@ onMounted(async () => {
   try {
     const res = await api.get('/user/propiedades-publicas')
     propiedades.value = res.data.propiedades || []
-    console.log('Propiedades cargadas:', propiedades.value) // Para debug
   } catch (err) {
     console.error('Error al cargar propiedades:', err)
     propiedades.value = []
