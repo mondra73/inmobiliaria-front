@@ -320,7 +320,7 @@
         </div>
 
         <!-- Imágenes -->
-        <div v-if="showImagesSection" class="bg-white rounded-3xl shadow-sm border border-gray-100 p-8">
+<div v-if="showImagesSection" class="bg-white rounded-3xl shadow-sm border border-gray-100 p-8">
   <h2 class="text-xl font-light text-slate-900 mb-6">Imágenes</h2>
 
   <input type="file" id="file-upload" ref="fileInput" class="hidden" multiple accept="image/png, image/jpeg"
@@ -340,51 +340,68 @@
     <p class="text-xs text-slate-500 mt-2">PNG, JPG hasta 10MB cada una</p>
   </label>
 
-  <div v-if="files.length > 0" class="mt-4 grid grid-cols-3 gap-4">
-    <div v-for="(file, index) in files" :key="index" class="relative group">
-      <div class="relative overflow-hidden rounded-lg border-2 border-gray-200">
-        <img
-          :src="file.preview"
-          class="w-full h-32 object-cover"
-          :style="getFileImageStyle(file)"
-        />
-
-        <!-- Botón para ajustar encuadre - SIEMPRE VISIBLE -->
-        <button
-          @click.prevent="openCropEditor(index)"
-          class="absolute top-2 left-2 bg-blue-600 text-white rounded-lg px-2 py-1 text-xs flex items-center justify-center opacity-90 hover:opacity-100 transition-opacity shadow-md z-10"
-          title="Ajustar encuadre"
-          type="button"
-        >
-          <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-          </svg>
-          Ajustar
-        </button>
-
-        <!-- Botón eliminar -->
-        <button
-          @click.prevent="removeFile(index)"
-          class="absolute top-2 right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center opacity-90 hover:opacity-100 transition-opacity z-10"
-          type="button"
-        >
-          ×
-        </button>
+  <!-- Grid de imágenes con drag & drop -->
+  <draggable 
+    v-if="files.length > 0" 
+    v-model="files" 
+    class="mt-4 grid grid-cols-3 gap-4"
+    item-key="id"
+    @end="handleDragEnd"
+  >
+    <template #item="{ element: file, index }">
+      <div class="relative group">
+        <div class="relative overflow-hidden rounded-lg border-2 border-gray-200">
+          <img 
+            :src="file.preview" 
+            class="w-full h-32 object-cover"
+            :style="getFileImageStyle(file)"
+          />
+          
+          <!-- Indicador de portada -->
+          <div v-if="index === 0" class="absolute top-2 left-2 bg-blue-500 text-white px-2 py-1 text-xs rounded">
+            Portada
+          </div>
+          
+          <!-- Botón para ajustar encuadre -->
+          <button 
+            @click.prevent="openCropEditor(index)"
+            class="absolute top-2 left-2 bg-blue-600 text-white rounded-lg px-2 py-1 text-xs flex items-center justify-center opacity-90 hover:opacity-100 transition-opacity shadow-md z-10"
+            :style="index === 0 ? 'top: 30px' : 'top: 2px'"
+            title="Ajustar encuadre"
+            type="button"
+          >
+            <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+            </svg>
+            Ajustar
+          </button>
+          
+          <!-- Botón eliminar -->
+          <button 
+            @click.prevent="removeFile(index)" 
+            class="absolute top-2 right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center opacity-90 hover:opacity-100 transition-opacity z-10"
+            type="button"
+          >
+            ×
+          </button>
+          
+          <!-- Número de orden -->
+          <div class="absolute bottom-2 right-2 bg-black bg-opacity-50 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs">
+            {{ index + 1 }}
+          </div>
+        </div>
+        
+        <input v-model="file.descripcion" placeholder="Descripción (opcional)"
+          class="text-xs w-full mt-1 p-1 border rounded" />
       </div>
-    </div>
-  </div>
+    </template>
+  </draggable>
 </div>
 
-<ImageCropEditor
-  v-if="showCropEditor"
-  :imageUrl="currentEditingImage?.preview"
-  :initialOffsetX="currentEditingImage?.offsetX || 0.5"
-  :initialOffsetY="currentEditingImage?.offsetY || 0.5"
-  :initialZoom="currentEditingImage?.zoom || 1.0"
-  @save="saveCropSettings"
-  @cancel="showCropEditor = false"
-/>
+        <ImageCropEditor v-if="showCropEditor" :imageUrl="currentEditingImage?.preview"
+          :initialOffsetX="currentEditingImage?.offsetX || 0.5" :initialOffsetY="currentEditingImage?.offsetY || 0.5"
+          :initialZoom="currentEditingImage?.zoom || 1.0" @save="saveCropSettings" @cancel="showCropEditor = false" />
 
         <!-- Botones de acción -->
         <div v-if="showActionButtons" class="flex justify-end space-x-4">
@@ -486,11 +503,12 @@ import { GalponForm } from './propertyTypes/GalponForm';
 import { LocalForm } from './propertyTypes/LocalForm';
 import { TerrenoForm } from './propertyTypes/TerrenoForm';
 import ImageCropEditor from './ImageCropEditor.vue'
+import draggable from 'vuedraggable';
 
 // 2. Inicializar hooks y router
 const router = useRouter()
 const { formData, resetForm, handlePropertyTypeChange, getEndpoint, ...computedProps } = useFormSetup()
-const { files, handleFileUpload, removeFile } = useImageHandling()
+const { files, handleFileUpload, removeFile, handleDragEnd } = useImageHandling()
 
 // Estado para el editor de encuadre
 const showCropEditor = ref(false)
@@ -537,6 +555,17 @@ const getFileImageStyle = (file) => {
     transformOrigin: `${offsetX * 100}% ${offsetY * 100}%`
   };
 }
+
+const onDragEnd = () => {
+  // Actualizar automáticamente el orden y la portada
+  files.value = files.value.map((file, index) => ({
+    ...file,
+    orden: index,
+    esPortada: index === 0
+  }));
+  
+  mostrarMensajeTemporal('exito', 'Orden de imágenes actualizado');
+};
 
 // 3. Destructuring COMPLETO de computed properties
 const {
@@ -598,21 +627,20 @@ const submitForm = async () => {
 
     // Subir imágenes y preparar payload
     const uploadedImages = await Promise.all(
-      files.value.map(async (file, index) => {
-        const imageData = await uploadImageToCloudinary(file.file)
-        return {
-          url: imageData.url,
-          public_id: imageData.public_id,
-          descripcion: file.descripcion || '',
-          orden: index,
-          esPortada: index === 0,
-          // Aquí guardamos los ajustes de encuadre
-          offsetX: file.offsetX !== undefined ? file.offsetX : 0.5,
-          offsetY: file.offsetY !== undefined ? file.offsetY : 0.5,
-          zoom: file.zoom !== undefined ? file.zoom : 1.0
-        }
-      })
-    )
+  files.value.map(async (file, index) => {
+    const imageData = await uploadImageToCloudinary(file.file)
+    return {
+      url: imageData.url,
+      public_id: imageData.public_id,
+      descripcion: file.descripcion || '',
+      orden: file.orden || index, // Usa el orden del drag & drop
+      esPortada: file.esPortada || index === 0, // Usa la portada del drag & drop
+      offsetX: file.offsetX !== undefined ? file.offsetX : 0.5,
+      offsetY: file.offsetY !== undefined ? file.offsetY : 0.5,
+      zoom: file.zoom !== undefined ? file.zoom : 1.0
+    }
+  })
+)
 
     // Imagen por defecto
     const imagenPorDefecto = {
