@@ -98,43 +98,66 @@
               </button>
 
               <!-- Editor de imágenes en modo edición -->
-              <div v-if="editando" class="p-4 border-t">
-                <h3 class="font-medium mb-2">Administrar imágenes</h3>
-                <input type="file" multiple @change="handleImageUpload" class="mb-4" accept="image/*" ref="fileInput" />
+<div v-if="editando" class="p-4 border-t">
+  <h3 class="font-medium mb-2">Administrar imágenes</h3>
+  <input type="file" multiple @change="handleImageUpload" class="mb-4" accept="image/*" ref="fileInput" />
 
-                <div class="grid grid-cols-4 gap-2">
-                  <div v-for="(imagen, index) in form.imagenes" :key="index" class="relative group">
-                    <div class="relative overflow-hidden rounded-lg border border-gray-200">
-                      <img :src="imagen.url"
-                        :class="['w-full h-20 object-cover', imagenSeleccionada === index ? 'ring-2 ring-blue-500' : '']"
-                        :style="getThumbnailStyle(imagen)" />
+  <!-- Grid de imágenes con drag & drop -->
+  <draggable 
+    v-model="form.imagenes" 
+    class="grid grid-cols-4 gap-2"
+    item-key="public_id"
+    @end="onDragEnd"
+  >
+    <template #item="{ element: imagen, index }">
+      <div class="relative group">
+        <div class="relative overflow-hidden rounded-lg border-2 border-gray-200">
+          <img 
+            :src="imagen.url" 
+            :class="['w-full h-20 object-cover']"
+            :style="getThumbnailStyle(imagen)"
+          />
+          
+          <!-- Indicador de portada -->
+          <div v-if="index === 0" class="absolute top-1 left-1 bg-blue-500 text-white px-1 py-0.5 text-xs rounded">
+            Portada
+          </div>
+          
+          <!-- Botón para ajustar encuadre -->
+          <button 
+            @click.stop="openCropEditor(index)"
+            class="absolute top-1 left-1 bg-blue-600 text-white rounded px-1 py-0.5 text-xs flex items-center justify-center opacity-90 hover:opacity-100 transition-opacity z-10"
+            :style="index === 0 ? 'top: 18px' : 'top: 1px'"
+            title="Ajustar encuadre"
+            type="button"
+          >
+            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+            </svg>
+          </button>
 
-                      <!-- Botón para ajustar encuadre -->
-                      <button @click.stop="openCropEditor(index)"
-                        class="absolute top-1 left-1 bg-blue-600 text-white rounded-lg px-2 py-1 text-xs flex items-center justify-center opacity-90 hover:opacity-100 transition-opacity shadow-md z-10"
-                        title="Ajustar encuadre" type="button">
-                        <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                        </svg>
-                        Ajustar
-                      </button>
-
-                      <!-- Botón de eliminar -->
-                      <button @click.stop="eliminarImagen(index)"
-                        class="absolute top-1 right-1 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center opacity-90 hover:opacity-100 transition-opacity z-10"
-                        title="Eliminar imagen">
-                        ×
-                      </button>
-                    </div>
-
-                    <input v-model="imagen.descripcion" placeholder="Descripción"
-                      class="text-xs w-full mt-1 p-1 border rounded" />
-                  </div>
-                </div>
-              </div>
+          <!-- Botón eliminar -->
+          <button 
+            @click.stop="eliminarImagen(index)" 
+            class="absolute top-1 right-1 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center opacity-90 hover:opacity-100 transition-opacity z-10"
+            type="button"
+          >
+            ×
+          </button>
+          
+          <!-- Número de orden -->
+          <div class="absolute bottom-1 right-1 bg-black bg-opacity-50 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">
+            {{ index + 1 }}
+          </div>
+        </div>
+        
+        <input v-model="imagen.descripcion" placeholder="Descripción"
+          class="text-xs w-full mt-1 p-1 border rounded" />
+      </div>
+    </template>
+  </draggable>
+</div>
 
               <!-- Miniaturas en modo visualización -->
               <div v-else-if="propiedad.imagenes?.length > 1" class="p-4">
@@ -572,6 +595,7 @@ import { uploadImageToCloudinary } from '../../../utils/uploadToCloudinary'
 import { jwtDecode } from 'jwt-decode';
 import { useFormEdit } from './hooks/useFormEdit';
 import ImageCropEditor from '../NuevaPropiedad/ImageCropEditor.vue';
+import draggable from 'vuedraggable';
 
 // Estados reactivos
 const propiedad = ref(null)
@@ -692,7 +716,18 @@ const getImageStyle = (imagen, isModal = false) => {
   };
 };
 
-// En las miniaturas también aplicamos el encuadre
+// Función cuando termina el drag en edición
+const onDragEnd = () => {
+  // Actualizar orden y portada automáticamente
+  form.value.imagenes = form.value.imagenes.map((imagen, index) => ({
+    ...imagen,
+    orden: index,
+    esPortada: index === 0
+  }));
+  
+  mostrarMensajeTemporal('exito', 'Orden de imágenes actualizado');
+};
+
 const getThumbnailStyle = (imagen) => {
   if (!imagen) return {};
 
@@ -952,8 +987,7 @@ const handleImageUpload = async (event) => {
           public_id,
           descripcion: '',
           orden: form.value.imagenes.length,
-          esPortada: false,
-          // Incluir campos de encuadre por defecto
+          esPortada: form.value.imagenes.length === 0, // Solo portada si es la primera
           offsetX: 0.5,
           offsetY: 0.5,
           zoom: 1.0
@@ -973,31 +1007,28 @@ const handleImageUpload = async (event) => {
 };
 
 const eliminarImagen = (index) => {
-  imagenAEliminar.value = index
-  mostrarModalConfirmacionImagen.value = true
-}
+  imagenAEliminar.value = index;
+  mostrarModalConfirmacionImagen.value = true;
+};
 
 const confirmarEliminacionImagen = async () => {
-  const index = imagenAEliminar.value
-  mostrarModalConfirmacionImagen.value = false
+  const index = imagenAEliminar.value;
+  mostrarModalConfirmacionImagen.value = false;
 
-  // Animación de fade out (opcional)
-  const imageElement = document.querySelector(`.image-container-${index}`);
-  if (imageElement) {
-    imageElement.classList.add('fade-out');
-    await new Promise(resolve => setTimeout(resolve, 200));
-  }
+  form.value.imagenes.splice(index, 1);
+  
+  form.value.imagenes = form.value.imagenes.map((imagen, index) => ({
+    ...imagen,
+    orden: index,
+    esPortada: index === 0
+  }));
 
-  // Eliminar la imagen
-  form.value.imagenes.splice(index, 1)
-
-  // Ajustar la imagen seleccionada si es necesario
   if (imagenSeleccionada.value >= form.value.imagenes.length) {
-    imagenSeleccionada.value = Math.max(0, form.value.imagenes.length - 1)
+    imagenSeleccionada.value = Math.max(0, form.value.imagenes.length - 1);
   }
 
-  mostrarMensajeTemporal('exito', 'Imagen eliminada')
-}
+  mostrarMensajeTemporal('exito', 'Imagen eliminada');
+};
 
 const eliminarPropiedad = async () => {
   eliminando.value = true
