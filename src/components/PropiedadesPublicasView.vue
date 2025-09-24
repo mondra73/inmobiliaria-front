@@ -41,40 +41,44 @@
         </div>
       </section>
 
-      <!-- Tarjetas de propiedades -->
+      <!-- Tarjetas de propiedades - CORREGIDO: cambiar "casa" por "propiedad" -->
       <section class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 mt-4">
-        <div v-for="casa in propiedadesPaginadas" :key="casa.id" @click="irADetallePropiedad(casa.id)"
+        <div v-for="propiedad in propiedadesPaginadas" :key="propiedad.id" @click="irADetallePropiedad(propiedad.id)"
           class="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow duration-200 cursor-pointer">
           <div class="relative">
-            <img :src="casa.imagenes?.[0]?.url || '/placeholder.svg?height=200&width=300'" :alt="casa.titulo"
-              class="w-full h-48 object-cover" />
+  <img
+    :src="propiedad.imagenes?.[0]?.url || '/placeholder.svg?height=200&width=300'"
+    :alt="propiedad.titulo"
+    class="w-full h-48 object-cover"
+    :style="getImageStyle(propiedad.imagenes?.[0])"
+  />
             <span class="absolute top-4 left-4 bg-green-100 text-green-800 px-2 py-1 text-xs font-medium rounded">
-              {{ casa.operacion }}
+              {{ propiedad.operacion }}
             </span>
           </div>
 
           <div class="p-6">
             <span class="inline-block bg-blue-100 text-blue-800 px-2 py-1 text-xs font-medium rounded mb-2">
-              {{ casa.tipo }}
+              {{ propiedad.tipo }}
             </span>
 
             <h3 class="font-semibold text-slate-900 text-lg mb-1 line-clamp-2">
-              {{ casa.titulo }}
+              {{ propiedad.titulo }}
             </h3>
             <div class="text-slate-600 text-sm mb-1 flex items-center">
               <Home class="w-4 h-4 mr-1" />
-              <span>{{ casa.ubicacion.calle }} {{ casa.ubicacion.altura }}, {{ casa.ubicacion.localidad }}</span>
+              <span>{{ propiedad.ubicacion.calle }} {{ propiedad.ubicacion.altura }}, {{ propiedad.ubicacion.localidad }}</span>
             </div>
             <div class="text-slate-600 text-sm mb-3 flex items-center">
-              <span>Publicado: {{ formatDate(casa.fechaPublicada) }}</span>
+              <span>Publicado: {{ formatDate(propiedad.fechaPublicada) }}</span>
             </div>
             <div class="text-2xl font-light text-slate-900 mb-2">
-              {{ formatPrice(casa.precio) }}
+              {{ formatPrice(propiedad.precio) }}
             </div>
             <div class="text-sm text-slate-600 flex flex-wrap gap-4">
-              <span v-if="casa.caracteristicas.dormitorios">{{ casa.caracteristicas.dormitorios }} dorm.</span>
-              <span v-if="casa.caracteristicas.baños">{{ casa.caracteristicas.baños }} baños</span>
-              <span v-if="casa.caracteristicas.superficieTotal">{{ casa.caracteristicas.superficieTotal }}m²</span>
+              <span v-if="propiedad.caracteristicas.dormitorios">{{ propiedad.caracteristicas.dormitorios }} dorm.</span>
+              <span v-if="propiedad.caracteristicas.baños">{{ propiedad.caracteristicas.baños }} baños</span>
+              <span v-if="propiedad.caracteristicas.superficieTotal">{{ propiedad.caracteristicas.superficieTotal }}m²</span>
             </div>
           </div>
         </div>
@@ -166,6 +170,20 @@ const filtroTitulo = ref('')
 const filtroTipo = ref('')
 const filtroOperacion = ref('')
 
+// Función para aplicar el encuadre a las imágenes
+const getImageStyle = (imagen) => {
+  if (!imagen) return {};
+
+  // Valores por defecto para backward compatibility
+  const offsetX = imagen.offsetX !== undefined ? imagen.offsetX : 0.5;
+  const offsetY = imagen.offsetY !== undefined ? imagen.offsetY : 0.5;
+
+  // SOLO objectPosition para encuadre, SIN transform (zoom)
+  return {
+    objectPosition: `${offsetX * 100}% ${offsetY * 100}%`
+  };
+};
+
 function irADetallePropiedad(id) {
   router.push(`/propiedad/${id}`)
 }
@@ -213,6 +231,7 @@ onMounted(async () => {
   try {
     const res = await api.get('/user/propiedades-publicas')
     propiedades.value = res.data.propiedades || []
+    console.log('Propiedades cargadas:', propiedades.value) // Para debug
   } catch (err) {
     console.error('Error al cargar propiedades:', err)
     propiedades.value = []
