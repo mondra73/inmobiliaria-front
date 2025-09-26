@@ -60,10 +60,16 @@
           </h2>
           <p class="text-slate-600 mt-1">Administra tus clientes y operaciones inmobiliarias</p>
         </div>
-        <button @click="irANuevoCliente"
-          class="bg-slate-900 hover:bg-slate-800 text-white px-6 py-3 rounded-xl font-medium transition-colors duration-200 shadow-md">
-          + Nuevo Cliente
-        </button>
+        <div class="flex space-x-4">
+          <button @click="irANuevoCliente"
+            class="bg-slate-900 hover:bg-slate-800 text-white px-6 py-3 rounded-xl font-medium transition-colors duration-200 shadow-md">
+            + Nuevo Cliente
+          </button>
+          <button @click="irANuevaOperacion"
+            class="bg-slate-900 hover:bg-slate-800 text-white px-6 py-3 rounded-xl font-medium transition-colors duration-200 shadow-md">
+            + Cargar Operación
+          </button>
+        </div>
       </header>
 
       <!-- Filtros -->
@@ -89,42 +95,42 @@
       </section>
 
       <!-- Estado de carga -->
-  <div v-if="cargando" class="flex justify-center items-center h-64">
-    <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-slate-900"></div>
-  </div>
+      <div v-if="cargando" class="flex justify-center items-center h-64">
+        <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-slate-900"></div>
+      </div>
 
-  <!-- Mensaje de error -->
-  <div v-if="error" class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl mb-6">
-    {{ error }}
-  </div>
+      <!-- Mensaje de error -->
+      <div v-if="error" class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl mb-6">
+        {{ error }}
+      </div>
 
-  <!-- Si no hay resultados -->
-  <p v-if="!cargando && operaciones.length === 0" class="text-center text-slate-500 mt-12">
-    No hay clientes registrados.
-  </p>
+      <!-- Si no hay resultados -->
+      <p v-if="!cargando && operaciones.length === 0" class="text-center text-slate-500 mt-12">
+        No hay clientes registrados.
+      </p>
 
       <!-- Lista de operaciones -->
       <section v-if="!cargando" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 mt-4">
-    <div v-for="operacion in operacionesFiltradas" :key="operacion.id"
-      @click="verDetalleCliente(operacion.id)"
-      class="bg-white rounded-3xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow duration-200 p-6 cursor-pointer">
-      <h3 class="font-semibold text-slate-900 text-lg mb-1">
-        {{ operacion.cliente.nombre }} {{ operacion.cliente.apellido }}
-      </h3>
-      <p class="text-sm text-slate-600 mb-1">
-        <strong>DNI:</strong> {{ operacion.cliente.dni }}
-      </p>
-      <p class="text-sm text-slate-600 mb-1">
-        <strong>Teléfono:</strong> {{ operacion.cliente.telefono }}
-      </p>
-      <p class="text-sm text-slate-600 mb-1">
-        <strong>Email:</strong> {{ operacion.cliente.mail }}
-      </p>
-      <p class="text-slate-500 text-xs mt-2">
-        Registrado: {{ formatDate(operacion.fecha) }}
-      </p>
-    </div>
-  </section>
+        <div v-for="operacion in operacionesFiltradas" :key="operacion.id"
+          @click="verDetalleCliente(operacion.id)"
+          class="bg-white rounded-3xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow duration-200 p-6 cursor-pointer">
+          <h3 class="font-semibold text-slate-900 text-lg mb-1">
+            {{ operacion.cliente.nombre }} {{ operacion.cliente.apellido }}
+          </h3>
+          <p class="text-sm text-slate-600 mb-1">
+            <strong>DNI:</strong> {{ operacion.cliente.dni }}
+          </p>
+          <p class="text-sm text-slate-600 mb-1">
+            <strong>Teléfono:</strong> {{ operacion.cliente.telefono }}
+          </p>
+          <p class="text-sm text-slate-600 mb-1">
+            <strong>Email:</strong> {{ operacion.cliente.mail }}
+          </p>
+          <p class="text-slate-500 text-xs mt-2">
+            Registrado: {{ formatDate(operacion.fecha) }}
+          </p>
+        </div>
+      </section>
 
       <!-- Si no hay resultados -->
       <p v-if="operaciones.length === 0" class="text-center text-slate-500 mt-12">
@@ -279,6 +285,10 @@ const totalPaginas = computed(() =>
 
 function irANuevoCliente() {
   router.push('/nuevo-cliente')
+}
+
+function irANuevaOperacion() {
+  router.push('/nueva-operacion')
 }
 
 function formatDate(fecha) {
