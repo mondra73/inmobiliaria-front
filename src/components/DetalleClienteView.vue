@@ -323,68 +323,73 @@
           </div>
 
           <!-- Ofertas como Vendedor -->
-          <div class="bg-white rounded-3xl shadow-sm border border-gray-100">
-            <div class="p-6 border-b border-gray-100 flex justify-between items-center">
-              <h2 class="text-xl font-light text-slate-900">
-                <span class="font-semibold">Propiedades en Venta/Alquiler</span>
-              </h2>
-              <button v-if="editando" @click="abrirModalPropiedades"
-                class="bg-blue-600 text-white px-3 py-1 rounded-lg text-sm">
-                + Agregar Propiedad
-              </button>
+<div class="bg-white rounded-3xl shadow-sm border border-gray-100">
+  <div class="p-6 border-b border-gray-100 flex justify-between items-center">
+    <h2 class="text-xl font-light text-slate-900">
+      <span class="font-semibold">Propiedades en Venta/Alquiler</span>
+    </h2>
+    <button v-if="editando" @click="abrirModalPropiedades"
+      class="bg-blue-600 text-white px-3 py-1 rounded-lg text-sm">
+      + Agregar Propiedad
+    </button>
+  </div>
+  <div class="p-6">
+    <div v-if="!cliente.oferente || cliente.oferente.length === 0" class="text-center text-slate-500 py-4">
+      No hay propiedades registradas como oferente
+    </div>
+
+    <div v-else v-for="(oferta, index) in (editando ? form.oferente : cliente.oferente)" :key="index"
+      class="mb-4 p-4 bg-slate-50 rounded-lg last:mb-0 hover:bg-slate-100 transition-colors cursor-pointer"
+      @click="verPropiedad(oferta)">
+      <div class="flex justify-between items-start">
+        <div class="flex-1">
+          <div>
+            <p class="text-sm text-slate-600 mb-1">Propiedad</p>
+            <div class="font-medium text-slate-900 hover:text-blue-600 transition-colors">
+              {{ oferta.propiedad }}
+              <span class="text-xs text-blue-600 ml-2">↗ Ver detalles</span>
             </div>
-            <div class="p-6">
-              <div v-if="!cliente.oferente || cliente.oferente.length === 0" class="text-center text-slate-500 py-4">
-                No hay propiedades registradas como oferente
-              </div>
-
-              <div v-else v-for="(oferta, index) in (editando ? form.oferente : cliente.oferente)" :key="index"
-                class="mb-4 p-4 bg-slate-50 rounded-lg last:mb-0">
-                <div class="flex justify-between items-start">
-                  <div class="flex-1">
-                    <div>
-                      <p class="text-sm text-slate-600 mb-1">Propiedad</p>
-                      <div class="font-medium text-slate-900">{{ oferta.propiedad }}</div>
-                      <div v-if="oferta.detallesPropiedad" class="text-sm text-slate-600 mt-1">
-                        <span v-if="oferta.detallesPropiedad.tipo" class="bg-blue-100 text-blue-800 px-2 py-1 rounded text-xs mr-2">
-                          {{ oferta.detallesPropiedad.tipo }}
-                        </span>
-                        <span v-if="oferta.detallesPropiedad.operacion" class="bg-green-100 text-green-800 px-2 py-1 rounded text-xs mr-2">
-                          {{ oferta.detallesPropiedad.operacion }}
-                        </span>
-                        <span v-if="oferta.detallesPropiedad.precio && oferta.detallesPropiedad.precio.monto" class="text-slate-700">
-                          ${{ oferta.detallesPropiedad.precio.monto.toLocaleString() }} {{ oferta.detallesPropiedad.precio.moneda }}
-                        </span>
-                      </div>
-                    </div>
-
-                    <div v-if="oferta.descripcion" class="mt-2">
-                      <p class="text-sm text-slate-600">Descripción adicional:</p>
-                      <p class="text-slate-700">{{ oferta.descripcion }}</p>
-                    </div>
-
-                    <div class="flex items-center space-x-2 mt-2">
-                      <span :class="[
-                        'px-2 py-1 rounded-full text-xs',
-                        oferta.activa ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-                      ]">
-                        {{ oferta.activa ? 'Activa' : 'Inactiva' }}
-                      </span>
-                      <button v-if="editando" @click="oferta.activa = !oferta.activa"
-                        class="text-xs text-blue-600 hover:text-blue-800">
-                        {{ oferta.activa ? 'Desactivar' : 'Activar' }}
-                      </button>
-                    </div>
-                  </div>
-
-                  <button v-if="editando" @click="eliminarOferta(index)"
-                    class="bg-red-100 text-red-700 px-2 py-1 rounded text-sm hover:bg-red-200 ml-2">
-                    ×
-                  </button>
-                </div>
-              </div>
+            <div v-if="oferta.detallesPropiedad" class="text-sm text-slate-600 mt-1">
+              <span v-if="oferta.detallesPropiedad.tipo" class="bg-blue-100 text-blue-800 px-2 py-1 rounded text-xs mr-2">
+                {{ oferta.detallesPropiedad.tipo }}
+              </span>
+              <span v-if="oferta.detallesPropiedad.operacion" class="bg-green-100 text-green-800 px-2 py-1 rounded text-xs mr-2">
+                {{ oferta.detallesPropiedad.operacion }}
+              </span>
+              <span v-if="oferta.detallesPropiedad.precio && oferta.detallesPropiedad.precio.monto" class="text-slate-700">
+                ${{ oferta.detallesPropiedad.precio.monto.toLocaleString() }} {{
+                  oferta.detallesPropiedad.precio.moneda }}
+              </span>
             </div>
           </div>
+
+          <div v-if="oferta.descripcion" class="mt-2">
+            <p class="text-sm text-slate-600">Descripción adicional:</p>
+            <p class="text-slate-700">{{ oferta.descripcion }}</p>
+          </div>
+
+          <div class="flex items-center space-x-2 mt-2">
+            <span :class="[
+              'px-2 py-1 rounded-full text-xs',
+              oferta.activa ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+            ]">
+              {{ oferta.activa ? 'Activa' : 'Inactiva' }}
+            </span>
+            <button v-if="editando" @click.stop="oferta.activa = !oferta.activa"
+              class="text-xs text-blue-600 hover:text-blue-800">
+              {{ oferta.activa ? 'Desactivar' : 'Activar' }}
+            </button>
+          </div>
+        </div>
+
+        <button v-if="editando" @click.stop="eliminarOferta(index)"
+          class="bg-red-100 text-red-700 px-2 py-1 rounded text-sm hover:bg-red-200 ml-2">
+          ×
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
 
           <!-- Modal de Selección de Propiedades -->
           <div v-if="mostrarModalPropiedades"
@@ -706,7 +711,21 @@ onMounted(async () => {
   await obtenerCliente()
 })
 
-// En obtenerCliente, después de cargar los datos:
+// Función para ver propiedad
+const verPropiedad = (oferta) => {
+  // Usar propiedadId si está disponible, sino intentar con _id
+  const propiedadId = oferta.propiedadId || oferta._id
+
+  if (propiedadId) {
+    // Abrir en nueva pestaña
+    const routeData = router.resolve({ path: `/propiedad/${propiedadId}` })
+    window.open(routeData.href, '_blank')
+  } else {
+    console.error('No se puede obtener ID de la propiedad:', oferta)
+    mostrarMensajeTemporal('error', 'No se puede acceder a la propiedad')
+  }
+}
+
 const obtenerCliente = async () => {
   cargando.value = true
   error.value = null
