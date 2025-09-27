@@ -511,106 +511,121 @@
           </div>
         </div>
 
-        <!-- Sidebar -->
-        <div class="space-y-6">
-          <!-- Estado del Cliente -->
-          <div class="bg-white rounded-3xl shadow-sm border border-gray-100">
-            <div class="p-6">
-              <div class="text-center mb-6">
-                <div class="w-20 h-20 bg-slate-200 rounded-full mx-auto mb-4 flex items-center justify-center">
-                  <svg class="w-10 h-10 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                      d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-                  </svg>
-                </div>
-                <h3 class="text-lg font-medium text-slate-900">{{ cliente.nombre }} {{ cliente.apellido }}</h3>
-                <p class="text-slate-600">Cliente desde {{ formatMonthYear(cliente.fechaCreacion) }}</p>
-              </div>
+<!-- Sidebar -->
+<div class="space-y-6">
+  <!-- Estado del Cliente -->
+  <div class="bg-white rounded-3xl shadow-sm border border-gray-100">
+    <div class="p-6">
+      <div class="text-center mb-6">
+        <div class="w-20 h-20 bg-slate-200 rounded-full mx-auto mb-4 flex items-center justify-center">
+          <svg class="w-10 h-10 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+          </svg>
+        </div>
+        <h3 class="text-lg font-medium text-slate-900">{{ cliente.nombre }} {{ cliente.apellido }}</h3>
+        <p class="text-slate-600">Cliente desde {{ formatMonthYear(cliente.fechaCreacion) }}</p>
+      </div>
 
-              <div class="border-t border-gray-200 my-4"></div>
+      <div class="border-t border-gray-200 my-4"></div>
 
-              <div class="space-y-4">
-                <div class="flex items-start space-x-3">
-                  <svg class="w-5 h-5 text-slate-400 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                      d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z">
-                    </path>
-                  </svg>
-                  <div>
-                    <p class="font-medium text-slate-900">Nivel de Interés</p>
-                    <p class="text-sm text-slate-600">
-                      {{ cliente.preferenciasBusqueda && cliente.preferenciasBusqueda.length > 0 ? 'Alto - Búsqueda activa' : 'Sin preferencias' }}
-                    </p>
-                  </div>
-                </div>
-
-                <div class="flex items-start space-x-3">
-                  <svg class="w-5 h-5 text-slate-400 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                      d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                  </svg>
-                  <div>
-                    <p class="font-medium text-slate-900">Última Actualización</p>
-                    <p class="text-sm text-slate-600">{{ formatDate(cliente.fechaCreacion) }}</p>
-                  </div>
-                </div>
-
-                <div class="flex items-start space-x-3">
-                  <svg class="w-5 h-5 text-slate-400 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                      d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                      d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z">
-                    </path>
-                  </svg>
-                  <div>
-                    <p class="font-medium text-slate-900">Preferencias Activas</p>
-                    <p class="text-sm text-slate-600">
-                      {{cliente.preferenciasBusqueda ? cliente.preferenciasBusqueda.filter(p => p.activa).length : 0}} activas
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Acciones Rápidas -->
-          <div class="bg-white rounded-3xl shadow-sm border border-gray-100">
-            <div class="p-6 border-b border-gray-100">
-              <h3 class="text-lg font-light text-slate-900">
-                <span class="font-semibold">Acciones</span>
-              </h3>
-            </div>
-            <div class="p-6 space-y-3">
-              <button @click="llamarCliente"
-                class="w-full bg-slate-900 hover:bg-slate-800 text-white py-3 px-4 rounded-xl font-medium transition-colors duration-200 flex items-center justify-center space-x-2">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z">
-                  </path>
-                </svg>
-                <span>Llamar Cliente</span>
-              </button>
-              <button @click="enviarEmail"
-                class="w-full border border-gray-300 text-slate-700 py-3 px-4 rounded-xl bg-transparent hover:bg-slate-50 transition-colors duration-200 flex items-center justify-center space-x-2">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z">
-                  </path>
-                </svg>
-                <span>Enviar Email</span>
-              </button>
-              <button @click="programarVisita"
-                class="w-full border border-gray-300 text-slate-700 py-3 px-4 rounded-xl bg-transparent hover:bg-slate-50 transition-colors duration-200">
-                Programar Visita
-              </button>
-              <button @click="enviarPropiedades"
-                class="w-full border border-gray-300 text-slate-700 py-3 px-4 rounded-xl bg-transparent hover:bg-slate-50 transition-colors duration-200">
-                Enviar Propiedades
-              </button>
-            </div>
+      <div class="space-y-4">
+        <div class="flex items-start space-x-3">
+          <svg class="w-5 h-5 text-slate-400 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z">
+            </path>
+          </svg>
+          <div>
+            <p class="font-medium text-slate-900">Nivel de Interés</p>
+            <p class="text-sm text-slate-600">
+              {{ cliente.preferenciasBusqueda && cliente.preferenciasBusqueda.length > 0 ? 'Alto - Búsqueda activa' : 'Sin preferencias' }}
+            </p>
           </div>
         </div>
+
+        <div class="flex items-start space-x-3">
+          <svg class="w-5 h-5 text-slate-400 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+          </svg>
+          <div>
+            <p class="font-medium text-slate-900">Última Actualización</p>
+            <p class="text-sm text-slate-600">{{ formatDate(cliente.fechaCreacion) }}</p>
+          </div>
+        </div>
+
+        <div class="flex items-start space-x-3">
+          <svg class="w-5 h-5 text-slate-400 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z">
+            </path>
+          </svg>
+          <div>
+            <p class="font-medium text-slate-900">Preferencias Activas</p>
+            <p class="text-sm text-slate-600">
+              {{cliente.preferenciasBusqueda ? cliente.preferenciasBusqueda.filter(p => p.activa).length : 0}} activas
+            </p>
+          </div>
+        </div>
+
+        <!-- NUEVA SECCIÓN: Propiedades en Venta/Alquiler (solo contador) -->
+        <div class="flex items-start space-x-3">
+          <svg class="w-5 h-5 text-slate-400 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6">
+            </path>
+          </svg>
+          <div>
+            <p class="font-medium text-slate-900">Propiedades Publicadas</p>
+            <p class="text-sm text-slate-600">
+              {{cliente.oferente ? cliente.oferente.filter(o => o.activa).length : 0}} activas
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Acciones Rápidas -->
+  <div class="bg-white rounded-3xl shadow-sm border border-gray-100">
+    <div class="p-6 border-b border-gray-100">
+      <h3 class="text-lg font-light text-slate-900">
+        <span class="font-semibold">Acciones</span>
+      </h3>
+    </div>
+    <div class="p-6 space-y-3">
+      <button @click="llamarCliente"
+        class="w-full bg-slate-900 hover:bg-slate-800 text-white py-3 px-4 rounded-xl font-medium transition-colors duration-200 flex items-center justify-center space-x-2">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z">
+          </path>
+        </svg>
+        <span>Llamar Cliente</span>
+      </button>
+      <button @click="enviarEmail"
+        class="w-full border border-gray-300 text-slate-700 py-3 px-4 rounded-xl bg-transparent hover:bg-slate-50 transition-colors duration-200 flex items-center justify-center space-x-2">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z">
+          </path>
+        </svg>
+        <span>Enviar Email</span>
+      </button>
+      <button @click="programarVisita"
+        class="w-full border border-gray-300 text-slate-700 py-3 px-4 rounded-xl bg-transparent hover:bg-slate-50 transition-colors duration-200">
+        Programar Visita
+      </button>
+      <button @click="enviarPropiedades"
+        class="w-full border border-gray-300 text-slate-700 py-3 px-4 rounded-xl bg-transparent hover:bg-slate-50 transition-colors duration-200">
+        Enviar Propiedades
+      </button>
+    </div>
+  </div>
+</div>
       </div>
     </div>
   </div>
