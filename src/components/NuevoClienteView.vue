@@ -5,7 +5,7 @@
       <!-- Header con flechita -->
       <header class="flex items-center mb-8 space-x-4">
         <!-- Flecha de regreso -->
-        <button @click="router.push('/operaciones')" class="text-slate-500 hover:text-slate-700 transition-colors">
+        <button @click="router.push('/clientes')" class="text-slate-500 hover:text-slate-700 transition-colors">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"
             stroke-width="1.5">
             <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
@@ -94,12 +94,11 @@ const crearCliente = async () => {
   mensajeError.value = false
 
   try {
-    // Usa la instancia de api en lugar de axios directamente
     await api.post('/admin/nuevo-cliente', cliente.value)
     mensaje.value = 'Cliente creado correctamente.'
 
     setTimeout(() => {
-      router.push('/operaciones')
+      router.push('/clientes')
     }, 1500)
   } catch (error) {
     console.error('Error al crear cliente:', error)

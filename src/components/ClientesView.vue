@@ -146,7 +146,6 @@ const obtenerClientes = async () => {
     if (response.data.success) {
       clientes.value = response.data.data
 
-      // Transformar clientes a operaciones (ajusta según tu modelo de datos)
       operaciones.value = clientes.value.map(cliente => ({
         id: cliente._id,
         cliente: {
