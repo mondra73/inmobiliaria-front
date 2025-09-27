@@ -9,6 +9,7 @@ import PropiedadDetalle from "../components/PropiedadDetalle/PropiedadDetalleVie
 import Dashboard from "../components/DashboardView.vue";
 import Operaciones from "../components/OperacionesView.vue";
 import NuevaOperacionView from "../components/NuevaOperacionView.vue";
+import ClientesView from "../components/ClientesView.vue"
 import NuevoCliente from "../components/NuevoClienteView.vue";
 import NuevaPropiedad from "../components/NuevaPropiedad/NuevaPropiedadView.vue";
 import NotFoundView from "../components/NotFoundView.vue";
@@ -23,8 +24,8 @@ const routes = [
   { path: "/dashboard", component: Dashboard, meta: { requiresAuth: true } },
   { path: "/operaciones", component: Operaciones, meta: { requiresAuth: true } },
   { path: "/nueva-operacion", component: NuevaOperacionView, meta: { requiresAuth: true } },
+  { path: "/clientes", component: ClientesView, meta: { requiresAuth: true } },
   { path: "/cliente/:id", component: DetalleClienteView, meta: { requiresAuth: true } },
-
   { path: "/nuevo-cliente", component: NuevoCliente, meta: { requiresAuth: true } },
   { path: "/nueva-propiedad", component: NuevaPropiedad, meta: { requiresAuth: true } },
   { path: "/propiedades", component: Propiedades,  meta: { requiresAuth: true } },
