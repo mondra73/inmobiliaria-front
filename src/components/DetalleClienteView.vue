@@ -12,11 +12,17 @@
         </button>
         <div class="flex-1">
           <div class="flex items-center space-x-3 mb-2">
-            <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium">Cliente Activo</span>
-            <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">Comprador</span>
-            <span v-if="cliente.preferenciasBusqueda && cliente.preferenciasBusqueda.some(p => p.altaPrioridad)"
-              class="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-sm">Alta Prioridad</span>
-          </div>
+              <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium">Cliente Activo</span>
+
+              <!-- Badge para Oferente -->
+              <span v-if="esOferente" class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">Oferente</span>
+
+              <!-- Badge para Receptor -->
+              <span v-if="esReceptor" class="bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-sm">Receptor</span>
+
+              <span v-if="cliente.preferenciasBusqueda && cliente.preferenciasBusqueda.some(p => p.altaPrioridad)"
+                class="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-sm">Alta Prioridad</span>
+            </div>
 
           <!-- Título editable -->
           <h1 v-if="!editando" class="text-3xl font-light text-slate-900">
@@ -687,6 +693,14 @@ const form = reactive({
   mail: '',
   preferenciasBusqueda: [],
   oferente: []
+})
+
+const esOferente = computed(() => {
+  return cliente.value.oferente && cliente.value.oferente.length > 0
+})
+
+const esReceptor = computed(() => {
+  return cliente.value.preferenciasBusqueda && cliente.value.preferenciasBusqueda.length > 0
 })
 
 // Computed para propiedades filtradas
