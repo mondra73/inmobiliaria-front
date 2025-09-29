@@ -40,15 +40,16 @@
               <input v-model="cliente.dni" type="number" required
                 class="w-full p-4 border-2 border-gray-300 rounded-xl hover:border-gray-400 focus:outline-none focus:border-slate-600 focus:ring-2 focus:ring-slate-200 transition-all duration-200 shadow-sm" />
             </div>
-            <div >
+            <div>
               <label class="block text-slate-700 text-sm mb-1">Teléfono</label>
               <input v-model="cliente.telefono" type="text" required
                 class="w-full p-4 border-2 border-gray-300 rounded-xl hover:border-gray-400 focus:outline-none focus:border-slate-600 focus:ring-2 focus:ring-slate-200 transition-all duration-200 shadow-sm" />
             </div>
             <div class="md:col-span-2">
-              <label class="block text-slate-700 text-sm mb-1">Email</label>
-              <input v-model="cliente.mail" type="email" required
-                class="w-full p-4 border-2 border-gray-300 rounded-xl hover:border-gray-400 focus:outline-none focus:border-slate-600 focus:ring-2 focus:ring-slate-200 transition-all duration-200 shadow-sm" />
+              <label class="block text-slate-700 text-sm mb-1">Email <span class="text-slate-400 text-xs">(Opcional)</span></label>
+              <input v-model="cliente.mail" type="email"
+                class="w-full p-4 border-2 border-gray-300 rounded-xl hover:border-gray-400 focus:outline-none focus:border-slate-600 focus:ring-2 focus:ring-slate-200 transition-all duration-200 shadow-sm"
+                placeholder="cliente@ejemplo.com (opcional)" />
             </div>
           </div>
 
@@ -80,7 +81,7 @@ const cliente = ref({
   nombre: '',
   apellido: '',
   dni: '',
-  mail: '',
+  mail: '', // Ahora puede estar vacío
   telefono: ''
 })
 
@@ -94,7 +95,13 @@ const crearCliente = async () => {
   mensajeError.value = false
 
   try {
-    await api.post('/admin/nuevo-cliente', cliente.value)
+    // Limpiar el campo mail si está vacío para evitar enviar strings vacíos
+    const datosCliente = {
+      ...cliente.value,
+      mail: cliente.value.mail.trim() === '' ? null : cliente.value.mail.trim()
+    }
+
+    await api.post('/admin/nuevo-cliente', datosCliente)
     mensaje.value = 'Cliente creado correctamente.'
 
     setTimeout(() => {
@@ -117,6 +124,4 @@ const crearCliente = async () => {
     cargando.value = false
   }
 }
-
-
 </script>
