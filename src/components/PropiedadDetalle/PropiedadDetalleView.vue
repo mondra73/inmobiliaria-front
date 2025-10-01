@@ -103,8 +103,8 @@
   <input type="file" multiple @change="handleImageUpload" class="mb-4" accept="image/*" ref="fileInput" />
 
   <!-- Grid de imágenes con drag & drop -->
-  <draggable 
-    v-model="form.imagenes" 
+  <draggable
+    v-model="form.imagenes"
     class="grid grid-cols-4 gap-2"
     item-key="public_id"
     @end="onDragEnd"
@@ -112,19 +112,19 @@
     <template #item="{ element: imagen, index }">
       <div class="relative group">
         <div class="relative overflow-hidden rounded-lg border-2 border-gray-200">
-          <img 
-            :src="imagen.url" 
+          <img
+            :src="imagen.url"
             :class="['w-full h-20 object-cover']"
             :style="getThumbnailStyle(imagen)"
           />
-          
+
           <!-- Indicador de portada -->
           <div v-if="index === 0" class="absolute top-1 left-1 bg-blue-500 text-white px-1 py-0.5 text-xs rounded">
             Portada
           </div>
-          
+
           <!-- Botón para ajustar encuadre -->
-          <button 
+          <button
             @click.stop="openCropEditor(index)"
             class="absolute top-1 left-1 bg-blue-600 text-white rounded px-1 py-0.5 text-xs flex items-center justify-center opacity-90 hover:opacity-100 transition-opacity z-10"
             :style="index === 0 ? 'top: 18px' : 'top: 1px'"
@@ -138,20 +138,20 @@
           </button>
 
           <!-- Botón eliminar -->
-          <button 
-            @click.stop="eliminarImagen(index)" 
+          <button
+            @click.stop="eliminarImagen(index)"
             class="absolute top-1 right-1 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center opacity-90 hover:opacity-100 transition-opacity z-10"
             type="button"
           >
             ×
           </button>
-          
+
           <!-- Número de orden -->
           <div class="absolute bottom-1 right-1 bg-black bg-opacity-50 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">
             {{ index + 1 }}
           </div>
         </div>
-        
+
         <input v-model="imagen.descripcion" placeholder="Descripción"
           class="text-xs w-full mt-1 p-1 border rounded" />
       </div>
@@ -724,7 +724,7 @@ const onDragEnd = () => {
     orden: index,
     esPortada: index === 0
   }));
-  
+
   mostrarMensajeTemporal('exito', 'Orden de imágenes actualizado');
 };
 
@@ -1016,7 +1016,7 @@ const confirmarEliminacionImagen = async () => {
   mostrarModalConfirmacionImagen.value = false;
 
   form.value.imagenes.splice(index, 1);
-  
+
   form.value.imagenes = form.value.imagenes.map((imagen, index) => ({
     ...imagen,
     orden: index,

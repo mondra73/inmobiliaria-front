@@ -6,6 +6,7 @@ export function useFormSetup() {
     tituloPublicacion: '',
     operacion: '',
     visible: false,
+    clienteDueño: null,
     ubicacion: {
       calle: '',
       altura: null,

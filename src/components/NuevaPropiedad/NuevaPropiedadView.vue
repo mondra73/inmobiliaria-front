@@ -86,6 +86,84 @@
           </div>
         </div>
 
+         <!-- Cliente Dueño -->
+        <div class="bg-white rounded-3xl shadow-sm border border-gray-100 p-8">
+          <h2 class="text-xl font-light text-slate-900 mb-6">
+            Cliente <span class="font-semibold">Dueño</span>
+          </h2>
+
+          <div class="space-y-4">
+            <!-- Selector de cliente existente -->
+            <div>
+              <label class="block mb-2 text-sm font-medium text-slate-700" for="cliente-dueno">
+                Seleccionar Cliente Existente
+              </label>
+              <div class="flex gap-3">
+                <select
+                  id="cliente-dueno"
+                  v-model="formData.clienteDueño"
+                  class="flex-1 p-4 border-2 border-gray-300 rounded-xl hover:border-gray-400 focus:outline-none focus:border-slate-600 focus:ring-2 focus:ring-slate-200 transition-all duration-200 shadow-sm appearance-none bg-white"
+                >
+                  <option :value="null">Sin cliente asignado</option>
+                  <option
+                    v-for="cliente in clientes"
+                    :key="cliente._id"
+                    :value="cliente._id"
+                  >
+                    {{ formatClienteName(cliente) }}
+                  </option>
+                </select>
+
+                <!-- Botón para recargar clientes -->
+                <button
+                  type="button"
+                  @click="cargarClientes"
+                  class="px-4 py-4 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl font-medium transition-colors duration-200 flex items-center"
+                  :disabled="cargandoClientes"
+                >
+                  <svg
+                    class="w-5 h-5"
+                    :class="{ 'animate-spin': cargandoClientes }"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                  </svg>
+                </button>
+              </div>
+              <p class="text-sm text-slate-500 mt-2">
+                Opcional: Puede asignar un cliente dueño ahora o hacerlo más tarde
+              </p>
+            </div>
+
+            <!-- Información del cliente seleccionado -->
+            <div v-if="clienteSeleccionado" class="p-4 bg-slate-50 rounded-xl border border-slate-200">
+              <h3 class="font-medium text-slate-700 mb-2">Cliente seleccionado:</h3>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm">
+                <div><span class="font-medium">Nombre:</span> {{ clienteSeleccionado.nombre }} {{ clienteSeleccionado.apellido }}</div>
+                <div><span class="font-medium">Email:</span> {{ clienteSeleccionado.mail || 'No especificado' }}</div>
+                <div><span class="font-medium">Teléfono:</span> {{ clienteSeleccionado.telefono || 'No especificado' }}</div>
+                <div><span class="font-medium">DNI:</span> {{ clienteSeleccionado.dni || 'No especificado' }}</div>
+              </div>
+            </div>
+
+            <!-- Botón para crear nuevo cliente -->
+            <div class="pt-2">
+              <button
+                type="button"
+                @click="irANuevoCliente"
+                class="text-slate-600 hover:text-slate-800 text-sm font-medium flex items-center transition-colors duration-200"
+              >
+                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                </svg>
+                Crear nuevo cliente
+              </button>
+            </div>
+          </div>
+        </div>
+
         <!-- Ubicación -->
         <div v-if="showLocationSection" class="bg-white rounded-3xl shadow-sm border border-gray-500 p-8">
           <h2 class="text-xl font-light text-slate-900 mb-6">Ubicación</h2>
@@ -341,9 +419,9 @@
   </label>
 
   <!-- Grid de imágenes con drag & drop -->
-  <draggable 
-    v-if="files.length > 0" 
-    v-model="files" 
+  <draggable
+    v-if="files.length > 0"
+    v-model="files"
     class="mt-4 grid grid-cols-3 gap-4"
     item-key="id"
     @end="handleDragEnd"
@@ -351,19 +429,19 @@
     <template #item="{ element: file, index }">
       <div class="relative group">
         <div class="relative overflow-hidden rounded-lg border-2 border-gray-200">
-          <img 
-            :src="file.preview" 
+          <img
+            :src="file.preview"
             class="w-full h-32 object-cover"
             :style="getFileImageStyle(file)"
           />
-          
+
           <!-- Indicador de portada -->
           <div v-if="index === 0" class="absolute top-2 left-2 bg-blue-500 text-white px-2 py-1 text-xs rounded">
             Portada
           </div>
-          
+
           <!-- Botón para ajustar encuadre -->
-          <button 
+          <button
             @click.prevent="openCropEditor(index)"
             class="absolute top-2 left-2 bg-blue-600 text-white rounded-lg px-2 py-1 text-xs flex items-center justify-center opacity-90 hover:opacity-100 transition-opacity shadow-md z-10"
             :style="index === 0 ? 'top: 30px' : 'top: 2px'"
@@ -376,22 +454,22 @@
             </svg>
             Ajustar
           </button>
-          
+
           <!-- Botón eliminar -->
-          <button 
-            @click.prevent="removeFile(index)" 
+          <button
+            @click.prevent="removeFile(index)"
             class="absolute top-2 right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center opacity-90 hover:opacity-100 transition-opacity z-10"
             type="button"
           >
             ×
           </button>
-          
+
           <!-- Número de orden -->
           <div class="absolute bottom-2 right-2 bg-black bg-opacity-50 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs">
             {{ index + 1 }}
           </div>
         </div>
-        
+
         <input v-model="file.descripcion" placeholder="Descripción (opcional)"
           class="text-xs w-full mt-1 p-1 border rounded" />
       </div>
@@ -487,7 +565,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import api from '../../api'
 import { uploadImageToCloudinary } from '../../../utils/uploadToCloudinary'
@@ -510,13 +588,55 @@ const router = useRouter()
 const { formData, resetForm, handlePropertyTypeChange, getEndpoint, ...computedProps } = useFormSetup()
 const { files, handleFileUpload, removeFile, handleDragEnd } = useImageHandling()
 
+// NUEVOS ESTADOS PARA CLIENTES
+const clientes = ref([])
+const cargandoClientes = ref(false)
+
+// Computed para obtener el cliente seleccionado
+const clienteSeleccionado = computed(() => {
+  if (!formData.value.clienteDueño) return null
+  return clientes.value.find(cliente => cliente._id === formData.value.clienteDueño)
+})
+
+// Función para cargar clientes desde la API
+const cargarClientes = async () => {
+  try {
+    cargandoClientes.value = true
+    const response = await api.get('/admin/clientes?limit=100') // Trae hasta 100 clientes
+    clientes.value = response.data.data
+  } catch (error) {
+    console.error('Error al cargar clientes:', error)
+    mensajeError.value = 'Error al cargar la lista de clientes'
+    mostrarMensaje.value = true
+  } finally {
+    cargandoClientes.value = false
+  }
+}
+
+// Función para formatear el nombre del cliente
+const formatClienteName = (cliente) => {
+  const nombre = cliente.nombre || ''
+  const apellido = cliente.apellido || ''
+  const dni = cliente.dni ? ` (${cliente.dni})` : ''
+  const mail = cliente.mail ? ` - ${cliente.mail}` : ''
+
+  if (!nombre && !apellido) {
+    return `Cliente sin nombre${dni}${mail}`
+  }
+
+  return `${nombre} ${apellido}${dni}${mail}`
+}
+
+// Función para ir a crear nuevo cliente
+const irANuevoCliente = () => {
+  router.push('/nuevo-cliente')
+}
+
 // Estado para el editor de encuadre
 const showCropEditor = ref(false)
 const currentEditingImageIndex = ref(null)
 const currentEditingImage = ref(null)
 
-// En la función openCropEditor, cambia getImageStyle por getFileImageStyle
-// Función para abrir el editor de encuadre
 const openCropEditor = (index) => {
   console.log('Abriendo editor para imagen:', index); // Para debug
   currentEditingImageIndex.value = index;
@@ -563,7 +683,7 @@ const onDragEnd = () => {
     orden: index,
     esPortada: index === 0
   }));
-  
+
   mostrarMensajeTemporal('exito', 'Orden de imágenes actualizado');
 };
 
@@ -694,6 +814,11 @@ const submitForm = async () => {
 const goToDashboard = () => {
   router.push('/dashboard')
 }
+
+// Cargar clientes al montar el componente
+onMounted(() => {
+  cargarClientes()
+})
 
 </script>
 
