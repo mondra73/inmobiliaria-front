@@ -366,18 +366,12 @@
                   </div>
                 </template>
 
-                <!-- Coordenadas (común para todos los tipos) -->
-                <div class="grid grid-cols-2 gap-4">
-                  <div>
-                    <label class="block text-sm font-medium text-slate-700 mb-1">Coordenadas (Latitud)</label>
-                    <input :value="getCoordenadaValue('lat')" @input="e => actualizarCoordenada('lat', e.target.value)"
-                      type="number" step="0.000001" class="w-full border rounded p-2" placeholder="Ej: -34.603722" />
-                  </div>
-                  <div>
-                    <label class="block text-sm font-medium text-slate-700 mb-1">Coordenadas (Longitud)</label>
-                    <input :value="getCoordenadaValue('lng')" @input="e => actualizarCoordenada('lng', e.target.value)"
-                      type="number" step="0.000001" class="w-full border rounded p-2" placeholder="Ej: -58.381592" />
-                  </div>
+                <!-- Coordenadas (común para todos los tipos) - VERSIÓN CORREGIDA -->
+                <div>
+                  <label class="block text-sm font-medium text-slate-700 mb-1">Coordenadas (lat,lng)</label>
+                  <input v-model="form.ubicacion.coordenadas"
+                    class="w-full border rounded p-2"
+                    placeholder="Ej: -34.603722, -58.381592" />
                 </div>
 
                 <!-- Mapa URL (común para todos los tipos) -->
@@ -652,12 +646,12 @@ const mostrarMapa = computed(() => {
   return false;
 });
 
-// Computed property para generar la URL del mapa - VERSIÓN CON CONVERSIÓN
+// Computed property para generar la URL del mapa - VERSIÓN CORREGIDA
 const urlMapa = computed(() => {
   const ubicacion = propiedad.value?.ubicacion;
   if (!ubicacion) return '';
 
-  // 1. Si tenemos coordenadas, usarlas (ya funciona)
+  // 1. Si tenemos coordenadas, usarlas (esto funciona)
   if (ubicacion.coordenadas) {
     try {
       let lat, lng;
@@ -677,52 +671,29 @@ const urlMapa = computed(() => {
     }
   }
 
-  // 2. Si tenemos mapaUrl, convertirlo a formato embed si es necesario
-  if (ubicacion.mapaUrl) {
-    return convertirUrlAEmbed(ubicacion.mapaUrl);
-  }
-
-  return '';
-});
-
-// Función para convertir URLs de Google Maps a formato embed
-const convertirUrlAEmbed = (url) => {
-  // Si ya es una URL de embed, devolverla tal cual
-  if (url.includes('output=embed') || url.includes('/embed/')) {
-    return url;
-  }
-
-  // Si es un enlace abreviado de Google (maps.app.goo.gl), devolverlo tal cual (funciona)
-  if (url.includes('maps.app.goo.gl') || url.includes('goo.gl/maps')) {
-    return url;
-  }
-
-  // Si es una URL normal de Google Maps, intentar extraer las coordenadas
-  if (url.includes('google.com/maps') || url.includes('google.com.ar/maps')) {
+  // 2. Si tenemos mapaUrl pero NO coordenadas, extraer coordenadas del mapaUrl
+  if (ubicacion.mapaUrl && !ubicacion.coordenadas) {
     try {
-      // Intentar extraer coordenadas del formato /@lat,lng
-      const coordMatch = url.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/);
+      // Extraer coordenadas del formato /@lat,lng
+      const coordMatch = ubicacion.mapaUrl.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/);
       if (coordMatch) {
         const lat = coordMatch[1];
         const lng = coordMatch[2];
         return `https://maps.google.com/maps?q=${lat},${lng}&z=15&output=embed`;
       }
-
-      // Intentar extraer coordenadas del formato !3dlat!4dlng
-      const coordMatch2 = url.match(/!3d(-?\d+\.\d+)!4d(-?\d+\.\d+)/);
-      if (coordMatch2) {
-        const lat = coordMatch2[1];
-        const lng = coordMatch2[2];
-        return `https://maps.google.com/maps?q=${lat},${lng}&z=15&output=embed`;
-      }
     } catch (e) {
-      console.error('Error convirtiendo URL de Google Maps:', e);
+      console.error("Error extrayendo coordenadas de mapaUrl:", e);
     }
   }
 
-  // Si no se pudo convertir, devolver la URL original (aunque probablemente no funcione)
-  return url;
-};
+  // 3. Si no se pudo extraer coordenadas, devolver el mapaUrl original (aunque probablemente falle)
+  if (ubicacion.mapaUrl) {
+    return ubicacion.mapaUrl;
+  }
+
+  return '';
+});
+
 
 // Función para obtener el estilo de la imagen con encuadre
 const getImageStyle = (imagen, isModal = false) => {
@@ -1095,55 +1066,6 @@ const toggleVisibilidadPrecio = () => {
     form.value.precio.visible = !form.value.precio.visible
   }
 }
-
-const getCoordenadaValue = (tipo) => {
-  if (!form.value.ubicacion.coordenadas) return '';
-
-  if (typeof form.value.ubicacion.coordenadas === 'string') {
-    const parts = form.value.ubicacion.coordenadas.split(',');
-    const lat = parseFloat(parts[0]);
-    const lng = parseFloat(parts[1]);
-    return tipo === 'lat' ? (isNaN(lat) ? '' : lat) : (isNaN(lng) ? '' : lng);
-  }
-
-  // Si es objeto
-  const value = form.value.ubicacion.coordenadas[tipo === 'lat' ? 'lat' : 'lng'];
-  return value === 0 || value === null ? '' : value;
-};
-
-const actualizarCoordenada = (tipo, valor) => {
-  let numValor = valor === '' ? null : parseFloat(valor);
-
-  // Si el valor es 0, lo convertimos a null
-  if (numValor === 0) {
-    numValor = null;
-  }
-
-  if (typeof form.value.ubicacion.coordenadas === 'string') {
-    const parts = form.value.ubicacion.coordenadas.split(',');
-    if (tipo === 'lat') {
-      form.value.ubicacion.coordenadas = `${numValor || ''},${parts[1] || ''}`;
-    } else {
-      form.value.ubicacion.coordenadas = `${parts[0] || ''},${numValor || ''}`;
-    }
-  } else {
-    // Si no existe el objeto coordenadas, crearlo
-    if (!form.value.ubicacion.coordenadas) {
-      form.value.ubicacion.coordenadas = { lat: null, lng: null };
-    }
-
-    form.value.ubicacion.coordenadas = {
-      ...form.value.ubicacion.coordenadas,
-      [tipo === 'lat' ? 'lat' : 'lng']: numValor
-    };
-
-    // Si ambas coordenadas son null, poner todo el objeto como null
-    if (form.value.ubicacion.coordenadas.lat === null && form.value.ubicacion.coordenadas.lng === null) {
-      form.value.ubicacion.coordenadas = null;
-    }
-  }
-};
-
 
 // Carga inicial
 onMounted(async () => {
