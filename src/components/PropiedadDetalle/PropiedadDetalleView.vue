@@ -596,6 +596,9 @@ import { jwtDecode } from 'jwt-decode';
 import { useFormEdit } from './hooks/useFormEdit';
 import ImageCropEditor from '../NuevaPropiedad/ImageCropEditor.vue';
 import draggable from 'vuedraggable';
+import { watch } from 'vue'
+
+
 
 // Estados reactivos
 const propiedad = ref(null)
@@ -649,52 +652,77 @@ const mostrarMapa = computed(() => {
   return false;
 });
 
-// Computed property para generar la URL del mapa
+// Computed property para generar la URL del mapa - VERSIÓN CON CONVERSIÓN
 const urlMapa = computed(() => {
   const ubicacion = propiedad.value?.ubicacion;
-
   if (!ubicacion) return '';
 
-  // Manejar coordenadas
+  // 1. Si tenemos coordenadas, usarlas (ya funciona)
   if (ubicacion.coordenadas) {
     try {
-      // Si es string (formato "lat,lng")
+      let lat, lng;
+
       if (typeof ubicacion.coordenadas === 'string') {
-        const [lat, lng] = ubicacion.coordenadas.split(',').map(c => c.trim());
-        if (lat && lng) {
-          return `https://maps.google.com/maps?q=${lat},${lng}&z=15&output=embed`;
-        }
+        [lat, lng] = ubicacion.coordenadas.split(',').map(c => c.trim());
+      } else if (typeof ubicacion.coordenadas === 'object') {
+        lat = ubicacion.coordenadas.lat;
+        lng = ubicacion.coordenadas.lng;
       }
-      // Si es objeto {lat, lng}
-      else if (typeof ubicacion.coordenadas === 'object') {
-        return `https://maps.google.com/maps?q=${ubicacion.coordenadas.lat},${ubicacion.coordenadas.lng}&z=15&output=embed`;
+
+      if (lat && lng) {
+        return `https://maps.google.com/maps?q=${lat},${lng}&z=15&output=embed`;
       }
     } catch (e) {
-      console.error("Error procesando coordenadas:", e);
-      return '';
+      console.error("Error con coordenadas:", e);
     }
   }
 
-  // Manejar mapaUrl
+  // 2. Si tenemos mapaUrl, convertirlo a formato embed si es necesario
   if (ubicacion.mapaUrl) {
-    try {
-      // Convertir URL normal de Google Maps a embed
-      if (ubicacion.mapaUrl.includes('google.com/maps/')) {
-        return ubicacion.mapaUrl
-          .replace('google.com/maps/', 'google.com/maps/embed/')
-          .replace('?', '?pb=');
-      }
-      // Si ya es un embed URL
-      if (ubicacion.mapaUrl.includes('embed')) {
-        return ubicacion.mapaUrl;
-      }
-    } catch (e) {
-      console.error("Error procesando mapaUrl:", e);
-    }
+    return convertirUrlAEmbed(ubicacion.mapaUrl);
   }
 
   return '';
 });
+
+// Función para convertir URLs de Google Maps a formato embed
+const convertirUrlAEmbed = (url) => {
+  // Si ya es una URL de embed, devolverla tal cual
+  if (url.includes('output=embed') || url.includes('/embed/')) {
+    return url;
+  }
+
+  // Si es un enlace abreviado de Google (maps.app.goo.gl), devolverlo tal cual (funciona)
+  if (url.includes('maps.app.goo.gl') || url.includes('goo.gl/maps')) {
+    return url;
+  }
+
+  // Si es una URL normal de Google Maps, intentar extraer las coordenadas
+  if (url.includes('google.com/maps') || url.includes('google.com.ar/maps')) {
+    try {
+      // Intentar extraer coordenadas del formato /@lat,lng
+      const coordMatch = url.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/);
+      if (coordMatch) {
+        const lat = coordMatch[1];
+        const lng = coordMatch[2];
+        return `https://maps.google.com/maps?q=${lat},${lng}&z=15&output=embed`;
+      }
+
+      // Intentar extraer coordenadas del formato !3dlat!4dlng
+      const coordMatch2 = url.match(/!3d(-?\d+\.\d+)!4d(-?\d+\.\d+)/);
+      if (coordMatch2) {
+        const lat = coordMatch2[1];
+        const lng = coordMatch2[2];
+        return `https://maps.google.com/maps?q=${lat},${lng}&z=15&output=embed`;
+      }
+    } catch (e) {
+      console.error('Error convirtiendo URL de Google Maps:', e);
+    }
+  }
+
+  // Si no se pudo convertir, devolver la URL original (aunque probablemente no funcione)
+  return url;
+};
 
 // Función para obtener el estilo de la imagen con encuadre
 const getImageStyle = (imagen, isModal = false) => {
@@ -1133,6 +1161,15 @@ onMounted(async () => {
     console.error('Error al cargar la propiedad', error)
   }
 })
+
+// Watcher para debuggear el mapa
+watch([() => propiedad.value, mostrarMapa, urlMapa], ([newProp, newMostrar, newUrl], [oldProp, oldMostrar, oldUrl]) => {
+  console.log('🔄 Cambios en mapa:');
+  console.log('Propiedad:', newProp?._id);
+  console.log('mostrarMapa:', newMostrar);
+  console.log('urlMapa:', newUrl);
+  console.log('---');
+}, { deep: true, immediate: true });
 
 onUnmounted(() => {
   window.removeEventListener('keydown', manejarTeclado)
