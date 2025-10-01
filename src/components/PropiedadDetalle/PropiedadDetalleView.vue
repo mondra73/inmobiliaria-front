@@ -181,57 +181,6 @@
                 class="text-slate-700 leading-relaxed border border-gray-300 rounded p-2 w-full h-32"></textarea>
             </div>
 
-            <!-- Caracteristicas -->
-            <div class="bg-white rounded-3xl border border-gray-100 p-6" v-if="propiedad">
-              <h2 class="text-xl font-light mb-4 text-slate-900 font-semibold">Características</h2>
-              <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
-                <div v-for="item in featureItems" :key="item.id" class="flex items-center space-x-2">
-                  <div class="w-8 h-8 rounded-lg flex items-center justify-center" :class="item.iconBg">
-                    <component :is="item.icon" class="w-4 h-4" :class="item.iconColor" />
-                  </div>
-                  <div>
-                    <p class="text-sm text-slate-600">{{ item.label }}</p>
-                    <!-- Modifica esta línea: -->
-                    <p v-if="!editando" class="font-medium text-slate-900">
-                      {{ item.id === 'superficieTotal' && propiedad.tipo === 'Terreno'
-                        ? propiedad.superficie || '-'
-                        : propiedad[item.id] || '-'
-                      }}
-                    </p>
-                    <input v-else v-model.number="form[item.id]" type="number" class="w-16 border rounded p-1" />
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Servicios Basicos -->
-            <div class="bg-white rounded-3xl border border-gray-100 p-6" v-if="propiedad?.servicios">
-              <h2 class="text-xl font-light mb-4 text-slate-900 font-semibold">Servicios Básicos</h2>
-              <div class="grid grid-cols-2 md:grid-cols-4 gap-4 p-4 bg-slate-50 rounded-xl">
-                <div v-for="(label, key) in serviciosConfig" :key="key"
-                  class="flex items-center space-x-2 p-3 bg-white rounded-lg shadow-sm">
-                  <input type="checkbox" :checked="editando ? form.servicios[key] : propiedad.servicios[key]"
-                    :disabled="!editando" @change="editando && (form.servicios[key] = $event.target.checked)"
-                    class="mt-1 h-5 w-5 rounded border-gray-300 text-slate-600">
-                  <span class="text-sm font-medium text-slate-700">{{ label }}</span>
-                </div>
-              </div>
-            </div>
-
-            <!-- Amenities -->
-            <div class="bg-white rounded-3xl border border-gray-100 p-6" v-if="amenitiesConfig[propiedad.tipo]">
-              <h2 class="text-xl font-light mb-4 text-slate-900 font-semibold">Amenities</h2>
-              <div class="grid grid-cols-2 md:grid-cols-3 gap-4 p-4 bg-slate-50 rounded-xl">
-                <div v-for="(label, key) in amenitiesConfig[propiedad.tipo]" :key="key"
-                  class="flex items-center space-x-2 p-3 bg-white rounded-lg shadow-sm">
-                  <input type="checkbox" :checked="editando ? form.amenities[key] : propiedad.amenities?.[key]"
-                    :disabled="!editando" @change="editando && (form.amenities[key] = $event.target.checked)"
-                    class="mt-1 h-5 w-5 rounded border-gray-300 text-slate-600">
-                  <span class="text-sm font-medium text-slate-700">{{ label }}</span>
-                </div>
-              </div>
-            </div>
-
             <!-- Ubicación editable -->
             <div class="bg-white rounded-3xl border border-gray-100 p-6">
               <h2 class="text-xl font-light mb-4 text-slate-900 font-semibold">Ubicación</h2>
@@ -378,6 +327,57 @@
                 <div>
                   <label class="block text-sm font-medium text-slate-700 mb-1">URL del Mapa</label>
                   <input v-model="form.ubicacion.mapaUrl" class="w-full border rounded p-2" />
+                </div>
+              </div>
+            </div>
+
+            <!-- Caracteristicas -->
+            <div class="bg-white rounded-3xl border border-gray-100 p-6" v-if="propiedad">
+              <h2 class="text-xl font-light mb-4 text-slate-900 font-semibold">Características</h2>
+              <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                <div v-for="item in featureItems" :key="item.id" class="flex items-center space-x-2">
+                  <div class="w-8 h-8 rounded-lg flex items-center justify-center" :class="item.iconBg">
+                    <component :is="item.icon" class="w-4 h-4" :class="item.iconColor" />
+                  </div>
+                  <div>
+                    <p class="text-sm text-slate-600">{{ item.label }}</p>
+                    <!-- Modifica esta línea: -->
+                    <p v-if="!editando" class="font-medium text-slate-900">
+                      {{ item.id === 'superficieTotal' && propiedad.tipo === 'Terreno'
+                        ? propiedad.superficie || '-'
+                        : propiedad[item.id] || '-'
+                      }}
+                    </p>
+                    <input v-else v-model.number="form[item.id]" type="number" class="w-16 border rounded p-1" />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Servicios Basicos -->
+            <div class="bg-white rounded-3xl border border-gray-100 p-6" v-if="propiedad?.servicios">
+              <h2 class="text-xl font-light mb-4 text-slate-900 font-semibold">Servicios Básicos</h2>
+              <div class="grid grid-cols-2 md:grid-cols-4 gap-4 p-4 bg-slate-50 rounded-xl">
+                <div v-for="(label, key) in serviciosConfig" :key="key"
+                  class="flex items-center space-x-2 p-3 bg-white rounded-lg shadow-sm">
+                  <input type="checkbox" :checked="editando ? form.servicios[key] : propiedad.servicios[key]"
+                    :disabled="!editando" @change="editando && (form.servicios[key] = $event.target.checked)"
+                    class="mt-1 h-5 w-5 rounded border-gray-300 text-slate-600">
+                  <span class="text-sm font-medium text-slate-700">{{ label }}</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Amenities -->
+            <div class="bg-white rounded-3xl border border-gray-100 p-6" v-if="amenitiesConfig[propiedad.tipo]">
+              <h2 class="text-xl font-light mb-4 text-slate-900 font-semibold">Amenities</h2>
+              <div class="grid grid-cols-2 md:grid-cols-3 gap-4 p-4 bg-slate-50 rounded-xl">
+                <div v-for="(label, key) in amenitiesConfig[propiedad.tipo]" :key="key"
+                  class="flex items-center space-x-2 p-3 bg-white rounded-lg shadow-sm">
+                  <input type="checkbox" :checked="editando ? form.amenities[key] : propiedad.amenities?.[key]"
+                    :disabled="!editando" @change="editando && (form.amenities[key] = $event.target.checked)"
+                    class="mt-1 h-5 w-5 rounded border-gray-300 text-slate-600">
+                  <span class="text-sm font-medium text-slate-700">{{ label }}</span>
                 </div>
               </div>
             </div>
@@ -590,8 +590,6 @@ import { jwtDecode } from 'jwt-decode';
 import { useFormEdit } from './hooks/useFormEdit';
 import ImageCropEditor from '../NuevaPropiedad/ImageCropEditor.vue';
 import draggable from 'vuedraggable';
-import { watch } from 'vue'
-
 
 
 // Estados reactivos
@@ -1083,15 +1081,6 @@ onMounted(async () => {
     console.error('Error al cargar la propiedad', error)
   }
 })
-
-// Watcher para debuggear el mapa
-watch([() => propiedad.value, mostrarMapa, urlMapa], ([newProp, newMostrar, newUrl], [oldProp, oldMostrar, oldUrl]) => {
-  console.log('🔄 Cambios en mapa:');
-  console.log('Propiedad:', newProp?._id);
-  console.log('mostrarMapa:', newMostrar);
-  console.log('urlMapa:', newUrl);
-  console.log('---');
-}, { deep: true, immediate: true });
 
 onUnmounted(() => {
   window.removeEventListener('keydown', manejarTeclado)

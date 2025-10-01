@@ -82,11 +82,16 @@
       <h3 class="font-semibold text-slate-900 text-lg mb-1 line-clamp-2">
         {{ propiedad.titulo }}
       </h3>
+
+
       <div class="text-slate-600 text-sm mb-1 flex items-center">
-        <Home class="w-4 h-4 mr-1" />
-        <span>{{ propiedad.ubicacion.calle }} {{ propiedad.ubicacion.altura }}, {{ propiedad.ubicacion.localidad
-        }}</span>
-      </div>
+  <Home class="w-4 h-4 mr-1" />
+  <span v-if="propiedad.ubicacion.altura">{{ propiedad.ubicacion.calle }} {{ propiedad.ubicacion.altura }}, {{ propiedad.ubicacion.localidad }}</span>
+  <span v-else-if="propiedad.ubicacion.calle">{{ propiedad.ubicacion.calle }}, {{ propiedad.ubicacion.localidad }}</span>
+  <span v-else>{{ propiedad.ubicacion.localidad }}</span>
+</div>
+
+
       <div class="text-slate-600 text-sm mb-3 flex items-center">
         <span>Publicado: {{ formatDate(propiedad.fechaPublicada) }}</span>
       </div>
@@ -147,6 +152,7 @@ import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import api from '../api'
 import DashboardLayout from '../components/ui/DashboardLayout.vue'
+import { Search, Home } from 'lucide-vue-next'
 
 const router = useRouter()
 const casas = ref([])

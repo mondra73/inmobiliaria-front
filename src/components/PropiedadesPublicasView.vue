@@ -46,12 +46,8 @@
         <div v-for="propiedad in propiedadesPaginadas" :key="propiedad.id" @click="irADetallePropiedad(propiedad.id)"
           class="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow duration-200 cursor-pointer">
           <div class="relative">
-  <img
-    :src="propiedad.imagenes?.[0]?.url || '/placeholder.svg?height=200&width=300'"
-    :alt="propiedad.titulo"
-    class="w-full h-48 object-cover"
-    :style="getImageStyle(propiedad.imagenes?.[0])"
-  />
+            <img :src="propiedad.imagenes?.[0]?.url || '/placeholder.svg?height=200&width=300'" :alt="propiedad.titulo"
+              class="w-full h-48 object-cover" :style="getImageStyle(propiedad.imagenes?.[0])" />
             <span class="absolute top-4 left-4 bg-green-100 text-green-800 px-2 py-1 text-xs font-medium rounded">
               {{ propiedad.operacion }}
             </span>
@@ -65,10 +61,16 @@
             <h3 class="font-semibold text-slate-900 text-lg mb-1 line-clamp-2">
               {{ propiedad.titulo }}
             </h3>
+
             <div class="text-slate-600 text-sm mb-1 flex items-center">
               <Home class="w-4 h-4 mr-1" />
-              <span>{{ propiedad.ubicacion.calle }} {{ propiedad.ubicacion.altura }}, {{ propiedad.ubicacion.localidad }}</span>
+              <span v-if="propiedad.ubicacion.altura">{{ propiedad.ubicacion.calle }} {{ propiedad.ubicacion.altura }},
+                {{ propiedad.ubicacion.localidad }}</span>
+              <span v-else-if="propiedad.ubicacion.calle">{{ propiedad.ubicacion.calle }}, {{
+                propiedad.ubicacion.localidad }}</span>
+              <span v-else>{{ propiedad.ubicacion.localidad }}</span>
             </div>
+
             <div class="text-slate-600 text-sm mb-3 flex items-center">
               <span>Publicado: {{ formatDate(propiedad.fechaPublicada) }}</span>
             </div>
@@ -76,9 +78,11 @@
               {{ formatPrice(propiedad.precio) }}
             </div>
             <div class="text-sm text-slate-600 flex flex-wrap gap-4">
-              <span v-if="propiedad.caracteristicas.dormitorios">{{ propiedad.caracteristicas.dormitorios }} dorm.</span>
+              <span v-if="propiedad.caracteristicas.dormitorios">{{ propiedad.caracteristicas.dormitorios }}
+                dorm.</span>
               <span v-if="propiedad.caracteristicas.baños">{{ propiedad.caracteristicas.baños }} baños</span>
-              <span v-if="propiedad.caracteristicas.superficieTotal">{{ propiedad.caracteristicas.superficieTotal }}m²</span>
+              <span v-if="propiedad.caracteristicas.superficieTotal">{{ propiedad.caracteristicas.superficieTotal
+                }}m²</span>
             </div>
           </div>
         </div>
