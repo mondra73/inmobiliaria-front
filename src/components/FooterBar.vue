@@ -11,14 +11,14 @@
         </div>
 
         <p class="footer-subtitle mx-auto mb-6">
-          Profesionalismo, experiencia y confianza en cada operación inmobiliaria.
+          Martillero Público y Corredor Inmobiliario. <br>
+          Matricula Profesional N°241 Tomo I Folio 81 C.M.P. <br>
         </p>
 
         <v-divider class="my-6" color="grey-darken-3"></v-divider>
 
         <p class="footer-copy text-caption">
-          Matricula Profesional N°241 Tomo I Folio 81 C.M.P. <br>
-          © 2025 Martillero Público y Corredor Inmobiliario. <br> Todos los derechos reservados.
+          © 2025  Todos los derechos reservados.
         </p>
       </v-container>
     </v-footer>
