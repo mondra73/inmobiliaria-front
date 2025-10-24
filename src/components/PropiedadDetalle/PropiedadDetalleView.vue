@@ -332,27 +332,25 @@
             </div>
 
             <!-- Caracteristicas -->
-            <div class="bg-white rounded-3xl border border-gray-100 p-6" v-if="propiedad">
-              <h2 class="text-xl font-light mb-4 text-slate-900 font-semibold">Características</h2>
-              <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
-                <div v-for="item in featureItems" :key="item.id" class="flex items-center space-x-2">
-                  <div class="w-8 h-8 rounded-lg flex items-center justify-center" :class="item.iconBg">
-                    <component :is="item.icon" class="w-4 h-4" :class="item.iconColor" />
-                  </div>
-                  <div>
-                    <p class="text-sm text-slate-600">{{ item.label }}</p>
-                    <!-- Modifica esta línea: -->
-                    <p v-if="!editando" class="font-medium text-slate-900">
-                      {{ item.id === 'superficieTotal' && propiedad.tipo === 'Terreno'
-                        ? propiedad.superficie || '-'
-                        : propiedad[item.id] || '-'
-                      }}
-                    </p>
-                    <input v-else v-model.number="form[item.id]" type="number" class="w-16 border rounded p-1" />
+              <div class="bg-white rounded-3xl border border-gray-100 p-6" v-if="propiedad">
+                <h2 class="text-xl font-light mb-4 text-slate-900 font-semibold">Características</h2>
+                <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                  <div v-for="item in filteredFeatureItems" :key="item.id" class="flex items-center space-x-2">
+                    <div class="w-8 h-8 rounded-lg flex items-center justify-center" :class="item.iconBg">
+                      <component :is="item.icon" class="w-4 h-4" :class="item.iconColor" />
+                    </div>
+                    <div>
+                      <p class="text-sm text-slate-600">{{ item.label }}</p>
+                      <!-- Modo visualización -->
+                      <p v-if="!editando" class="font-medium text-slate-900">
+                        {{ getFeatureValue(item.id) }}
+                      </p>
+                      <!-- Modo edición -->
+                      <input v-else v-model.number="form[item.id]" type="number" class="w-16 border rounded p-1" />
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
 
             <!-- Servicios Basicos -->
             <div class="bg-white rounded-3xl border border-gray-100 p-6" v-if="propiedad?.servicios">
@@ -613,6 +611,38 @@ const currentEditingImage = ref(null);
 
 const { editando, form, activarEdicion, cancelarEdicion, guardarCambios } = useFormEdit(propiedad);
 
+// Computed para filtrar items que tienen valores vacíos
+const filteredFeatureItems = computed(() => {
+  if (!propiedad.value) return []
+
+  return featureItems.value.filter(item => {
+    const value = getFeatureValue(item.id, true); // true para obtener el valor raw
+    // Solo mostrar items que tienen valor (no null, undefined, o vacío)
+    return value !== null && value !== undefined && value !== '' && value !== 0;
+  })
+})
+
+// Función para obtener el valor de una característica
+const getFeatureValue = (itemId, raw = false) => {
+  if (!propiedad.value) return raw ? null : '-'
+
+  let value;
+
+  // Caso especial para superficieTotal en Terrenos
+  if (itemId === 'superficieTotal' && propiedad.value.tipo === 'Terreno') {
+    value = propiedad.value.superficie;
+  } else {
+    value = propiedad.value[itemId];
+  }
+
+  if (raw) {
+    return value; // Devuelve el valor original para filtrado
+  }
+
+  // Para mostrar, si está vacío devuelve '-'
+  return value || '-';
+}
+
 // Computed property para determinar si mostrar el mapa
 const mostrarMapa = computed(() => {
   const ubicacion = propiedad.value?.ubicacion;
@@ -856,6 +886,7 @@ const featureItems = computed(() => {
     }
   ].filter(item => item.show)
 })
+
 
 const handleVolver = () => {
   const token = localStorage.getItem('auth-token');
