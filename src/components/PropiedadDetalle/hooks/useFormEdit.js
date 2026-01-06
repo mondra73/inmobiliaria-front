@@ -23,10 +23,8 @@ export function useFormEdit(propiedad) {
   const activarEdicion = () => {
     editando.value = true;
 
-    // Clonar la propiedad
     const clonedPropiedad = JSON.parse(JSON.stringify(propiedad.value));
 
-    // Para terrenos, mapear superficie a superficieTotal
     if (clonedPropiedad.tipo === 'Terreno') {
       clonedPropiedad.superficieTotal = clonedPropiedad.superficie;
     }
@@ -44,7 +42,6 @@ export function useFormEdit(propiedad) {
         moneda: 'ARS',
         visible: true
       },
-      // Para terrenos, mantener la estructura plana
       ...(clonedPropiedad.tipo === 'Terreno' && {
         calle: clonedPropiedad.ubicacion?.calle || '',
         altura: clonedPropiedad.ubicacion?.altura || null,

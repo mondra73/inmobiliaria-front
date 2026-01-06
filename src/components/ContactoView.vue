@@ -177,7 +177,6 @@ const enviarConsulta = async () => {
     mostrarMensaje.value = true
     isEnviando.value = false
 
-    // Oculta el mensaje luego de 5 segundos
     setTimeout(() => {
       mostrarMensaje.value = false
     }, 5000)

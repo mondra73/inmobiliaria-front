@@ -20,7 +20,6 @@
                 <div class="text-center lg:text-left">
                     <div
                         class="w-55 h-55 bg-slate-100 rounded-3xl flex items-center justify-center mx-auto lg:mx-0 mb-8">
-                        <!-- Reemplaza esto con tu logo -->
                         <img :src="logo" alt="Logo de la empresa" class="w-45 h-45 object-contain">
                     </div>
                     <h2 class="text-2xl font-semibold text-slate-900 mb-4">Tu Inmobiliaria de Confianza</h2>
@@ -165,7 +164,6 @@
             <p class="text-slate-600 mb-8 text-lg">
                 Nuestro equipo de profesionales está aquí para ayudarte en cada paso del camino.
             </p>
-            <!-- Reemplaza los botones en la sección de contacto con esto: -->
             <div class="flex flex-col sm:flex-row gap-4 justify-center">
                 <router-link to="/contacto"
                     class="bg-slate-900 text-white px-8 py-3 rounded-xl hover:bg-slate-800 transition-colors duration-200 font-medium text-center">
@@ -185,5 +183,5 @@ import logo from '../assets/logo-principal.png';
 </script>
 
 <style scoped>
-/* Estilos adicionales si son necesarios */
+
 </style>

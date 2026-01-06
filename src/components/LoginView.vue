@@ -54,7 +54,6 @@
           </button>
         </form>
 
-        <!-- Link adicional (opcional) -->
         <div class="text-center mt-6">
           <a href="#" class="text-sm text-slate-600 hover:text-slate-900 transition-colors duration-200">
             ¿Olvidaste tu contraseña?
@@ -77,7 +76,6 @@ import { useRouter } from 'vue-router'
 import api from '../api'
 const router = useRouter()
 
-// Estado reactivo
 const loginForm = ref({
   usuario: '',
   password: ''
@@ -86,8 +84,6 @@ const loginForm = ref({
 const isLoading = ref(false)
 const errorMessage = ref('')
 
-
-// Función para manejar el login
 const handleLogin = async () => {
   isLoading.value = true
   errorMessage.value = ''
@@ -107,7 +103,6 @@ const handleLogin = async () => {
     }
 
   } catch (error) {
-    // Manejo de errores centralizado en api.js, aquí solo mostramos el mensaje
     errorMessage.value = error.response?.data?.error ||
                         error.message ||
                         'Error en la conexión'

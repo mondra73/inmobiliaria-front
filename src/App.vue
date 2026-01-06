@@ -3,7 +3,6 @@
     <!-- AppBar global -->
     <AppBar />
 
-    <!-- Área scrollable para enlaces -->
     <v-main id="scrolling-area">
       <RouterView />
     </v-main>
@@ -20,7 +19,7 @@ import FooterBar from './components/FooterBar.vue'
 
 
 <style>
-/* Elimina el scoped para permitir que Vuetify funcione */
+
 .logo {
   margin: 0 auto 2rem;
 }

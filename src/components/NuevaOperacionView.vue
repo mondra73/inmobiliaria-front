@@ -20,7 +20,7 @@
 
       <!-- Formulario -->
       <form class="space-y-8" @submit.prevent="crearOperacion">
-        <!-- Datos de la operación -->
+
         <div class="bg-white rounded-3xl shadow-sm border border-gray-100 p-8">
           <h2 class="text-xl font-light text-slate-900 mb-6">
             Datos de la <span class="font-semibold">Operación</span>
@@ -273,7 +273,6 @@ import api from '../api'
 
 const router = useRouter();
 
-// Campos del formulario
 const operacion = ref("");
 const propiedadSearch = ref("");
 const propiedadId = ref("");
@@ -283,12 +282,10 @@ const fechaConcretada = ref("");
 const descripcion = ref("");
 const cargando = ref(false);
 
-// Estados para mensajes
 const mensajeExito = ref("");
 const mensajeError = ref("");
 const mostrarMensaje = ref(false);
 
-// Búsqueda de participantes
 const oferenteSearch = ref("");
 const receptorSearch = ref("");
 const oferenteId = ref("");
@@ -297,17 +294,14 @@ const showOferenteResults = ref(false);
 const showReceptorResults = ref(false);
 const showPropiedadResults = ref(false);
 
-// Datos cargados desde API
 const todasLasPropiedades = ref([]);
 const todosLosClientes = ref([]);
 
-// Cargar datos al montar el componente
 onMounted(async () => {
   await cargarPropiedades();
   await cargarClientes();
 });
 
-// Cargar propiedades desde API
 const cargarPropiedades = async () => {
   try {
     const response = await api.get('/admin/todas-propiedades');
@@ -320,7 +314,6 @@ const cargarPropiedades = async () => {
   }
 };
 
-// Cargar clientes desde API
 const cargarClientes = async () => {
   try {
     const response = await api.get('/admin/clientes?limit=1000');
@@ -333,7 +326,6 @@ const cargarClientes = async () => {
   }
 };
 
-// Filtros computados
 const filteredPropiedades = computed(() => {
   if (!propiedadSearch.value) return todasLasPropiedades.value.slice(0, 10);
 
@@ -364,7 +356,6 @@ const filteredReceptores = computed(() => {
   ).slice(0, 10);
 });
 
-// Funciones de selección
 function selectPropiedad(propiedad) {
   propiedadSearch.value = propiedad.titulo;
   propiedadId.value = propiedad.id;
@@ -383,7 +374,6 @@ function selectReceptor(cliente) {
   showReceptorResults.value = false;
 }
 
-// Función para mostrar mensajes temporales
 function mostrarMensajeTemporal(tipo, texto, duracion = 4000) {
   if (tipo === 'exito') {
     mensajeExito.value = texto;
@@ -400,14 +390,11 @@ function mostrarMensajeTemporal(tipo, texto, duracion = 4000) {
   }, duracion);
 }
 
-// Función para volver atrás
 function volver() {
   router.back();
 }
 
-// Envío del formulario - CORREGIDO
 async function crearOperacion() {
-  // Validación de campos obligatorios
   if (!operacion.value) {
     mostrarMensajeTemporal('error', 'Seleccione el tipo de operación');
     return;
@@ -448,11 +435,9 @@ async function crearOperacion() {
 
     console.log('Respuesta del servidor:', response);
 
-    // Manejar diferentes formatos de respuesta
     if (response.data.success || response.status === 200 || response.status === 201) {
       mostrarMensajeTemporal('exito', 'Operación creada exitosamente');
 
-      // Esperar un poco antes de redirigir para que el usuario vea el mensaje
       setTimeout(() => {
         resetForm();
         router.push('/operaciones');
@@ -464,11 +449,9 @@ async function crearOperacion() {
   } catch (err) {
     console.error('Error completo al crear operación:', err);
 
-    // Manejar diferentes formatos de error
     let mensajeError = 'Error al crear la operación';
 
     if (err.response) {
-      // Error de axios con respuesta del servidor
       if (err.response.data && err.response.data.message) {
         mensajeError = err.response.data.message;
       } else if (err.response.status === 400) {
@@ -477,7 +460,6 @@ async function crearOperacion() {
         mensajeError = 'Error interno del servidor';
       }
     } else if (err.message) {
-      // Error general
       mensajeError = err.message;
     }
 
@@ -503,7 +485,7 @@ function resetForm() {
 </script>
 
 <style scoped>
-/* Estilos para los mensajes de notificación */
+
 .mensaje-exito {
   background-color: #f0fdf4;
   border: 1px solid #bbf7d0;

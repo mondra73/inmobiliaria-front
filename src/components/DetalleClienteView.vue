@@ -79,7 +79,6 @@
         {{ error }}
       </div>
 
-      <!-- Contenido principal cuando hay datos -->
       <div v-if="!cargando && cliente" class="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <!-- Columna principal -->
         <div class="lg:col-span-2 space-y-8">
@@ -582,7 +581,6 @@
           </div>
         </div>
 
-        <!-- NUEVA SECCIÓN: Propiedades en Venta/Alquiler (solo contador) -->
         <div class="flex items-start space-x-3">
           <svg class="w-5 h-5 text-slate-400 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -678,12 +676,10 @@ const cargando = ref(true)
 const error = ref(null)
 const editando = ref(false)
 
-// Estados para mensajes
 const mensajeExito = ref('')
 const mensajeError = ref('')
 const mostrarMensaje = ref(false)
 
-// Formulario reactivo
 const form = reactive({
   nombre: '',
   apellido: '',
@@ -703,7 +699,6 @@ const esReceptor = computed(() => {
   return cliente.value.preferenciasBusqueda && cliente.value.preferenciasBusqueda.length > 0
 })
 
-// Computed para propiedades filtradas
 const propiedadesFiltradas = computed(() => {
   if (!todasLasPropiedades.value || todasLasPropiedades.value.length === 0) return []
 
@@ -720,18 +715,14 @@ const propiedadesFiltradas = computed(() => {
   })
 })
 
-// Obtener datos del cliente al montar el componente
 onMounted(async () => {
   await obtenerCliente()
 })
 
-// Función para ver propiedad
 const verPropiedad = (oferta) => {
-  // Usar propiedadId si está disponible, sino intentar con _id
   const propiedadId = oferta.propiedadId || oferta._id
 
   if (propiedadId) {
-    // Abrir en nueva pestaña
     const routeData = router.resolve({ path: `/propiedad/${propiedadId}` })
     window.open(routeData.href, '_blank')
   } else {
@@ -750,17 +741,13 @@ const obtenerCliente = async () => {
     if (response.data.success) {
       cliente.value = response.data.data
 
-      // NORMALIZAR: Agregar propiedadId a las ofertas existentes que no lo tengan
       if (cliente.value.oferente && cliente.value.oferente.length > 0) {
-        // Primero obtener todas las propiedades para hacer matching
         const propiedadesResponse = await api.get('/admin/todas-propiedades')
         const todasPropiedades = propiedadesResponse.data.casas || []
 
         cliente.value.oferente = cliente.value.oferente.map(oferta => {
-          // Si ya tiene propiedadId, dejarla como está
           if (oferta.propiedadId) return oferta
 
-          // Buscar por título
           if (oferta.propiedad && todasPropiedades.length > 0) {
             const tituloOferta = oferta.propiedad.toLowerCase().trim()
             const propiedadMatch = todasPropiedades.find(prop =>
@@ -785,7 +772,6 @@ const obtenerCliente = async () => {
         })
       }
 
-      // Resto del código igual...
       Object.assign(form, {
         nombre: cliente.value.nombre || '',
         apellido: cliente.value.apellido || '',
@@ -806,12 +792,10 @@ const obtenerCliente = async () => {
   }
 }
 
-// Funciones de edición
 const activarEdicion = () => {
   editando.value = true
 }
 
-// Función para abrir el modal y cargar propiedades - VERSIÓN MEJORADA
 const abrirModalPropiedades = async () => {
   mostrarModalPropiedades.value = true
   cargandoPropiedades.value = true
@@ -824,7 +808,6 @@ const abrirModalPropiedades = async () => {
 
       const idsAsignados = new Set()
 
-      // 1. Propiedades en form.oferente (agregadas durante edición)
       if (form.oferente && form.oferente.length > 0) {
         form.oferente.forEach(oferta => {
           if (oferta.propiedadId) {
@@ -833,23 +816,18 @@ const abrirModalPropiedades = async () => {
         })
       }
 
-      // 2. Propiedades en cliente.value.oferente (ya guardadas en BD) - BÚSQUEDA ROBUSTA
       if (cliente.value.oferente && cliente.value.oferente.length > 0) {
         cliente.value.oferente.forEach(oferta => {
-          // Intentar por propiedadId primero
           if (oferta.propiedadId) {
             idsAsignados.add(oferta.propiedadId)
           }
-          // Búsqueda por título (más flexible)
           else if (oferta.propiedad) {
-            // Normalizar títulos para comparación (minúsculas, sin espacios extra)
             const tituloOferta = oferta.propiedad.toLowerCase().trim()
 
             const propiedadEncontrada = todasPropiedades.find(prop => {
               if (!prop.titulo) return false
               const tituloProp = prop.titulo.toLowerCase().trim()
 
-              // Comparación exacta o parcial
               return tituloProp === tituloOferta ||
                      tituloProp.includes(tituloOferta) ||
                      tituloOferta.includes(tituloProp)
@@ -875,14 +853,12 @@ const abrirModalPropiedades = async () => {
   }
 }
 
-// Función para cerrar el modal
 const cerrarModalPropiedades = () => {
   mostrarModalPropiedades.value = false
-  // Limpiar filtros y recargar propiedades la próxima vez
   filtroTexto.value = ''
   filtroTipo.value = ''
   filtroOperacion.value = ''
-  todasLasPropiedades.value = [] // Limpiar para forzar recarga
+  todasLasPropiedades.value = [] 
 }
 
 const seleccionarPropiedad = (propiedad) => {
@@ -897,7 +873,7 @@ const seleccionarPropiedad = (propiedad) => {
 
   const nuevaOferta = {
     propiedad: propiedad.titulo || 'Sin título',
-    propiedadId: propiedad.id, // Asegurar que esto se guarde
+    propiedadId: propiedad.id, 
     detallesPropiedad: {
       tipo: propiedad.tipo || '',
       operacion: propiedad.operacion || '',
@@ -908,10 +884,8 @@ const seleccionarPropiedad = (propiedad) => {
     activa: true
   }
 
-  // Agregar al form (para edición)
   form.oferente.push(nuevaOferta)
 
-  // También actualizar cliente.value para mostrar en tiempo real
   if (!cliente.value.oferente) {
     cliente.value.oferente = []
   }
@@ -922,11 +896,9 @@ const seleccionarPropiedad = (propiedad) => {
 }
 
 const validarFormulario = () => {
-  // Solo validar las preferencias que existan (no requerir que haya al menos una)
   if (form.preferenciasBusqueda) {
     for (let i = 0; i < form.preferenciasBusqueda.length; i++) {
       const pref = form.preferenciasBusqueda[i]
-      // Solo validar si la preferencia tiene algún dato
       if (pref.tipoPropiedad || pref.tipoOperacion || pref.presupuesto) {
         if (!pref.tipoPropiedad || !pref.tipoOperacion) {
           mostrarMensajeTemporal('error', `La preferencia ${i + 1} debe tener tipo de propiedad y operación seleccionados si se completan otros campos`)
@@ -936,11 +908,9 @@ const validarFormulario = () => {
     }
   }
 
-  // Validar ofertas (solo las que tengan datos)
   if (form.oferente) {
     for (let i = 0; i < form.oferente.length; i++) {
       const oferta = form.oferente[i]
-      // Solo validar si la oferta tiene algún dato
       if (oferta.propiedad || oferta.descripcion) {
         if (!oferta.propiedad || oferta.propiedad.trim() === '') {
           mostrarMensajeTemporal('error', `La propiedad ${i + 1} debe tener un nombre si se completa`)
@@ -956,7 +926,6 @@ const validarFormulario = () => {
 const limpiarDatosParaEnvio = () => {
   const datosLimpios = { ...form }
 
-  // Filtrar preferencias vacías o incompletas
   datosLimpios.preferenciasBusqueda = datosLimpios.preferenciasBusqueda
     .filter(pref => pref.tipoPropiedad && pref.tipoOperacion)
     .map(pref => ({
@@ -969,7 +938,6 @@ const limpiarDatosParaEnvio = () => {
       fechaCreacionPreferencia: pref.fechaCreacionPreferencia || new Date()
     }))
 
-  // Filtrar ofertas vacías
   datosLimpios.oferente = datosLimpios.oferente
     .filter(oferta => oferta.propiedad && oferta.propiedad.trim() !== '')
     .map(oferta => ({
@@ -983,14 +951,11 @@ const limpiarDatosParaEnvio = () => {
 
 const cancelarEdicion = async () => {
   try {
-    // Recargar los datos frescos desde la API
     const response = await api.get(`/admin/cliente/${route.params.id}`)
 
     if (response.data.success) {
-      // Restaurar cliente.value con los datos frescos
       cliente.value = response.data.data
 
-      // Restaurar el formulario
       Object.assign(form, {
         nombre: cliente.value.nombre || '',
         apellido: cliente.value.apellido || '',
@@ -1018,7 +983,6 @@ const guardarCambios = async () => {
   }
 
   try {
-    // Limpiar datos antes de enviar
     const datosLimpios = limpiarDatosParaEnvio()
 
     const response = await api.put(`/admin/editar-cliente/${route.params.id}`, datosLimpios)
@@ -1031,7 +995,6 @@ const guardarCambios = async () => {
   } catch (err) {
     console.error('Error al guardar cambios:', err)
     if (err.response?.data?.errors) {
-      // Mostrar errores de validación del backend
       const errores = err.response.data.errors.join(', ')
       mostrarMensajeTemporal('error', `Errores de validación: ${errores}`)
     } else {
@@ -1040,9 +1003,7 @@ const guardarCambios = async () => {
   }
 }
 
-// Funciones para manejar preferencias
 const agregarPreferencia = () => {
-  // Asegurarnos de que el array exista
   if (!form.preferenciasBusqueda) {
     form.preferenciasBusqueda = []
   }
@@ -1074,12 +1035,10 @@ const eliminarOferta = (index) => {
   }
 }
 
-// Funciones de navegación
 const volver = () => {
   router.back()
 }
 
-// Funciones de acciones
 const llamarCliente = () => {
   if (cliente.value.telefono) {
     window.open(`tel:${cliente.value.telefono}`, '_blank')
@@ -1100,7 +1059,6 @@ const enviarPropiedades = () => {
   console.log('Enviar propiedades a:', cliente.value.mail)
 }
 
-// Funciones de utilidad
 const mostrarMensajeTemporal = (tipo, texto, duracion = 3000) => {
   if (tipo === 'exito') {
     mensajeExito.value = texto

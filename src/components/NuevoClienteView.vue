@@ -81,7 +81,7 @@ const cliente = ref({
   nombre: '',
   apellido: '',
   dni: '',
-  mail: '', // Ahora puede estar vacío
+  mail: '', 
   telefono: ''
 })
 
@@ -95,7 +95,6 @@ const crearCliente = async () => {
   mensajeError.value = false
 
   try {
-    // Limpiar el campo mail si está vacío para evitar enviar strings vacíos
     const datosCliente = {
       ...cliente.value,
       mail: cliente.value.mail.trim() === '' ? null : cliente.value.mail.trim()
@@ -113,7 +112,6 @@ const crearCliente = async () => {
     if (error.response?.data?.message) {
       mensaje.value = error.response.data.message
     } else if (error.response?.data?.errors) {
-      // Si hay errores de validación, puedes mostrarlos
       const errors = error.response.data.errors
       mensaje.value = Object.values(errors).join(', ')
     } else {

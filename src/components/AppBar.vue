@@ -51,19 +51,16 @@ import logo from '../assets/simbolo-completo.png'
 const router = useRouter()
 const isAuthenticated = ref(false)
 
-// Función para verificar si el usuario está autenticado
 const checkAuthStatus = () => {
   isAuthenticated.value = !!localStorage.getItem('auth-token')
   console.log('Auth status changed:', isAuthenticated.value)
 }
 
-// Configuración de listeners
 onMounted(() => {
   window.addEventListener('auth-change', checkAuthStatus)
   checkAuthStatus()
 })
 
-// Limpieza de listeners
 onUnmounted(() => {
   window.removeEventListener('auth-change', checkAuthStatus)
 })
@@ -73,7 +70,6 @@ const goToHome = () => {
 }
 
 const menuItems = [
-  // { id: 'nosotros', title: 'Nosotros' },
   { id: 'propiedades', title: 'Propiedades' },
   { id: 'consultar', title: 'Consultar' }
 ]
@@ -160,22 +156,21 @@ body {
   padding-top: 110px !important;
 }
 
-/* Estilos mejorados para los botones de navegación */
 .nav-btn {
   font-family: 'Ubuntu', sans-serif !important;
   font-size: 1.170rem !important;
   font-weight: 400 !important;
   letter-spacing: 0.025em !important;
   text-transform: none !important;
-  color: #334155 !important; /* Color slate-700 similar al home */
+  color: #334155 !important; 
   transition: all 0.2s ease !important;
   margin: 1 8px !important;
   padding: 8px 16px !important;
 }
 
 .nav-btn:hover {
-  color: #1e293b !important; /* Color slate-800 para hover */
-  background-color: rgba(148, 163, 184, 0.1) !important; /* Hover sutil */
+  color: #1e293b !important; 
+  background-color: rgba(148, 163, 184, 0.1) !important; 
 }
 
 /* Estilos para el menú móvil */

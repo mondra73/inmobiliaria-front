@@ -131,15 +131,11 @@ import vertical1 from '../assets/vertical1.jpg';
 import vertical2 from '../assets/vertical2.jpg';
 import vertical3 from '../assets/vertical3.jpg';
 
-
-// Arrays con las imágenes disponibles
 const desktopImages = [horizontal1, horizontal2, horizontal3];
 const mobileImages = [vertical1, vertical2, vertical3];
 
-// Índice actual (0 o 1)
 const currentIndex = ref(0);
 
-// Funciones que devuelven los estilos según la imagen
 const getDesktopStyle = (img) => ({
   backgroundImage: `url(${img})`,
   backgroundSize: 'cover',
@@ -158,7 +154,6 @@ const getMobileStyle = (img) => ({
 
 let intervalId;
 
-// Función para despertar el backend
 const despertarBackendUnaVezPorSesion = () => {
   const yaLlamado = sessionStorage.getItem("backendDespertado");
 
@@ -178,16 +173,13 @@ const despertarBackendUnaVezPorSesion = () => {
 };
 
 onMounted(() => {
-  // Llamar a la función para despertar el backend
   despertarBackendUnaVezPorSesion();
 
-  // Precargar imágenes "dibujándolas" en un canvas (fuerza a renderizar en GPU)
   desktopImages.concat(mobileImages).forEach(src => {
     const img = new Image();
     img.src = src;
   });
 
-  // Activar intervalo como antes
   intervalId = setInterval(() => {
     currentIndex.value = (currentIndex.value + 1) % desktopImages.length;
   }, 5000);
@@ -201,7 +193,7 @@ onBeforeUnmount(() => {
 
 
 <style>
-/* Estilos para asegurar la correcta visualización */
+
 section {
   background-repeat: no-repeat;
 }

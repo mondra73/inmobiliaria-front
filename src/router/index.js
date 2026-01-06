@@ -40,11 +40,9 @@ const router = createRouter({
   routes,
 });
 
-// ✅ GUARD: Bloqueo de rutas privadas
 router.beforeEach((to, from, next) => {
   const token = localStorage.getItem('auth-token')
 
-  // ✅ Rutas protegidas
   if (to.meta.requiresAuth) {
     if (!token) return next('/login')
 
@@ -62,7 +60,6 @@ router.beforeEach((to, from, next) => {
     }
   }
 
-  // 🚫 Bloquear acceso a /login si ya tiene sesión válida
   if (to.path === '/login' && token) {
     try {
       const payload = JSON.parse(atob(token.split('.')[1]))
@@ -71,7 +68,7 @@ router.beforeEach((to, from, next) => {
         return next('/dashboard')
       }
     } catch {
-      // Token inválido, dejar pasar
+
     }
   }
 

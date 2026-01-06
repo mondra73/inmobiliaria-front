@@ -1,4 +1,3 @@
-// generate-sitemap.js
 import { writeFileSync } from 'fs'
 
 const domain = 'https://www.espinosainmob.com.ar'
@@ -8,7 +7,6 @@ const rutas = [
   '/nosotros',
   '/propiedades-publicas',
   '/contacto',
-  // agregá las rutas que quieras indexar
 ]
 
 const fecha = new Date().toISOString()
@@ -29,7 +27,6 @@ ${rutas
   .join('')}
 </urlset>`
 
-// Guardar en carpeta `dist` al compilar
 writeFileSync('./dist/sitemap.xml', sitemap)
 
 console.log('✅ Sitemap generado con éxito.')

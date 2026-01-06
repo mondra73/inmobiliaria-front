@@ -43,7 +43,6 @@ export const CasaForm = {
       if (!this.formData.habitaciones && this.formData.habitaciones !== 0) {
         errors.push('El número de habitaciones es requerido')
       }
-      // Agregar más validaciones según necesidad
       return errors
     }
   }

@@ -30,7 +30,7 @@
               <option value="Oferente">Oferente</option>
               <option value="Receptor">Receptor</option>
             </select>
-            <!-- Elemento vacío para mantener la estructura -->
+
             <div class="hidden md:block"></div>
           </div>
         </section>
@@ -116,16 +116,13 @@ const router = useRouter()
 const cargando = ref(false)
 const error = ref(null)
 
-// Datos reales desde el backend
 const clientes = ref([])
 
-// Filtros y paginación
 const filtroNombre = ref('')
 const filtroTipoCliente = ref('')
 const paginaActual = ref(1)
 const elementosPorPagina = 6
 
-// Obtener datos al montar el componente
 onMounted(async () => {
   await obtenerClientes()
 })
@@ -147,10 +144,8 @@ const obtenerClientes = async () => {
         telefono: cliente.telefono,
         profesion: cliente.profesion,
         fechaCreacion: cliente.fechaCreacion,
-        // Determinar tipo de cliente basado en el schema
         esOferente: cliente.oferente && cliente.oferente.length > 0,
         esReceptor: cliente.preferenciasBusqueda && cliente.preferenciasBusqueda.length > 0,
-        // Propiedades originales para filtrado
         oferente: cliente.oferente,
         preferenciasBusqueda: cliente.preferenciasBusqueda
       }))
@@ -163,7 +158,6 @@ const obtenerClientes = async () => {
   }
 }
 
-// Computed properties
 const clientesFiltrados = computed(() => {
   let filtrados = clientes.value.filter(cliente => {
     const coincideNombre = !filtroNombre.value ||

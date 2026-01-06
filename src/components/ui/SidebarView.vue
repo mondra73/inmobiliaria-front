@@ -123,10 +123,8 @@ import { useRoute } from 'vue-router'
 const route = useRoute()
 const userData = ref({ nombre: '' })
 
-// Obtener la ruta actual para resaltar el menú activo
 const currentRoute = computed(() => route.path)
 
-// Función para decodificar el token JWT
 function parseJwt(token) {
   try {
     const base64Url = token.split('.')[1]
@@ -142,7 +140,6 @@ function parseJwt(token) {
   }
 }
 
-// Obtener datos del usuario al montar el componente
 onMounted(() => {
   const token = localStorage.getItem('auth-token')
   if (token) {

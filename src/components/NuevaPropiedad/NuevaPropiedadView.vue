@@ -570,7 +570,6 @@ import { useRouter } from 'vue-router'
 import api from '../../api'
 import { uploadImageToCloudinary } from '../../../utils/uploadToCloudinary'
 
-// 1. Importar todos los módulos
 import { useFormSetup } from './hooks/useFormSetup'
 import { useImageHandling } from './hooks/useImageHandling'
 import { CasaForm } from './propertyTypes/CasaForm';
@@ -583,26 +582,22 @@ import { TerrenoForm } from './propertyTypes/TerrenoForm';
 import ImageCropEditor from './ImageCropEditor.vue'
 import draggable from 'vuedraggable';
 
-// 2. Inicializar hooks y router
 const router = useRouter()
 const { formData, resetForm, handlePropertyTypeChange, getEndpoint, ...computedProps } = useFormSetup()
 const { files, handleFileUpload, removeFile, handleDragEnd } = useImageHandling()
 
-// NUEVOS ESTADOS PARA CLIENTES
 const clientes = ref([])
 const cargandoClientes = ref(false)
 
-// Computed para obtener el cliente seleccionado
 const clienteSeleccionado = computed(() => {
   if (!formData.value.clienteDueño) return null
   return clientes.value.find(cliente => cliente._id === formData.value.clienteDueño)
 })
 
-// Función para cargar clientes desde la API
 const cargarClientes = async () => {
   try {
     cargandoClientes.value = true
-    const response = await api.get('/admin/clientes?limit=100') // Trae hasta 100 clientes
+    const response = await api.get('/admin/clientes?limit=100') 
     clientes.value = response.data.data
   } catch (error) {
     console.error('Error al cargar clientes:', error)
@@ -613,7 +608,6 @@ const cargarClientes = async () => {
   }
 }
 
-// Función para formatear el nombre del cliente
 const formatClienteName = (cliente) => {
   const nombre = cliente.nombre || ''
   const apellido = cliente.apellido || ''
@@ -627,28 +621,23 @@ const formatClienteName = (cliente) => {
   return `${nombre} ${apellido}${dni}${mail}`
 }
 
-// Función para ir a crear nuevo cliente
 const irANuevoCliente = () => {
   router.push('/nuevo-cliente')
 }
 
-// Estado para el editor de encuadre
 const showCropEditor = ref(false)
 const currentEditingImageIndex = ref(null)
 const currentEditingImage = ref(null)
 
 const openCropEditor = (index) => {
-  console.log('Abriendo editor para imagen:', index); // Para debug
   currentEditingImageIndex.value = index;
   currentEditingImage.value = files.value[index];
   showCropEditor.value = true;
 
-  // Prevenir cualquier comportamiento por defecto
   event?.preventDefault();
   event?.stopPropagation();
 }
 
-// Función para guardar los ajustes de encuadre
 const saveCropSettings = (cropData) => {
   if (currentEditingImageIndex.value !== null) {
     files.value[currentEditingImageIndex.value] = {
@@ -661,7 +650,6 @@ const saveCropSettings = (cropData) => {
   currentEditingImage.value = null
 }
 
-// Función para obtener el estilo de la imagen (para archivos nuevos)
 const getFileImageStyle = (file) => {
   if (!file) return {};
 
@@ -677,7 +665,6 @@ const getFileImageStyle = (file) => {
 }
 
 const onDragEnd = () => {
-  // Actualizar automáticamente el orden y la portada
   files.value = files.value.map((file, index) => ({
     ...file,
     orden: index,
@@ -687,7 +674,6 @@ const onDragEnd = () => {
   mostrarMensajeTemporal('exito', 'Orden de imágenes actualizado');
 };
 
-// 3. Destructuring COMPLETO de computed properties
 const {
   isCampo,
   showLocationSection,
@@ -710,7 +696,6 @@ const {
   showFreeHeightField
 } = computedProps
 
-// 4. Mapeo de componentes por tipo
 const propertyComponents = {
   'Casa': CasaForm,
   'Departamento': DepartamentoForm,
@@ -721,18 +706,15 @@ const propertyComponents = {
   'Campo': CampoForm
 }
 
-// 5. Componente actual basado en la categoría seleccionada
 const currentPropertyComponent = computed(() => {
   return formData.value.categoria ? propertyComponents[formData.value.categoria] : null
 })
 
-// 6. Estado del formulario (idéntico a tu versión)
 const isLoading = ref(false)
 const mensajeExito = ref('')
 const mensajeError = ref('')
 const mostrarMensaje = ref(false)
 
-// 7. Función submitForm
 const submitForm = async () => {
   try {
     isLoading.value = true
@@ -745,7 +727,6 @@ const submitForm = async () => {
     if (!formData.value.categoria) throw new Error('Seleccione tipo de propiedad')
     if (!formData.value.operacion) throw new Error('Seleccione operación')
 
-    // Subir imágenes y preparar payload
     const uploadedImages = await Promise.all(
   files.value.map(async (file, index) => {
     const imageData = await uploadImageToCloudinary(file.file)
@@ -753,8 +734,8 @@ const submitForm = async () => {
       url: imageData.url,
       public_id: imageData.public_id,
       descripcion: file.descripcion || '',
-      orden: file.orden || index, // Usa el orden del drag & drop
-      esPortada: file.esPortada || index === 0, // Usa la portada del drag & drop
+      orden: file.orden || index, 
+      esPortada: file.esPortada || index === 0, 
       offsetX: file.offsetX !== undefined ? file.offsetX : 0.5,
       offsetY: file.offsetY !== undefined ? file.offsetY : 0.5,
       zoom: file.zoom !== undefined ? file.zoom : 1.0
@@ -762,7 +743,6 @@ const submitForm = async () => {
   })
 )
 
-    // Imagen por defecto
     const imagenPorDefecto = {
       url: "https://res.cloudinary.com/dzobllxwh/image/upload/v1752663945/SAVE_20250716_080534_cvicml.jpg",
       public_id: "imagen_por_defecto",
@@ -771,7 +751,6 @@ const submitForm = async () => {
       esPortada: true
     };
 
-    // Si no se cargaron imágenes, usar imagen por defecto
     const imagenesFinales = uploadedImages.length > 0
       ? [...formData.value.imagenes, ...uploadedImages]
       : [imagenPorDefecto];
@@ -782,7 +761,6 @@ const submitForm = async () => {
       imagenes: imagenesFinales
     };
 
-    // Ajuste ESPECÍFICO para Campo
     if (formData.value.categoria === 'Campo') {
       payload.ubicacion = {
         localidad: formData.value.ubicacion.localidad,
@@ -790,7 +768,6 @@ const submitForm = async () => {
         mapaUrl: formData.value.ubicacion.mapaUrl
       };
     } else {
-      // Para las demás propiedades, mantener la estructura actual
       payload.localidad = formData.value.ubicacion.localidad;
     }
     console.log('Payload enviado al backend:', payload)
@@ -810,12 +787,10 @@ const submitForm = async () => {
   }
 }
 
-// 8.
 const goToDashboard = () => {
   router.push('/dashboard')
 }
 
-// Cargar clientes al montar el componente
 onMounted(() => {
   cargarClientes()
 })

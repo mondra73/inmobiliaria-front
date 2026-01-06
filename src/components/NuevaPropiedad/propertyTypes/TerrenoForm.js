@@ -13,14 +13,12 @@ export const TerrenoForm = {
     preparePayload() {
       return {
         ...this.formData,
-        // Campos de ubicación
         calle: this.formData.calle || '',
         altura: this.formData.altura || null,
         entreCalle1: this.formData.entreCalle1 || '',
         entreCalle2: this.formData.entreCalle2 || '',
         localidad: this.formData.localidad || '',
 
-        // Mapear superficieTotal de vuelta a superficie
         superficie: this.formData.superficieTotal,
         dimensiones: {
           largo: this.formData.largo,

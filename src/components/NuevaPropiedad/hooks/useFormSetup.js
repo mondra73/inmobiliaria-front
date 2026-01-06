@@ -57,7 +57,6 @@ export function useFormSetup() {
 
   const formData = ref({...initialFormData})
 
-  // Todas las computed properties como en tu código original
   const showLocationSection = computed(() => !!formData.value.categoria)
   const showFeaturesSection = computed(() => !!formData.value.categoria)
   const showImagesSection = computed(() => !!formData.value.categoria)
@@ -80,25 +79,21 @@ export function useFormSetup() {
   const showAmenitiesSection = computed(() => ['Casa', 'Departamento'].includes(formData.value.categoria))
   const showFreeHeightField = computed(() => formData.value.categoria === 'Galpón')
 
-  // Función resetForm idéntica a la actual
   const resetForm = () => {
     const categoria = formData.value.categoria
     const moneda = formData.value.precio.moneda
 
-    // Limpia el formulario manteniendo la reactividad
     Object.assign(formData.value, JSON.parse(JSON.stringify(initialFormData)))
 
     formData.value.categoria = categoria
     formData.value.precio.moneda = moneda
   }
 
-  // Función handlePropertyTypeChange idéntica a la actual
   const handlePropertyTypeChange = () => {
     resetForm()
     console.log('Tipo de propiedad seleccionado:', formData.value.categoria)
   }
 
-  // Mapeo de endpoints
   const endpointsPorCategoria = {
     'Casa': '/admin/nueva-casa',
     'Departamento': '/admin/nuevo-dpto',

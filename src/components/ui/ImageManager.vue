@@ -53,7 +53,7 @@ const handleFileChange = async (e) => {
   const files = Array.from(e.target.files)
   if (files.length) {
     emit('image-upload', files)
-    fileInput.value.value = '' // Reset input
+    fileInput.value.value = ''
   }
 }
 </script>

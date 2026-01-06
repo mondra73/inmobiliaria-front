@@ -1,6 +1,5 @@
 <template>
   <div>
-    <!-- Nuevo Footer con mismo estilo que App Bar -->
     <v-footer class="glass-footer" padless>
       <v-container class="py-16 text-center">
         <div class="d-flex justify-center align-center mb-4">
@@ -23,7 +22,6 @@
       </v-container>
     </v-footer>
 
-    <!-- Ícono flotante de WhatsApp (NO TOCAR) -->
     <a
       href="https://wa.me/5492473466501?text=Hola%2C%20quisiera%20hacer%20una%20consulta%20sobre%20una%20propiedad"
       target="_blank"
@@ -37,11 +35,11 @@
 
 
 <script setup>
-// sin lógica JS
+
 </script>
 
 <style scoped>
-/* Footer con el mismo fondo y blur que el App Bar */
+
 .glass-footer {
     background-color: rgba(30, 30, 30, 0.9) !important;
     backdrop-filter: blur(10px);
@@ -66,16 +64,13 @@
 
 .footer-subtitle {
     color: #cbd5e1;
-    /* color claro para buen contraste */
     max-width: 400px;
 }
 
 .footer-copy {
     color: #94a3b8;
-    /* más claro que el texto del fondo */
 }
 
-/* Botón flotante de WhatsApp: NO TOCAR */
 .whatsapp-float {
     position: fixed;
     bottom: 24px;

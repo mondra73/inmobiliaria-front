@@ -41,7 +41,6 @@
         </div>
       </section>
 
-      <!-- Tarjetas de propiedades - CORREGIDO: cambiar "casa" por "propiedad" -->
       <section class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 mt-4">
         <div v-for="propiedad in propiedadesPaginadas" :key="propiedad.id" @click="irADetallePropiedad(propiedad.id)"
           class="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow duration-200 cursor-pointer">
@@ -88,7 +87,6 @@
         </div>
       </section>
 
-      <!-- Si no hay resultados -->
       <p v-if="propiedadesVisibles.length === 0" class="text-center text-slate-500 mt-12">No hay propiedades
         disponibles en este momento.</p>
 
@@ -169,20 +167,16 @@ const isLoading = ref(true)
 const paginaActual = ref(1)
 const propiedadesPorPagina = 9
 
-// Filtros
 const filtroTitulo = ref('')
 const filtroTipo = ref('')
 const filtroOperacion = ref('')
 
-// Función para aplicar el encuadre a las imágenes
 const getImageStyle = (imagen) => {
   if (!imagen) return {};
 
-  // Valores por defecto para backward compatibility
   const offsetX = imagen.offsetX !== undefined ? imagen.offsetX : 0.5;
   const offsetY = imagen.offsetY !== undefined ? imagen.offsetY : 0.5;
 
-  // SOLO objectPosition para encuadre, SIN transform (zoom)
   return {
     objectPosition: `${offsetX * 100}% ${offsetY * 100}%`
   };
@@ -205,7 +199,6 @@ function formatPrice(precio) {
   return `${symbol}${precio.monto.toLocaleString()} ${currency}`
 }
 
-// Propiedades filtradas (sin paginación)
 const propiedadesVisibles = computed(() => {
   return propiedades.value.filter((p) => {
     const coincideTitulo = p.titulo.toLowerCase().includes(filtroTitulo.value.toLowerCase())
@@ -219,14 +212,12 @@ const propiedadesVisibles = computed(() => {
   })
 })
 
-// Propiedades paginadas
 const propiedadesPaginadas = computed(() => {
   const inicio = (paginaActual.value - 1) * propiedadesPorPagina
   const fin = inicio + propiedadesPorPagina
   return propiedadesVisibles.value.slice(inicio, fin)
 })
 
-// Total de páginas
 const totalPaginas = computed(() => {
   return Math.max(1, Math.ceil(propiedadesVisibles.value.length / propiedadesPorPagina))
 })

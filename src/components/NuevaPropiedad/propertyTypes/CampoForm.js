@@ -21,9 +21,8 @@ export const CampoForm = {
           cloacas: Boolean(this.formData.servicios.cloacas),
           gas: Boolean(this.formData.servicios.gas)
         },
-        // Campos específicos para campos
         condicion: this.formData.condicion || null,
-        categoria: 'Campo' // Fuerza la categoría por si acaso
+        categoria: 'Campo' 
       }
     },
     validate() {

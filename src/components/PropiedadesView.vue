@@ -74,7 +74,6 @@
     </div>
 
     <div class="p-6">
-      <!-- Nuevo: Badge de tipo de propiedad -->
       <span class="inline-block bg-blue-100 text-blue-800 px-2 py-1 text-xs font-medium rounded mb-2">
         {{ propiedad.tipo }}
       </span>
@@ -109,7 +108,6 @@
   </div>
 </section>
 
-      <!-- Si no hay resultados -->
       <p v-if="casas.length === 0" class="text-center text-slate-500 mt-12">No hay propiedades cargadas.</p>
 
       <!-- Paginación -->
@@ -160,7 +158,6 @@ const userData = ref({ nombre: '' })
 const paginaActual = ref(1)
 const propiedadesPorPagina = 9
 
-// Función para decodificar el token JWT (copiada del primer componente)
 function parseJwt(token) {
   try {
     const base64Url = token.split('.')[1]
@@ -175,13 +172,11 @@ function parseJwt(token) {
   }
 }
 
-// Variables para los filtros (AÑADIDO)
 const filtroTitulo = ref('')
 const filtroTipo = ref('')
 const filtroOperacion = ref('')
 const filtroEstado = ref('')
 
-// Propiedad computada para casas filtradas (AÑADIDO)
 const casasFiltradas = computed(() => {
   const filtradas = casas.value.filter((propiedad) => {
     const coincideTitulo = propiedad.titulo.toLowerCase().includes(filtroTitulo.value.toLowerCase())
@@ -206,11 +201,9 @@ const casasFiltradas = computed(() => {
 const getImageStyle = (imagen) => {
   if (!imagen) return {};
 
-  // Valores por defecto para backward compatibility
   const offsetX = imagen.offsetX !== undefined ? imagen.offsetX : 0.5;
   const offsetY = imagen.offsetY !== undefined ? imagen.offsetY : 0.5;
 
-  // SOLO objectPosition para encuadre, SIN transform (zoom)
   return {
     objectPosition: `${offsetX * 100}% ${offsetY * 100}%`
   };
@@ -218,7 +211,6 @@ const getImageStyle = (imagen) => {
 
 const totalPaginas = computed(() => {
   const cantidad = casas.value.filter((propiedad) => {
-    // Mismo filtro que en casasFiltradas sin paginar
     const coincideTitulo = propiedad.titulo.toLowerCase().includes(filtroTitulo.value.toLowerCase())
     const coincideTipo = filtroTipo.value ? propiedad.tipo === filtroTipo.value : true
     const coincideOperacion = filtroOperacion.value
@@ -256,7 +248,6 @@ function formatPrice(precio) {
 
 
 onMounted(async () => {
-  // Cargar datos del usuario desde el token
   const token = localStorage.getItem('auth-token')
   if (token) {
     const decoded = parseJwt(token)
@@ -269,7 +260,6 @@ onMounted(async () => {
     }
   }
 
-  // Cargar propiedades
   try {
     const res = await api.get('/admin/todas-propiedades')
     casas.value = res.data.casas

@@ -315,7 +315,7 @@
                   </div>
                 </template>
 
-                <!-- Coordenadas (común para todos los tipos) - VERSIÓN CORREGIDA -->
+                <!-- Coordenadas (común para todos los tipos) -->
                 <div>
                   <label class="block text-sm font-medium text-slate-700 mb-1">Coordenadas (lat,lng)</label>
                   <input v-model="form.ubicacion.coordenadas"
@@ -387,7 +387,7 @@
             <div class="bg-white rounded-3xl border border-gray-100 p-6">
               <!-- Precio y visibilidad -->
               <div class="text-center mb-6">
-                <!-- Botón de visibilidad del precio (ahora arriba) -->
+                <!-- Botón de visibilidad del precio -->
                 <div class="flex justify-center mb-2">
                   <button v-if="puedeEditarEliminar" @click="toggleVisibilidadPrecio" :class="[
                     'text-xs font-medium px-2 py-1 rounded mb-2',
@@ -589,8 +589,6 @@ import { useFormEdit } from './hooks/useFormEdit';
 import ImageCropEditor from '../NuevaPropiedad/ImageCropEditor.vue';
 import draggable from 'vuedraggable';
 
-
-// Estados reactivos
 const propiedad = ref(null)
 const route = useRoute()
 const router = useRouter()
@@ -611,7 +609,6 @@ const currentEditingImage = ref(null);
 
 const { editando, form, activarEdicion, cancelarEdicion, guardarCambios } = useFormEdit(propiedad);
 
-// Computed para filtrar items que tienen valores vacíos
 const filteredFeatureItems = computed(() => {
   if (!propiedad.value) return []
 
@@ -622,13 +619,11 @@ const filteredFeatureItems = computed(() => {
   })
 })
 
-// Función para obtener el valor de una característica
 const getFeatureValue = (itemId, raw = false) => {
   if (!propiedad.value) return raw ? null : '-'
 
   let value;
 
-  // Caso especial para superficieTotal en Terrenos
   if (itemId === 'superficieTotal' && propiedad.value.tipo === 'Terreno') {
     value = propiedad.value.superficie;
   } else {
@@ -636,27 +631,21 @@ const getFeatureValue = (itemId, raw = false) => {
   }
 
   if (raw) {
-    return value; // Devuelve el valor original para filtrado
+    return value; 
   }
-
-  // Para mostrar, si está vacío devuelve '-'
   return value || '-';
 }
 
-// Computed property para determinar si mostrar el mapa
 const mostrarMapa = computed(() => {
   const ubicacion = propiedad.value?.ubicacion;
   if (!ubicacion) return false;
 
-  // Para terrenos, verificar si tenemos coordenadas válidas
   if (ubicacion.coordenadas) {
     try {
-      // Si es string (formato "lat,lng")
       if (typeof ubicacion.coordenadas === 'string') {
         const [lat, lng] = ubicacion.coordenadas.split(',').map(coord => parseFloat(coord.trim()));
         return !isNaN(lat) && !isNaN(lng) && lat !== 0 && lng !== 0;
       }
-      // Si es objeto {lat, lng}
       else if (typeof ubicacion.coordenadas === 'object') {
         return ubicacion.coordenadas.lat !== 0 && ubicacion.coordenadas.lng !== 0;
       }
@@ -666,7 +655,6 @@ const mostrarMapa = computed(() => {
     }
   }
 
-  // También verificar mapaUrl
   if (ubicacion.mapaUrl) {
     return true;
   }
@@ -674,12 +662,10 @@ const mostrarMapa = computed(() => {
   return false;
 });
 
-// Computed property para generar la URL del mapa - VERSIÓN CORREGIDA
 const urlMapa = computed(() => {
   const ubicacion = propiedad.value?.ubicacion;
   if (!ubicacion) return '';
 
-  // 1. Si tenemos coordenadas, usarlas (esto funciona)
   if (ubicacion.coordenadas) {
     try {
       let lat, lng;
@@ -699,10 +685,8 @@ const urlMapa = computed(() => {
     }
   }
 
-  // 2. Si tenemos mapaUrl pero NO coordenadas, extraer coordenadas del mapaUrl
   if (ubicacion.mapaUrl && !ubicacion.coordenadas) {
     try {
-      // Extraer coordenadas del formato /@lat,lng
       const coordMatch = ubicacion.mapaUrl.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/);
       if (coordMatch) {
         const lat = coordMatch[1];
@@ -714,7 +698,6 @@ const urlMapa = computed(() => {
     }
   }
 
-  // 3. Si no se pudo extraer coordenadas, devolver el mapaUrl original (aunque probablemente falle)
   if (ubicacion.mapaUrl) {
     return ubicacion.mapaUrl;
   }
@@ -722,17 +705,13 @@ const urlMapa = computed(() => {
   return '';
 });
 
-
-// Función para obtener el estilo de la imagen con encuadre
 const getImageStyle = (imagen, isModal = false) => {
   if (!imagen) return {};
 
-  // Valores por defecto para backward compatibility
   const offsetX = imagen.offsetX !== undefined ? imagen.offsetX : 0.5;
   const offsetY = imagen.offsetY !== undefined ? imagen.offsetY : 0.5;
   const zoom = imagen.zoom !== undefined ? imagen.zoom : 1.0;
 
-  // Para modal usamos 'contain', para galería 'cover'
   const objectFit = isModal ? 'contain' : 'cover';
 
   return {
@@ -743,9 +722,7 @@ const getImageStyle = (imagen, isModal = false) => {
   };
 };
 
-// Función cuando termina el drag en edición
 const onDragEnd = () => {
-  // Actualizar orden y portada automáticamente
   form.value.imagenes = form.value.imagenes.map((imagen, index) => ({
     ...imagen,
     orden: index,
@@ -772,7 +749,6 @@ const openCropEditor = (index) => {
   showCropEditor.value = true;
 };
 
-// Función para guardar los ajustes de encuadre
 const saveCropSettings = (cropData) => {
   if (currentEditingImageIndex.value !== null) {
     form.value.imagenes[currentEditingImageIndex.value] = {
@@ -788,7 +764,6 @@ const saveCropSettings = (cropData) => {
   currentEditingImage.value = null;
 };
 
-// Configuración reutilizable
 const serviciosConfig = {
   agua: 'Agua corriente',
   luz: 'Luz eléctrica',
@@ -896,21 +871,17 @@ const handleVolver = () => {
       const decoded = jwtDecode(token);
       const currentTime = Date.now() / 1000;
 
-      // Verificar si el token es válido y no ha expirado
       if (decoded.exp > currentTime) {
         router.push('/propiedades');
       } else {
-        // Token expirado
         localStorage.removeItem('auth-token');
         router.push('/propiedades-publicas');
       }
     } catch {
-      // Token inválido
       localStorage.removeItem('auth-token');
       router.push('/propiedades-publicas');
     }
   } else {
-    // No hay token
     router.push('/propiedades-publicas');
   }
 };
@@ -927,12 +898,11 @@ const puedeEditarEliminar = computed(() => {
   try {
     const token = localStorage.getItem('auth-token');
     if (!token) {
-      return false; // Si no hay token, no puede editar/eliminar
+      return false; 
     }
 
     const decoded = jwtDecode(token);
-    // Verificar si el rol es 'admin' Y si el token no ha expirado
-    const currentTime = Date.now() / 1000; // Fecha actual en segundos UNIX
+    const currentTime = Date.now() / 1000; 
     return decoded.rol === 'admin' && decoded.exp > currentTime;
 
   } catch (error) {
@@ -941,7 +911,6 @@ const puedeEditarEliminar = computed(() => {
   }
 });
 
-// Función para mostrar mensajes temporales
 const mostrarMensajeTemporal = (tipo, texto, duracion = 3000) => {
   if (tipo === 'exito') {
     mensajeExito.value = texto
@@ -958,7 +927,6 @@ const mostrarMensajeTemporal = (tipo, texto, duracion = 3000) => {
   }, duracion)
 }
 
-// Funciones de imágenes (declaradas una sola vez)
 const seleccionarImagen = (index) => {
   imagenSeleccionada.value = index
 }
@@ -973,7 +941,6 @@ const siguienteImagen = () => {
   }
 }
 
-// Función para manejar eventos de teclado
 const manejarTeclado = (event) => {
   if (!modalAbierto.value) return
 
@@ -998,7 +965,6 @@ const cerrarModal = () => {
   modalAbierto.value = false
 }
 
-// Manejo de imágenes
 const handleImageUpload = async (event) => {
   const uploadedFiles = Array.from(event.target.files);
   if (!uploadedFiles.length) return;
@@ -1015,7 +981,7 @@ const handleImageUpload = async (event) => {
           public_id,
           descripcion: '',
           orden: form.value.imagenes.length,
-          esPortada: form.value.imagenes.length === 0, // Solo portada si es la primera
+          esPortada: form.value.imagenes.length === 0, 
           offsetX: 0.5,
           offsetY: 0.5,
           zoom: 1.0
@@ -1067,7 +1033,6 @@ const eliminarPropiedad = async () => {
 
     mostrarMensajeTemporal('exito', 'Propiedad eliminada correctamente')
 
-    // Redirigir a la lista de propiedades después de 1 segundo
     setTimeout(() => {
       router.push('/propiedades')
     }, 1000)
@@ -1078,7 +1043,6 @@ const eliminarPropiedad = async () => {
   }
 }
 
-// Función para mostrar confirmación antes de eliminar
 const confirmarEliminacion = () => {
   mostrarModalConfirmacion.value = true
 }
@@ -1096,11 +1060,9 @@ const toggleVisibilidadPrecio = () => {
   }
 }
 
-// Carga inicial
 onMounted(async () => {
   window.addEventListener('keydown', manejarTeclado)
 
-  // 2. Cargar los datos de la propiedad
   try {
     const id = route.params.id
     const response = await api.get(`/user/propiedad/${id}`)
@@ -1130,7 +1092,6 @@ onUnmounted(() => {
   opacity: 0;
 }
 
-/* Estilo para el botón de eliminar */
 .delete-image-btn {
   transition: all 0.2s ease;
 }
@@ -1138,7 +1099,6 @@ onUnmounted(() => {
 .delete-image-btn:hover {
   transform: scale(1.1);
   background-color: #ef4444;
-  /* Rojo más intenso */
 }
 
 .fade-out {

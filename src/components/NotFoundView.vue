@@ -42,10 +42,7 @@
               class="text-slate-600 hover:text-slate-900 transition-colors duration-200 hover:underline">
               Propiedades
             </button>
-            <!-- <button @click="goToAbout"
-              class="text-slate-600 hover:text-slate-900 transition-colors duration-200 hover:underline">
-              Nosotros
-            </button> -->
+
             <button @click="goToContact"
               class="text-slate-600 hover:text-slate-900 transition-colors duration-200 hover:underline">
               Contacto
@@ -60,7 +57,6 @@
 <script setup>
 import { useRouter } from 'vue-router'
 
-// Imagen importada
 const notFoundImage = 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/404-ytjgIcPbZT5I62OdlUYq8c1tgPbpQS.png'
 
 const router = useRouter()
@@ -73,9 +69,6 @@ const goToProperties = () => {
   router.push('/propiedades-publicas')
 }
 
-// const goToAbout = () => {
-//   router.push('/nosotros')
-// }
 
 const goToContact = () => {
   router.push('/contacto')
@@ -83,7 +76,7 @@ const goToContact = () => {
 </script>
 
 <style scoped>
-/* Animación sutil para la imagen */
+
 img {
   animation: float 3s ease-in-out infinite;
 }
@@ -100,7 +93,6 @@ img {
   }
 }
 
-/* Efecto hover para los botones */
 button:hover {
   transform: translateY(-1px);
 }

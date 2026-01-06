@@ -54,7 +54,6 @@
         {{ error }}
       </div>
 
-      <!-- Si no hay resultados -->
       <p v-if="!cargando && operaciones.length === 0" class="text-center text-slate-500 mt-12">
         No hay operaciones registradas.
       </p>
@@ -170,10 +169,8 @@ const router = useRouter()
 const cargando = ref(false)
 const error = ref(null)
 
-// Datos reales desde el backend
 const operaciones = ref([])
 
-// Filtros y paginación
 const filtroPropiedad = ref('')
 const filtroCliente = ref('')
 const filtroOperacion = ref('')
@@ -181,7 +178,6 @@ const filtroMoneda = ref('')
 const paginaActual = ref(1)
 const elementosPorPagina = 6
 
-// Obtener datos al montar el componente
 onMounted(async () => {
 await obtenerOperaciones()
 })
@@ -203,7 +199,6 @@ const obtenerOperaciones = async () => {
   }
 }
 
-// Computed properties
 const operacionesFiltradas = computed(() => {
   let operacionesFiltradas = operaciones.value.filter(op => {
     const propiedadMatch = !filtroPropiedad.value ||
@@ -224,7 +219,6 @@ const operacionesFiltradas = computed(() => {
     return propiedadMatch && clienteMatch && operacionMatch && monedaMatch
   })
 
-  // Aplicar paginación
   const inicio = (paginaActual.value - 1) * elementosPorPagina
   const fin = paginaActual.value * elementosPorPagina
   return operacionesFiltradas.slice(inicio, fin)
@@ -253,7 +247,6 @@ const totalPaginas = computed(() =>
   )
 )
 
-// Funciones de utilidad
 function formatTipoOperacion(tipo) {
   const tipos = {
     'venta': 'Venta',

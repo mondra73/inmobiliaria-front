@@ -5,20 +5,17 @@ const api = axios.create({
   withCredentials: true
 })
 
-// Interceptor para agregar el token CORRECTAMENTE
 api.interceptors.request.use(config => {
-  const token = localStorage.getItem('auth-token') // Exactamente como está guardado
+  const token = localStorage.getItem('auth-token') 
   
   if (token) {
-    config.headers['auth-token'] = token // Sin Bearer, solo el token
-    // Elimina el header Authorization si no lo necesitas
+    config.headers['auth-token'] = token 
     delete config.headers['Authorization']
   }
   
   return config
 })
 
-// Interceptor de respuestas (mantenemos igual)
 api.interceptors.response.use(
   response => response,
   error => {

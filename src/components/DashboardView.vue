@@ -150,7 +150,6 @@ const irANuevaPropiedad = () => {
   router.push('/nueva-propiedad')
 }
 
-// Cargar métricas reales desde tu API
 const cargarMetricas = async () => {
   cargando.value = true
   try {
@@ -160,7 +159,6 @@ const cargarMetricas = async () => {
     }
   } catch (error) {
     console.error('Error al cargar métricas:', error)
-    // Valores por defecto en caso de error
     metricas.value = {
       propiedades: { total: 0, porOperacion: { venta: 0, alquiler: 0 } },
       operaciones: { total: 0, porTipo: { venta: 0, alquiler: 0 } }

@@ -5,6 +5,6 @@ import vuetify from 'vite-plugin-vuetify'
 export default defineConfig({
   plugins: [
     vue(),
-    vuetify({ autoImport: true }), // 👈 esto es clave
+    vuetify({ autoImport: true }), 
   ],
 })
